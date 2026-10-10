@@ -4,7 +4,7 @@ import path from "node:path";
 const sourceRoot = path.resolve("src");
 const extensions = new Set([".ts", ".tsx", ".css"]);
 const physicalClass =
-  /(?<![\w-])(?:-?(?:ml|mr|pl|pr|left|right)-[^\s"'`]+|text-(?:left|right)|rounded-(?:l|r|tl|tr|bl|br)(?:-[^\s"'`]+)?|border-(?:l|r)(?:-[^\s"'`]+)?|scroll-m(?:l|r)-[^\s"'`]+)/;
+  /(?<![\w-])(?:-?(?:ml|mr|pl|pr|left|right)-[^\s"'`]+|text-(?:left|right)|rounded-(?:tl|tr|bl|br|l|r)(?:-[^\s"'`]+)?|border-(?:l|r)(?:-[^\s"'`]+)?|scroll-m(?:l|r)-[^\s"'`]+)(?![\w-])/;
 const physicalCss =
   /\b(?:margin-left|margin-right|padding-left|padding-right|left|right)\s*:/;
 
@@ -30,7 +30,7 @@ for (const file of await collectFiles(sourceRoot)) {
   const lines = source.split(/\r?\n/);
 
   lines.forEach((line, index) => {
-    if (line.includes("logical-exempt:")) {
+    if (/(?:\/\/|\/\*)\s*logical-exempt:\s*[^\s*]/.test(line)) {
       return;
     }
 

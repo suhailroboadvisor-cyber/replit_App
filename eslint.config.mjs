@@ -1,29 +1,33 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
 
-const compat = new FlatCompat({
-  baseDirectory: path.dirname(fileURLToPath(import.meta.url)),
-});
+const jobsRestriction = {
+  group: ["@/jobs", "@/jobs/**", "**/jobs", "**/jobs/**"],
+  message: "Job entry points may only be imported by jobs and admin code.",
+};
 
-export default [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+const config = [
+  ...nextVitals,
+  ...nextTypescript,
   {
-    files: ["src/**/*.{js,jsx,ts,tsx}"],
     ignores: [
-      "src/jobs/**",
-      "src/app/\\[locale\\]/admin/**",
+      ".next/**",
+      ".local/**",
+      ".agents/**",
+      "attached_assets/**",
+      "coverage/**",
+      "playwright-report/**",
+      "test-results/**",
     ],
+  },
+  {
+    files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
+    ignores: ["src/jobs/**", "src/app/\\[locale\\]/admin/**"],
     rules: {
       "no-restricted-imports": [
         "error",
         {
-          patterns: [
-            {
-              group: ["@/jobs", "@/jobs/**"],
-              message: "Job entry points may only be imported by jobs and admin code.",
-            },
-          ],
+          patterns: [jobsRestriction],
         },
       ],
     },
@@ -35,6 +39,7 @@ export default [
         "error",
         {
           patterns: [
+            jobsRestriction,
             {
               group: ["@/db/app", "@/db/app/**"],
               message: "Public routes must not import the app database client.",
@@ -45,3 +50,5 @@ export default [
     },
   },
 ];
+
+export default config;

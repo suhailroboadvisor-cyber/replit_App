@@ -1,5 +1,9 @@
 .git
 .github
+.local
+.agents
+.cache
+.upm
 .next
 node_modules
 coverage

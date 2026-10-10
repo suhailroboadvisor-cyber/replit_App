@@ -4,6 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Suhail",
   description: "Suhail",
+  icons: { icon: "/brand/app-icon.svg" },
 };
 
 export default function RootLayout({
@@ -12,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <body>{children}</body>
     </html>
   );

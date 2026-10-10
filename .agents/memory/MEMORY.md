@@ -1,0 +1,2 @@
+- [Replit Node runtime](replit-node-runtime.md) — pnpm's bundled Node can differ from the selected Replit module; check the script runtime too.
+- [Next development origins](next-dev-origins.md) — use the exact Replit development domain; a single-subdomain wildcard may miss cluster-qualified hosts.
