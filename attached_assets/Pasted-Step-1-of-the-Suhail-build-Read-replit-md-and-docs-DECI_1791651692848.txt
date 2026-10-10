@@ -1,0 +1,30 @@
+Step 1 of the Suhail build. Read replit.md and docs/DECISIONS.md (D-18, D-19, D-24, D-41) first.
+
+Goal: an empty but production-grade Next.js project. No product features.
+
+Requirements
+1. Scaffold the latest stable Next.js (16+) with App Router, TypeScript strict, a src/ directory, Tailwind CSS v4, ESLint (flat config), the import alias @/*, and pnpm. Pin Node 22 LTS through .nvmrc, package.json "engines", and the Replit config. Remove all create-next-app boilerplate content and images. The home page renders just the word "Suhail" for now.
+2. next.config.ts: output 'standalone', poweredByHeader false, reactStrictMode true. Do not enable cacheComponents (D-19).
+3. Scripts:
+   dev = next dev -H 0.0.0.0 -p ${PORT:-3000}
+   build
+   start = next start -H 0.0.0.0 -p ${PORT:-3000}
+   typecheck, lint, lint:logical, format, test (vitest run), test:e2e (playwright)
+   Configure .replit so Run starts dev and the web preview uses that port.
+4. Environment: src/env/ with one zod schema per group (db, auth, storage, sec, site), each read lazily by getXEnv(). On failure, report the names of missing variables and never their values. Commit .env.example listing every variable from the Secrets table in BUILD_GUIDE.md, with a comment for each and no values. .gitignore must ignore .env* except .env.example.
+5. lint:logical: a Node script (scripts/lint-logical.mjs) that scans src/**/*.{ts,tsx,css} for physical-direction Tailwind classes and CSS properties (ml-, mr-, pl-, pr-, left-, right-, text-left, text-right, rounded-l, rounded-r, rounded-tl/tr/bl/br, border-l, border-r, scroll-ml/mr, margin-left, margin-right, padding-left, padding-right, left:, right:). It prints file:line for each hit and exits 1. Allow a hit only on a line carrying the comment "logical-exempt: <reason>".
+6. ESLint: no-restricted-imports so that nothing under src/app/[locale]/(public) can import @/db/app, and nothing outside src/jobs and src/app/[locale]/admin may import src/jobs. Install the server-only package.
+7. Testing: Vitest (node environment by default, coverage via v8) with one sample test. Playwright configured to use the preinstalled Chromium on Replit: honour PLAYWRIGHT_BROWSERS_PATH and never run "playwright install". One smoke test hits /api/health.
+8. GET /api/health returns { status: "ok", version } (version from package.json plus the git SHA when available). It makes no database call.
+9. Dockerfile: multi-stage, node:22-bookworm-slim, corepack pnpm, pnpm install --frozen-lockfile, next build, copy the standalone output, run as a non-root user, HEALTHCHECK on /api/health. Add .dockerignore.
+10. GitHub Actions .github/workflows/ci.yml, job "ci": checkout, pnpm setup with cache, install --frozen-lockfile, typecheck, lint, lint:logical, test, build, docker build (no push), and a gitleaks secret scan.
+11. A README.md with run, test and build commands only.
+
+Out of scope: database, auth, styling beyond defaults, i18n, any product page.
+
+Acceptance
+- pnpm typecheck && pnpm lint && pnpm lint:logical && pnpm test && pnpm build all pass.
+- curl -s localhost:$PORT/api/health returns status ok.
+- lint:logical fails on a temporary file containing "ml-2", and passes after you delete that file.
+
+Stop and summarise: files created, dependencies added (with one line each on why), and anything you could not verify in Replit (for example, docker build runs only in CI).
