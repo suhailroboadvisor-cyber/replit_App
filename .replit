@@ -3,6 +3,7 @@ run = "PORT=5000 pnpm dev"
 
 [nix]
 channel = "stable-25_05"
+packages = ["postgresql_17"]
 
 [agent]
 expertMode = true
