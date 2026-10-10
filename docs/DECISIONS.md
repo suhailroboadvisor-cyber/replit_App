@@ -111,3 +111,25 @@ Each decision has a stable ID; the numbers are not in date or section order. Cod
 | O-6 | Legal advice on data residency and Saudi PDPL obligations (reference §2). Phase 0 now stores personal data (D-45), so this is needed before launch | Launch gate |
 | O-7 | Terms of Use and Privacy Policy text, Arabic first, with legal review | Launch gate (D-49) |
 | O-8 | WhatsApp/SMS OTP provider: Meta WhatsApp Cloud API, Twilio, or a Saudi provider (Unifonic, Taqnyat), plus a sender registration | The later phone-OTP step (D-52) |
+
+## Clarifications from Step 0
+
+| ID | Clarification |
+| --- | --- |
+| D-55 | **Phase 0 editions contain the Editor's Pick only** (D-02). Omit AI/scoring-only columns from `Edition`: `universe_snapshot_id`, `universe_size`, `eligible_count`, `scored_count`, `excluded_count`, `score_model_version_id`, `score_model_version_label` and `ai_model`. Omit these fields from `Pick`: `why_selected`, `total_score`, `lens_score`, `factor_breakdown`, `score_model_version_label`, `lens_key`, `lens_description` and all `research_*` fields. Keep `Pick.slot_key` and `Pick.pick_type`. Phase 1 adds the omitted fields in its own migration. |
+| D-56 | **Public user accounts ship in Phase 0.** D-45 supersedes reference §2; account scope is as set out in D-45 to D-53. |
+| D-57 | **Omit the entire market-data section from the stock page.** A manually entered close appears only where used: as a pick's starting price, and inside the derived `market_cap` fact in the Fundamentals table, with its source. |
+| D-58 | **The licensed end-of-day price-provider decision is deferred to gate G1** (D-08, O-4), after the verified methodology establishes whether market cap is a denominator and the launch-universe size is known (O-2). |
+| D-59 | **D-42 replaces the reference's `array<string>` status reasons.** `status_reasons` is structured `jsonb`, rendered per locale. |
+| D-60 | **Email is nullable from Phase 0** (D-35), so later phone-only users require no schema migration. |
+| D-61 | **An undisclosed business-activity unknown remains severity `review`** (D-13) until the founder decides otherwise. |
+| D-62 | **Store finance and operating lease liabilities separately and exclude both from `interest_bearing_debt` until gate G1 decides their treatment** (D-44). |
+| D-63 | **AI explanations are deferred until after launch** (referenced by the founder as D-54); this supersedes D-26's Phase 0 generation timing. Arabic pages show structured evidence only. |
+| D-64 | **O-1 remains open:** the founder must supply the verified Al Rajhi / Awaied criteria document. It does not block Steps 1–6. |
+| D-65 | **O-2 remains open:** the founder must choose the US launch stocks and universe size. It does not block Steps 1–6. |
+| D-66 | **O-3 remains open:** the founder must assign Arabic disclaimer, status-reason and later AI-prompt writing/review. It does not block Steps 1–6. |
+| D-67 | **O-4 remains open:** the founder must decide whether a licensed end-of-day price feed is needed and select a provider at gate G1. It does not block Steps 1–6. |
+| D-68 | **O-5 remains open:** the founder must confirm the `suhail.sa` domain and Cloudflare readiness. It does not block Steps 1–6. |
+| D-69 | **O-6 remains open:** the founder must obtain legal advice on data residency and Saudi PDPL obligations. It does not block Steps 1–6. |
+| D-70 | **O-7 remains open:** the founder must supply Arabic-first Terms of Use and Privacy Policy text with legal review. It does not block Steps 1–6. |
+| D-71 | **O-8 remains open:** the founder must select the later WhatsApp/SMS OTP provider and arrange sender registration. It does not block Steps 1–6. |
