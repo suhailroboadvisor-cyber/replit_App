@@ -1,0 +1,113 @@
+# Suhail — Decision Log
+
+Decisions taken on 9 Oct 2026, after `SUHAIL_BUILD_REFERENCE.md` v1.1. They extend the reference. Where the two conflict, this file wins because it is newer. Where neither covers something, ask the founder before building it.
+
+Each decision has a stable ID; the numbers are not in date or section order. Code comments, migrations and pull requests cite the ID (e.g. `// D-08`).
+
+---
+
+## Scope
+
+| ID | Decision |
+| --- | --- |
+| D-01 | **Phase 0 market is US equities** (NASDAQ and NYSE). Saudi (Tadawul) comes later. The UI stays Arabic-first (reference §2). |
+| D-02 | **Phase 0 weekly edition = Editor's Pick only** (1–2 analyst calls per week). The 4 AI picks, the factor/scoring engine and its tables (`CandidateEvaluation`, `FactorResult`, `ScoreDefinition`, `ScoreModelVersion`, `ScoreResult`, `MarketUniverseSnapshot`) are **Phase 1**. They are not built or migrated in Phase 0. `Pick.slot_key` and `Pick.pick_type` stay so Phase 1 can add AI slots without a breaking change. |
+| D-03 | **Screening universe is a curated list** kept by admins (add a ticker → it is ingested and screened). Phase 0 has no automatic whole-market ingestion. |
+| D-04 | **No live prices in Phase 0.** The live-quote block of the stock page (§5.3 "Market data") is not built. |
+| D-45 | **Public user accounts ship in Phase 0.** This overrides reference §2's "no accounts for end users". Registration and sign-in are one "Continue with Google" step. A signed-in user gets an **account page only**: profile, language preference, delete account. No content is gated, and every verdict page, methodology page and edition stays public. Accounts are groundwork for subscriptions (reference §3.4 entitlements, Phase 1). Watchlists, alerts and portfolios are still out of scope. |
+
+## Data
+
+| ID | Decision |
+| --- | --- |
+| D-05 | **Financial-statement figures come from the SEC EDGAR XBRL API** (`companyfacts`, `submissions`, `company_tickers_exchange.json`). Every figure is stored with a `Source` row naming the filing (form, accession number, filed date, URL). A value read from one XBRL tag gets `input_state = reported`, tier `Verified`. A value summed from several tags gets `input_state = derived`, tier `Calculated`, and the mapping goes in `mapping_note`. |
+| D-06 | **The XBRL → line-item mapping is a versioned config file** (`src/ingest/sec/mapping.ts`). Any change to it bumps `calculation_version`. `interest_bearing_investments` cannot be proven interest-bearing from XBRL alone: it is ingested as `estimated` / `Estimated` until an analyst confirms it from the filing notes. |
+| D-07 | **Segments and activity categories are entered by the analyst** from the 10-K segment note, in the admin. `activity_category` is never inferred from a SIC code, sector label or AI (reference §7.2). Until a segment is classified it stays `unclassified`, and the engine returns `unknown` for it. |
+| D-08 | **Prices go through a `PriceProvider` interface.** The Phase 0 implementation is `manual`: an admin enters a close, its date and its source. It is used for Editor's Pick starting prices and for market cap (shares outstanding from SEC `dei:EntityCommonStockSharesOutstanding` × close; `derived`, weakest tier wins). If the verified Al Rajhi methodology uses market-cap denominators and the universe is too large for manual entry, a licensed end-of-day provider whose licence allows public display becomes a launch requirement. Revisit at gate G1. |
+| D-09 | **Analyst corrections never edit a fact in place.** An override inserts a new `FinancialFact` with its own `Source` (`source_type = internal` or the filing note) and a reason, and supersedes the earlier one. The earlier fact remains for audit. |
+
+## Methodology
+
+| ID | Decision |
+| --- | --- |
+| D-10 | **The Al Rajhi / Awaied criteria document has not been sourced yet.** EX-A and EX-B (reference §8) are seeded as fixtures (`is_demo = true`, `official_or_inspired = internal_example`). Nothing can be production-enabled until gate G1 in the build guide is complete. Thresholds are never typed from memory or from third-party summaries. |
+| D-11 | **Methodology versions and criteria can be edited only while `workflow_status = draft`.** A database trigger rejects edits after that. A change means a new version. |
+| D-12 | **Impact and test reports are stored rows** (`methodology_version_report`: `kind` = `impact` or `test`, `payload` jsonb, author, time; append-only). They satisfy the production gate in reference §7.5. An approval is recorded on the version (`approved_by`, `approved_at`) and as an `AuditEvent` of type `approval_recorded`. |
+| D-42 | **Status reasons are stored as structured objects** (`screening_run.status_reasons` jsonb: kind, criterion id and label, ratio, threshold, reason code). Each locale renders them at display time from deterministic templates (reference §7.3), so Arabic never depends on translating stored English. |
+| D-43 | **Every screening run stores its canonical hash payload** (`screening_run.hash_payload` jsonb, the exact object hashed in reference §7.4). A run can then be re-verified later (reference §13.3 check 10) even after facts or segments change. |
+| D-44 | **Lease liabilities are stored as separate line items** (`finance_lease_liabilities`, `operating_lease_liabilities`) and are **not** folded into `interest_bearing_debt`. Whether they count is a methodology rule, so the verified Al Rajhi document decides at G1. Also added: `shares_outstanding` (SEC `dei` cover-page value, with its as-of date). |
+| D-13 | **Business-activity criterion with no segment disclosure recorded:** the unknown has severity `review`, not `blocking`. The reference (§7.2) does not say. Change it if the founder decides otherwise. |
+
+## Platform
+
+| ID | Decision |
+| --- | --- |
+| D-14 | **Supabase** for Postgres, Auth and Storage. Auth covers everyone (D-45 to D-51): Google sign-in with sign-ups on, and the email/password provider off. Storage is used through its **S3-compatible endpoint** with `@aws-sdk/client-s3`, so it stays portable. The app never uses `supabase-js` for data, only for auth. The deployed app never holds a Supabase service-role/secret key; the only use of one is the workspace CLI in D-48. |
+| D-15 | **All app tables live in a Postgres schema named `app`**, which is **not** exposed through the Supabase Data API (PostgREST). This keeps reference §12 defect 1 (open data API) from coming back. |
+| D-16 | **Database roles:** `suhail_public` (SELECT only, and only what RLS policies allow: published, public rows); `suhail_app` (read/write for admin actions and jobs, but no UPDATE/DELETE on append-only tables); migrations run as `postgres`. Every table has RLS enabled. Public pages connect as `suhail_public`. Admin server actions, signed-in users' account actions and jobs connect as `suhail_app`, and account actions only ever touch the session user's own row. |
+| D-17 | **Append-only tables:** `screening_run`, `screening_criterion_result`, `screening_unknown`, `explanation_object`, `audit_event`, `edition_revision`, `editorial_approval`, `methodology_version_report`. Enforced by grants and by a trigger that raises on UPDATE/DELETE. |
+| D-18 | **Drizzle ORM** with `drizzle-kit`. Migrations are generated, reviewed and committed. An applied migration is never edited. |
+| D-19 | **Next.js 16+ App Router**, Node 22 LTS, pnpm, TypeScript strict. `proxy.ts` (not `middleware.ts`). Classic ISR (`export const revalidate`), with `cacheComponents` off in Phase 0. |
+| D-20 | **Caching on Autoscale:** instances do not share the Next.js cache, so public pages use time-based revalidation (`revalidate = 900`). The job's call to `/api/internal/revalidate` is best-effort. No Redis cache handler in Phase 0. |
+| D-21 | **i18n:** `next-intl`, `localePrefix: 'as-needed'`, `localeDetection: false` (no redirects based on the browser language, so URLs stay canonical and cacheable). Arabic is the default with no prefix; English lives under `/en`. All numbers and dates are formatted with `ar-u-ca-gregory-nu-latn` / `en-US` (Gregorian calendar, Western digits; reference §4.3). Plain `ar-SA` is never used, because it defaults to the Hijri calendar. |
+| D-22 | **Theme is dark-first:** dark by default, light derived from it. The user's choice is kept in `localStorage` and applied by a tiny inline script before paint. Public pages never read cookies or headers, so they stay ISR-cacheable. |
+| D-23 | **Scheduled job** = one bundled entry (`dist/jobs/weekly.js`) that ingests, screens, explains and then revalidates. It works in batches of 100, records a resumable cursor in `job_run`, and is idempotent: if a run's computed hash equals the latest stored hash for the same security and version, no new run is inserted and the job logs "unchanged". |
+| D-40 | **Security headers are split by surface.** Public ISR pages get a fixed CSP (`default-src 'self'`; `script-src 'self' 'unsafe-inline'`, because static pages cannot carry a per-request nonce; `object-src 'none'`; `base-uri 'self'`; `form-action 'self'`; `frame-ancestors 'none'`). Admin pages are dynamic and get a strict nonce-based CSP (`'nonce-…' 'strict-dynamic'`). Revisit if public pages ever render user-supplied HTML. |
+| D-41 | **Two Replit apps from one GitHub repo**, unless Replit lets one app hold both deployment types: `suhail-web` (development with Agent, plus the Autoscale deployment) and `suhail-jobs` (pulls `main`; Scheduled deployment only). Both have the same secrets. |
+| D-24 | **Pre-launch mode:** `SITE_MODE=preview` puts every public route behind HTTP basic auth, sends `X-Robots-Tag: noindex`, and serves a robots.txt that disallows everything. `SITE_MODE=live` is set only after the launch gate. |
+
+## Accounts and sign-in
+
+| ID | Decision |
+| --- | --- |
+| D-46 | **Phase 0 sign-in = Google only**, through Supabase Auth (redirect flow; no Google scripts loaded on our pages). One page, `/auth/sign-in`, handles both registration and sign-in. The first callback creates the `app.users` row with `role = user`; the upsert is idempotent. |
+| D-47 | **Admins and editors are not invited.** They register as ordinary users with Google, and an existing admin promotes them in the admin's **Users** page (`user` → `editor` / `admin`, audited). A promoted user must enrol **TOTP** before entering `/admin`, which requires the admin/editor role **and** AAL2. The first admin is bootstrapped with the CLI `pnpm admin:grant <email> admin`. The last remaining admin cannot be demoted. |
+| D-48 | **Lost authenticator (admins):** the workspace-only CLI `pnpm admin:reset-mfa <email>` removes the user's TOTP factors through the Supabase Admin API. It uses `SUPABASE_SECRET_KEY`, which is set only in the workspace shell and never in any deployment's secrets. |
+| D-49 | **Consent:** the sign-in page shows "By continuing you agree to the Terms and the Privacy Policy" with links, before the Google button. On first sign-in (and whenever a policy version changes) the user's acceptance is recorded: `terms_version`, `privacy_version` and `accepted_at` on `app.users`. A user with an outdated acceptance sees a re-consent screen before the account page. `/terms` and `/privacy` are public pages whose content comes from versioned files in the repo (Arabic first), supplied by the founder (O-7). |
+| D-50 | **Self-service account deletion** on the account page, with typed confirmation. It deletes the `auth.users` row through a `SECURITY DEFINER` Postgres function `app.delete_own_account(uuid)` (owned by `postgres`, EXECUTE granted only to `suhail_app`), called after the server has verified the session user equals the id. The `app.users` row cascades away, and `created_by` references are set to null. Admins must be demoted before they can delete their account. An audit event records the user id only, with no email (minimal personal data). |
+| D-51 | **Public pages stay ISR-cacheable with accounts.** The header's sign-in / account control is a small client component that reads the session in the browser (`@supabase/ssr` browser client). Server-side session refresh runs in `proxy.ts` only for `/auth/*`, `/account*` and `/admin*`, in both locales. The public CSP's `connect-src` adds the Supabase URL. Avatars are initials only (no Google image host). `/account`, `/auth` and `/admin` are `noindex` and disallowed in robots.txt. |
+| D-52 | **Mobile-number OTP comes later**, with **WhatsApp** as the preferred channel. It is built on Supabase phone auth with the **Send SMS hook** pointing at our own signed endpoint (`/api/hooks/send-otp`, Standard Webhooks signature), which sends through the chosen provider: WhatsApp Business (Meta Cloud API authentication template, or Twilio), with SMS fallback (a Saudi provider such as Unifonic/Taqnyat, or Twilio). The provider is open (O-8). Phase 0 code must not assume email is always present on a user, so phone-only users fit later. |
+| D-53 | **Audit event types added** to the reference §6 enum: `user_registered`, `user_role_change`, `user_mfa_reset`, `user_account_deleted`, `consent_recorded`. |
+
+## AI
+
+| ID | Decision |
+| --- | --- |
+| D-25 | **Anthropic API with our own key.** The model id comes from env `LLM_MODEL`, temperature 0. Every call stores model, `prompt_version` (a column added to `explanation_object`), validation status and details. |
+| D-26 | **Phase 0 generates English explanations only**, using reference §10.1 verbatim. Arabic pages show structured evidence only until an Arabic prompt and an Arabic forbidden-word list have been written and approved by a person (reference §10.1). Status reasons (§7.3) are deterministic templates in both languages; the Arabic templates carry a review marker until approved. |
+| D-27 | **The editor's text is checked against the banned-register list** (reference §4.6 and §10.4). Hard-banned terms block publishing; other matches show as warnings in the editor. |
+
+## Data-model additions (beyond reference §6)
+
+| ID | Addition | Why |
+| --- | --- | --- |
+| D-28 | `job_run` (job name, status, cursor, counts, errors, timings) | Resumable, observable scheduled jobs |
+| D-29 | `analyst_profile` (user id, name AR/EN, title AR/EN, credentials, headshot object key, bio AR/EN, active) | Brand §4.4: real names, headshots and credentials on all research |
+| D-30 | `company.name_ar`, `company.description_ar`, `company.description_en` | Arabic-first pages for US issuers |
+| D-31 | `security.slug` (unique, e.g. `nasdaq-aapl`), `security.in_universe`, `security.coverage_analyst_id`, `security.coverage_started_at` | Readable URLs (§5.2), curated universe (D-03), coverage flag for the seal |
+| D-32 | `methodology.slug`, and an `is_public` flag on methodology versions | `/methodology/[slug]` and RLS |
+| D-33 | Editor's Pick text fields in two languages: `*_ar` required, `*_en` optional. On `/en`, a missing English field falls back to Arabic with an "Arabic only" note | Arabic-first content |
+| D-34 | `methodology_version_report` | See D-12 |
+| D-35 | `app.users.id` = Supabase `auth.users.id`; `role` enum `admin` / `editor` / `user` (default `user`); `email` and `phone` both nullable (D-52); `full_name`, `locale_pref` (`ar` / `en`), `terms_version`, `privacy_version`, `accepted_at`, `last_sign_in_at` | Reference §3.4, D-45 to D-52 |
+| D-36 | View `app.public_settings` exposing only `default_shariah_methodology_version_id` to `suhail_public` | Public pages need the default version without reading `EditorialSetting` |
+
+## Provisional decisions (build them this way; the founder can change them)
+
+| ID | Decision |
+| --- | --- |
+| D-37 | **"Covered"** means an analyst has been assigned to the security in the admin (`coverage_analyst_id` set). The seal shows only when the security is covered **and** its latest status is `passes_selected_methodology` (reference §4.2). |
+| D-38 | **Approvals:** the stages are `qa` → `editorial` → `publish`. One person may approve more than one stage while the team is small. Every approval is recorded with its approver. |
+| D-39 | **Discovery:** reference §5.2 has no search or stock-index page. In Phase 0, stock pages are reached through editions, the sitemap and search engines. Add a `/stocks` index only if the founder asks for one. |
+
+## Open — ask the founder before the affected step
+
+| ID | Question | Blocks |
+| --- | --- | --- |
+| O-1 | The verified Al Rajhi / Awaied criteria document (thresholds, ratios, numerators, denominators, treatment rules, purification) | Gate G1, and therefore launch |
+| O-2 | Which US stocks, and how many, are in the launch universe? | Step 7 seed list; the D-08 price decision |
+| O-3 | Who writes and reviews the Arabic disclaimers (§11), the Arabic status-reason templates, and later the Arabic AI prompt? | Launch gate |
+| O-4 | Is a licensed end-of-day price feed needed (see D-08), and from which provider? | Gate G1 |
+| O-5 | Domain (`suhail.sa`) and Cloudflare account ready? | Step 13 |
+| O-6 | Legal advice on data residency and Saudi PDPL obligations (reference §2). Phase 0 now stores personal data (D-45), so this is needed before launch | Launch gate |
+| O-7 | Terms of Use and Privacy Policy text, Arabic first, with legal review | Launch gate (D-49) |
+| O-8 | WhatsApp/SMS OTP provider: Meta WhatsApp Cloud API, Twilio, or a Saudi provider (Unifonic, Taqnyat), plus a sender registration | The later phone-OTP step (D-52) |
