@@ -1,6 +1,11 @@
 import "server-only";
 import type { ZodType } from "zod";
 
+// Empty template assignments count as unset for optional/defaulted variables.
+export function blankToUndefined(value: unknown) {
+  return value === "" ? undefined : value;
+}
+
 export function parseEnv<TSchema extends ZodType>(
   schemaName: string,
   schema: TSchema,
