@@ -1,0 +1,78 @@
+Step 2 of the Suhail build. Read these in full first:
+- replit.md
+- docs/DECISIONS.md: D-02, D-09 to D-18, D-28 to D-36, D-42 to D-44, D-50, D-52, D-53
+- docs/SUHAIL_BUILD_REFERENCE.md: §3.4, all of §6 (including "Notes for the Postgres port", the line-item keys, input states and confidence tiers), §7.4 and §8
+
+Goal: the Phase 0 database in Postgres schema "app", with roles, grants, RLS and triggers, through Drizzle.
+
+Requirements
+1. Drizzle with postgres-js. drizzle.config.ts: schema in src/db/schema/*.ts, migrations in drizzle/, schemaFilter ['app'], dialect postgresql, credentials from DATABASE_URL_MIGRATIONS. Scripts db:generate, db:migrate, db:seed, db:studio.
+2. Two clients in src/db/, each importing "server-only". Both use postgres-js with prepare:false (transaction pooler), ssl 'require' and a small pool max:
+   - src/db/public.ts exports dbPublic (DATABASE_URL_PUBLIC);
+   - src/db/app.ts exports dbApp (DATABASE_URL_APP).
+3. Tables, all in pgSchema('app'):
+   users, analyst_profile, audit_event, exchange, company, security, source, financial_period, financial_fact, business_segment, price_bar, methodology, methodology_version, methodology_criterion, methodology_version_report, screening_run, screening_criterion_result, screening_unknown, explanation_object, edition, pick, editorial_approval, edition_revision, editorial_setting, job_run.
+   Do NOT create the Phase 1 scoring tables (D-02).
+4. Conventions:
+   - snake_case.
+   - id uuid primary key default gen_random_uuid(); created_at and updated_at timestamptz; created_by uuid null → users.
+   - Real foreign keys wherever the reference stores a string id.
+   - pgEnum for every reference enum, with exactly the values in §6.
+   - is_demo boolean NOT NULL DEFAULT false.
+   - Money and quantities numeric(30,6); ratios, thresholds and margins numeric(12,6). Map them to JS numbers in the Drizzle types.
+   - Keep the denormalised label columns the reference stores on immutable records (screening_run, pick, edition), because they preserve history.
+   - users.id equals Supabase auth.users.id, with NO foreign key to the auth schema, so migrations also run on plain Postgres in CI (D-35). users has the columns listed in D-35; email and phone are both nullable (D-52).
+   - created_by and similar user references use ON DELETE SET NULL, so a user's account can be deleted (D-50).
+   - The audit_event.event_type enum = the §6 values plus the D-53 additions.
+5. Columns added by decisions:
+   - security.slug (unique), in_universe, coverage_analyst_id, coverage_started_at (D-31)
+   - company.name_ar, description_ar, description_en (D-30)
+   - methodology.slug, methodology_version.is_public (D-32)
+   - methodology_version.approved_by and approved_at (D-12)
+   - screening_run.status_reasons as jsonb of structured objects (D-42) and screening_run.hash_payload jsonb (D-43)
+   - explanation_object.prompt_version (D-25)
+   - financial_fact.is_current with a partial unique index on (company_id, period_id, line_item) WHERE is_current (D-09)
+   - pick bilingual editor fields: *_ar NOT NULL when pick_type='editor' (use a CHECK constraint), *_en nullable (D-33)
+   - job_run (D-28) and analyst_profile (D-29) as specified in DECISIONS.md
+6. Unique constraints: exchange.code; (security.exchange_id, ticker); (methodology_version.methodology_id, version); (financial_period.company_id, period_type, fiscal_year, fiscal_period_label); a partial unique index on financial_period (company_id, period_type) WHERE is_latest; edition.edition_id together with revision_number.
+7. Custom SQL migrations (drizzle-kit generate --custom), idempotent:
+   a. Roles: create suhail_public and suhail_app as NOLOGIN if they do not exist. Passwords are set by hand later; never in git. GRANT USAGE ON SCHEMA app. Revoke everything on schema app from PUBLIC.
+   b. Grants: suhail_public gets SELECT only, on the publicly readable tables listed in c.
+      suhail_app gets SELECT, INSERT, UPDATE, DELETE on mutable tables, and SELECT, INSERT only on the append-only tables (D-17).
+      Set ALTER DEFAULT PRIVILEGES so future tables are not readable by suhail_public by default.
+   c. RLS: ENABLE ROW LEVEL SECURITY on every table.
+      suhail_app: a permissive policy on all tables (application code enforces roles).
+      suhail_public: SELECT policies only on:
+      - exchange (all rows);
+      - company, security, source, financial_period, financial_fact, business_segment, price_bar: only rows belonging to a security with in_universe = true AND listing_status = 'listed';
+      - methodology, methodology_version, methodology_criterion: only where the version has is_public = true;
+      - screening_run, screening_criterion_result, screening_unknown, explanation_object: only for public securities AND public methodology versions;
+      - edition, pick, edition_revision: only where edition.status is published_demo or published_live;
+      - analyst_profile: only active profiles.
+      No policy at all for suhail_public on users, audit_event, editorial_approval, editorial_setting, methodology_version_report and job_run.
+   d. View app.public_settings exposing ONLY default_shariah_methodology_version_id from editorial_setting, with security_barrier; GRANT SELECT to suhail_public (D-36).
+   e. Trigger function app.reject_mutation(): raises on UPDATE or DELETE. Attach it to every append-only table in D-17.
+   f. Trigger on methodology_version: once OLD.workflow_status <> 'draft', reject DELETE, and reject UPDATE of any column except workflow_status, workflow_history, production_enabled, impact_report_id, test_report_id, approval_id, approved_by, approved_at, is_public, updated_at. On methodology_criterion: reject INSERT, UPDATE and DELETE when the parent version is not draft (D-11).
+   g. An updated_at trigger on mutable tables.
+   h. app.delete_own_account(p_user_id uuid): SECURITY DEFINER, owned by postgres, SET search_path = '' with fully qualified names. It deletes from auth.users where id = p_user_id (the app.users row is removed in the same function, so no FK is needed). REVOKE EXECUTE FROM PUBLIC; GRANT EXECUTE only to suhail_app (D-50). In CI's plain Postgres, create a stub auth.users table in the test setup only, never in migrations. Make the migration skip the function body gracefully if the auth schema is absent, or guard it with to_regclass('auth.users').
+8. Seed (pnpm db:seed, idempotent, runs as the migrations user):
+   - Exchanges: NASDAQ (MIC XNAS) and NYSE (MIC XNYS); country US; timezone America/New_York; currency USD; regulator SEC; is_demo false.
+   - Methodologies EX-A v1.0 and EX-B v1.0 exactly as in reference §8, with official_or_inspired internal_example, licensing_status internal, production_enabled false, workflow_status draft, is_public true, is_demo true, effective 2026-01-01, slugs "example-a" and "example-b". For each criterion set criterion_type, label, threshold, threshold_unit, threshold_direction, borderline_margin (leave it NULL where §8 says "no margin"; never default it), numerator_line_items, denominator_line_items, required_inputs, sort_order, and treatment_rule_data containing prohibited_categories / non_permissible_categories as listed. Copy the treatment text from §8 verbatim into treatment_rules. Do not invent line items: put lease-treatment differences in treatment_rules text only (D-44).
+   - EditorialSetting: setting_key 'editorial'; default methodology version = EX-A v1.0; allow_ineligible_editor_pick false; is_demo false.
+9. Integration tests against a real Postgres. In CI add a postgres:17 service container; locally use DATABASE_URL_TEST. The tests run all migrations, then connect AS suhail_public and AS suhail_app (SET ROLE is fine in tests) and assert:
+   - suhail_public cannot select from users, audit_event, editorial_setting, editorial_approval, job_run or methodology_version_report;
+   - suhail_public cannot see a draft edition, and can see a published_live one;
+   - suhail_public cannot insert into any table;
+   - suhail_public sees only in-universe, listed securities;
+   - suhail_app cannot UPDATE or DELETE screening_run or audit_event (via both grants and trigger);
+   - a non-draft methodology version rejects criteria edits, but its workflow_status can still change;
+   - the seed is idempotent (running it twice gives the same row counts);
+   - suhail_public cannot execute app.delete_own_account; suhail_app can, and it removes both the auth row and the app.users row (against the test stub).
+
+Out of scope: UI, the engine, ingestion.
+
+Stop and summarise:
+- the table list with row-level access per role;
+- the migration files;
+- the exact SQL I must run by hand to set the role passwords;
+- anything in §6 you could not map, written as questions.
