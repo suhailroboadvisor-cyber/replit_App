@@ -11,6 +11,22 @@ jobs:
   ci:
     name: ci
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: suhail_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL_TEST: postgresql://postgres@127.0.0.1:5432/suhail_test
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,5 +48,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm lint:logical
       - run: pnpm test
+      # The isolated suite applies migrations and seeds twice before role tests.
+      - run: pnpm test:db
       - run: pnpm build
       - run: docker build --build-arg GIT_SHA="$GITHUB_SHA" .
