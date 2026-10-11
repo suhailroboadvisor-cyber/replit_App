@@ -5,3 +5,4 @@
 - [Drizzle/Postgres serialization](drizzle-postgres-serialization.md) — attaching Drizzle changes JSON serializers; raw queries on the same client need serialized JSON.
 - [Database CLI modules](database-cli-modules.md) — Vitest imports can pass while tsx commands fail; keep runner and schema module scopes compatible.
 - [Supabase connection modes](supabase-connection-modes.md) — Session for migrations/smoke checks, Transaction for app; integration tests only on disposable plain PostgreSQL 17.
+- [Validation startup budgets](validation-startup-budgets.md) — concurrent completion checks can make cold tooling initialization exceed ordinary assertion timeouts.
