@@ -27,6 +27,11 @@ export type BrowserAuth = {
 };
 
 const accountMessages = [
+  "Enable JavaScript to continue with Google.",
+  "Open sign-in in a new tab",
+  "Google sign-in needs a separate browser tab. Open sign-in in a new tab, then continue with Google.",
+  "Google sign-in could not be started. Check your connection and try again in a new tab. If it still fails, contact the site owner to check Google provider and callback settings.",
+  "Google navigation did not complete. Open sign-in in a new tab and try again.",
   "Accept and continue",
   "Accepted",
   "Account",

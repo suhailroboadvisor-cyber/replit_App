@@ -1,4 +1,29 @@
 import { expect,test } from "@playwright/test";
+for (const prefix of ["", "/en"]) {
+  test(`${prefix || "ar"} embedded sign-in directs users to a separate tab without starting OAuth`, async ({page}) => {
+    let starts = 0;
+    page.on("request", request => { if (request.url().endsWith("/auth/start")) starts++; });
+    await page.route("**/embed-parent", route => route.fulfill({
+      contentType:"text/html",body:`<iframe title="Isolated embedded sign-in" src="${prefix}/?screen=signin"></iframe>`,
+    }));
+    await page.route(`**${prefix}/?screen=signin`, async route => {
+      const response = await route.fetch();
+      const headers = response.headers();
+      // Test transport only: runtime frame-ancestors 'none' remains intact.
+      // Permit the isolated component to render inside a same-origin harness.
+      expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
+      headers["content-security-policy"] = headers["content-security-policy"].replace("frame-ancestors 'none'","frame-ancestors 'self'");
+      await route.fulfill({response,headers});
+    });
+    await page.goto("/embed-parent");
+    const frame = page.frameLocator("iframe");
+    await frame.getByRole("button",{name:/Continue with Google/}).click();
+    await expect(frame.getByRole("alert")).toContainText("separate browser tab");
+    await expect(frame.getByRole("link",{name:/Open sign-in in a new tab/})).toHaveAttribute("target","_blank");
+    await expect(frame.getByRole("link",{name:/Open sign-in in a new tab/})).toHaveAttribute("href",`${prefix}/auth/sign-in`);
+    expect(starts).toBe(0);
+  });
+}
 test("anonymous header makes zero private profile requests; browser sessions clear old roles",async({page})=>{
   let count=0;page.on("request",r=>{if(r.url().includes("/api/account/profile"))count++;});
   await page.goto("/");

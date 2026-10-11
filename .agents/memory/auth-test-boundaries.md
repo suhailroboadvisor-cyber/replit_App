@@ -12,6 +12,17 @@ browser verification needs authenticated-state fixtures without real credentials
 **How to apply:** Test privileged UI states using isolated fixtures; explicitly
 distinguish them from manual live Google/TOTP verification.
 
+For browser redirect-chain tests, use a real isolated HTTP destination after
+the first intercepted response instead of assuming subsequent redirects will
+also be intercepted.
+
+**Why:** Playwright's route interception handles the first request in a redirect
+chain; a fulfilled 302 can send subsequent requests to the actual external site
+despite a second matching page route.
+
+**How to apply:** Keep browser provider stand-ins in separate test processes or
+HTTP listeners, and distinguish isolated transport from live provider checks.
+
 Approved substantive policies must receive new version identifiers when replacing
 accepted draft policies.
 

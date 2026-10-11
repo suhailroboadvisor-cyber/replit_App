@@ -1,8 +1,10 @@
 "use client";
 
 import { LockKeyhole, ArrowUpRight } from "lucide-react";
+import { useState, type FormEvent } from "react";
 import { Lockup } from "@/components/foundation/Lockup";
-import { localePath } from "@/lib/auth/paths";
+import { localePath, safeNext } from "@/lib/auth/paths";
+import { googleOAuthUrl } from "@/lib/auth/oauth-url";
 import type { Locale } from "./types";
 import { reviewText } from "./types";
 
@@ -14,7 +16,39 @@ type SignInProps = {
 };
 
 export function SignInScreen({ locale, next, valueStatement, providerError }: SignInProps) {
-  const providerMessage = providerError ? reviewText(locale, providerError) : "";
+  const [connecting, setConnecting] = useState(false);
+  const [failure, setFailure] = useState<string | null>(null);
+  const providerMessage = failure || providerError ? reviewText(locale, failure || providerError || "") : "";
+  const signInPath = localePath(locale, "/auth/sign-in") + (safeNext(next) ? `?next=${encodeURIComponent(next!)}` : "");
+  async function startGoogle(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (connecting) return;
+    setFailure(null);
+    if (window.self !== window.top) {
+      setFailure("Google sign-in needs a separate browser tab. Open sign-in in a new tab, then continue with Google.");
+      return;
+    }
+    setConnecting(true);
+    const form = new FormData(event.currentTarget);
+    try {
+      const response = await fetch(localePath(locale, "/auth/start"), {
+        method: "POST", body: form, credentials: "same-origin", redirect: "error",
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!response.ok) throw new Error("oauth_start_failed");
+      const data: {url?: unknown} = await response.json();
+      const destination = googleOAuthUrl(data.url, process.env.NEXT_PUBLIC_SUPABASE_URL);
+      window.location.assign(destination);
+      // A browser/sandbox can refuse navigation without throwing; unload cancels this timer.
+      window.setTimeout(() => {
+        setConnecting(false);
+        setFailure("Google navigation did not complete. Open sign-in in a new tab and try again.");
+      }, 15000);
+    } catch {
+      setConnecting(false);
+      setFailure("Google sign-in could not be started. Check your connection and try again in a new tab. If it still fails, contact the site owner to check Google provider and callback settings.");
+    }
+  }
   const copy = {
     eyebrow: reviewText(locale, "RESEARCH, WITH ITS REASONS"),
     title: reviewText(locale, "Sign in"),
@@ -69,22 +103,28 @@ export function SignInScreen({ locale, next, valueStatement, providerError }: Si
                 </a>
                 .
               </p>
-              <form action={localePath(locale, "/auth/start")} method="post">
+              <form action={localePath(locale, "/auth/start")} method="post" onSubmit={startGoogle} aria-busy={connecting}>
                 <input type="hidden" name="next" value={next ?? ""} />
                 <button
                   type="submit"
+                  disabled={connecting}
                   className="mt-7 flex min-h-12 w-full items-center justify-between gap-4 bg-primary px-5 font-medium text-primary-foreground transition-opacity hover:opacity-90"
                 >
                   <span className="flex items-center gap-3">
                     <GoogleMark />
-                    {copy.continue}
+                    {connecting ? copy.connecting : copy.continue}
                   </span>
                   <ArrowUpRight aria-hidden="true" size={17} strokeWidth={1.6} />
                 </button>
               </form>
+              <noscript>{reviewText(locale, "Enable JavaScript to continue with Google.")}</noscript>
+              {connecting && <p className="mt-4 text-sm" role="status">{copy.connecting}</p>}
               {providerMessage && (
                 <p className="mt-4 border-s-2 border-foreground ps-3 text-sm text-foreground" role="alert">
                   {providerMessage}
+                  <a className="mt-2 block underline underline-offset-4" href={signInPath} target="_blank" rel="noopener noreferrer">
+                    {reviewText(locale, "Open sign-in in a new tab")}
+                  </a>
                 </p>
               )}
               <p className="mt-6 text-xs leading-6 text-muted-foreground">

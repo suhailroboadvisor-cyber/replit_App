@@ -55,6 +55,7 @@ async function user(role:"admin"|"editor"|"user"="user") {
   return person;
 }
 beforeAll(async()=>{
+  vi.stubEnv("SITE_URL","https://fixture.test");
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL","https://auth.fixture.test");
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY","fixture-anon");
   control=cliConnection("DATABASE_URL_TEST");

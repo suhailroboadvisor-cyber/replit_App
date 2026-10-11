@@ -4,9 +4,11 @@ import { serverAuth } from "../../../../../lib/auth/server";
 import { registerIdentity } from "../../../../../lib/auth/registration";
 import { currentConsent } from "../../../../../lib/auth/policies";
 import { localePath, safeNext } from "../../../../../lib/auth/paths";
+import { authOrigin } from "../../../../../lib/auth/origin";
 export async function GET(request: Request, {params}: {params:Promise<{locale:string}>}) {
   const {locale} = await params;
   const url = new URL(request.url);
+  const origin = authOrigin(request);
   const next = safeNext(url.searchParams.get("next"));
   try {
     const auth = await serverAuth();
@@ -20,8 +22,8 @@ export async function GET(request: Request, {params}: {params:Promise<{locale:st
     store.delete("suhail-consent");
     const target = next ?? localePath(user.locale_pref,"/");
     const destination = currentConsent(user) ? target : `${localePath(locale,"/auth/consent")}?next=${encodeURIComponent(target)}`;
-    return NextResponse.redirect(new URL(destination,url),303);
+    return NextResponse.redirect(new URL(destination,origin),303);
   } catch {
-    return NextResponse.redirect(new URL(`${localePath(locale,"/auth/sign-in")}?error=${url.searchParams.has("error")?"cancelled":"provider"}`,url),303);
+    return NextResponse.redirect(new URL(`${localePath(locale,"/auth/sign-in")}?error=${url.searchParams.has("error")?"cancelled":"provider"}`,origin),303);
   }
 }

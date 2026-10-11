@@ -1,5 +1,5 @@
 export class AuthError extends Error {
-  constructor(public status: 401 | 403 | 409 | 400, public code: string) { super(code); }
+  constructor(public status: 401 | 403 | 409 | 400 | 502 | 503, public code: string) { super(code); }
 }
 export type ActionResult = {ok: true} | {ok: false; error: string; status: number};
 export function actionError(error: unknown): ActionResult {

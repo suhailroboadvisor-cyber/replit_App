@@ -150,9 +150,41 @@ database and a local mock Supabase Admin API, never real users/credentials.
 Browser fixtures exercise actual menu/consent/account/MFA components; they are
 not a live Google/TOTP test or a screenshot of a real signed-in admin session.
 
-Manual live Google redirect, refresh/session cookies, Google cancellation and
-authenticator enrollment/step-up/reset still require the approved project
-configuration above. No such live test was claimed or executed.
+The original Step 5 verification did not exercise live Google. Subsequent
+navigation verification is described below; signed-in refresh/session cookies,
+Google cancellation after account selection and authenticator enrollment/
+step-up/reset still require authorized manual testing.
+
+### Google navigation verification
+
+Sign-in starts with a same-origin POST returning private/no-store JSON, then a
+document navigation to the validated configured Supabase Google authorization
+endpoint. `form-action 'self'`, script nonces/strict-dynamic, PKCE and
+`frame-ancestors 'none'` remain in place. Public provider settings are checked
+read-only with the browser-safe anon key before starting; disabled/unavailable
+Google setup stays on the sign-in page with retry/new-tab/site-owner guidance.
+The UI shows progress, prevents duplicate submissions and advises separate-tab
+sign-in for unsupported embedded contexts. JavaScript is required.
+
+Production callback/POST origins require HTTPS `SITE_URL`. Development also
+supports the exact `REPLIT_DEV_DOMAIN` supplied by the environment and same-port
+loopback aliases. Arbitrary forwarded hosts are never trusted. Set the canonical
+origin before production deployment; configure Supabase's redirect allowlist for
+both localized callback paths on every authorized origin. The live callback
+allowlist and completed account registration have **not** been verified.
+
+Browser regressions click the actual AR/EN screens, exercise the real Next start
+route and SDK-generated PKCE/cookies, then follow an isolated external HTTP
+redirect chain to a Google stand-in. These two route-integration cases require
+a configured Supabase project with Google enabled and skip explicitly when
+public auth configuration is absent; error and embedded-browser cases remain
+independent fixtures. Unit cases cover disabled settings, malicious destinations,
+CSRF/origin refusals and externally reachable callbacks.
+
+Unauthenticated live preview clicks on both `/auth/sign-in` and
+`/en/auth/sign-in` reached Google's sign-in page (start 200, Supabase authorize
+302). Testing stopped before account selection, account creation or authorization.
+No provider configuration, database data/roles or migrations were changed.
 
 ### Checks actually run
 
