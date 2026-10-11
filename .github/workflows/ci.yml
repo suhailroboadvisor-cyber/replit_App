@@ -8,6 +8,25 @@ permissions:
   contents: read
 
 jobs:
+  engine:
+    name: engine coverage (no database)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:engine
+      - uses: actions/upload-artifact@v4
+        with:
+          name: engine-coverage
+          path: coverage/engine/
   ci:
     name: ci
     runs-on: ubuntu-latest
@@ -51,4 +70,13 @@ jobs:
       # The isolated suite applies migrations and seeds twice before role tests.
       - run: pnpm test:db
       - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - run: pnpm test:e2e:accounts
+      - run: pnpm exec playwright test --config playwright.production.config.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: foundation-browser-checks
+          path: generated-artifacts/
       - run: docker build --build-arg GIT_SHA="$GITHUB_SHA" .

@@ -5,7 +5,11 @@ import { cliConnection } from "../scripts/db/connection";
 vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   postgres: vi.fn(() => ({ fixture: true })),
-  drizzle: vi.fn(() => ({ select: vi.fn(), execute: vi.fn() })),
+  drizzle: vi.fn((client: unknown) => ({
+    $client: client,
+    select: vi.fn(),
+    execute: vi.fn(),
+  })),
 }));
 vi.mock("postgres", () => ({ default: mocks.postgres }));
 vi.mock("drizzle-orm/postgres-js", () => ({ drizzle: mocks.drizzle }));
@@ -42,13 +46,20 @@ describe("database credential separation", () => {
       const db = lazyRuntimeClient(key);
       expect(mocks.postgres).not.toHaveBeenCalled();
       expect(() => db.select).toThrow(key);
-      const fixtureUrl = "postgresql://role.example.test/database";
+      const fixtureUrl = "postgresql://fixture@127.0.0.1:55432/database";
       vi.stubEnv(key, fixtureUrl);
       db.select();
       db.select();
       expect(mocks.postgres).toHaveBeenCalledExactlyOnceWith(
-        fixtureUrl,
-        runtimeOptions,
+        expect.objectContaining({
+          host: ["127.0.0.1"],
+          port: [55432],
+          username: "fixture",
+          database: "database",
+          password: expect.any(Function),
+          ...runtimeOptions,
+          ssl: false,
+        }),
       );
       expect(runtimeOptions).toMatchObject({
         ssl: "require",
@@ -65,21 +76,12 @@ describe("database credential separation", () => {
       vi.stubEnv(key, "postgresql://postgres@127.0.0.1:5432/fixture");
       cliConnection(key);
       expect(mocks.postgres).toHaveBeenCalledWith(
-        expect.any(String),
         expect.objectContaining({ ssl: false, max: 1, prepare: false }),
       );
       vi.stubEnv(key, "postgresql://remote.example.test/fixture");
-      if (key === "DATABASE_URL_TEST") {
-        mocks.postgres.mockClear();
-        expect(() => cliConnection(key)).toThrow("never Supabase");
-        expect(mocks.postgres).not.toHaveBeenCalled();
-      } else {
-        cliConnection(key);
-        expect(mocks.postgres).toHaveBeenLastCalledWith(
-          expect.any(String),
-          expect.objectContaining({ ssl: "require" }),
-        );
-      }
+      mocks.postgres.mockClear();
+      expect(() => cliConnection(key)).toThrow("never Supabase");
+      expect(mocks.postgres).not.toHaveBeenCalled();
     },
   );
   it("does not expose rejected credentials in validation errors", () => {
@@ -94,8 +96,50 @@ describe("database credential separation", () => {
     vi.stubEnv("DATABASE_URL_MIGRATIONS", undefined);
     cliConnection("DATABASE_URL_TEST");
     expect(mocks.postgres).toHaveBeenCalledExactlyOnceWith(
-      "postgresql://postgres@127.0.0.1:55432/suhail_test",
-      expect.objectContaining({ ssl: false, max: 1, prepare: false }),
+      expect.objectContaining({
+        host: ["127.0.0.1"],
+        port: [55432],
+        username: "postgres",
+        database: "suhail_test",
+        ssl: false,
+        max: 1,
+        prepare: false,
+      }),
     );
   });
+  it.each([
+    ["DATABASE_URL_APP", "production"],
+    ["DATABASE_URL_PUBLIC", "production"],
+    ["DATABASE_URL_APP", "test"],
+    ["DATABASE_URL_PUBLIC", "test"],
+  ] as const)(
+    "wires role refusal into the actual lazy %s client in %s mode",
+    async (key, mode) => {
+      vi.stubEnv("NODE_ENV", mode);
+      const username =
+        key === "DATABASE_URL_APP"
+          ? "suhail_app.project"
+          : "suhail_public.project";
+      vi.stubEnv(
+        key,
+        `postgresql://${username}@${mode === "test" ? "127.0.0.1" : "aws-0-region.pooler.supabase.com"}:6543/postgres`,
+      );
+      const raw = {
+        fixture: true,
+        unsafe: vi.fn((text: string) =>
+          Promise.resolve(
+            text === "select current_user"
+              ? [{ current_user: "postgres" }]
+              : [],
+          ),
+        ),
+        end: vi.fn(async () => {}),
+      };
+      mocks.postgres.mockReturnValueOnce(raw);
+      const db = lazyRuntimeClient(key);
+      await expect(db.$client.unsafe("business")).rejects.toThrow(key);
+      expect(raw.unsafe).toHaveBeenCalledWith("select current_user");
+      expect(raw.end).toHaveBeenCalledExactlyOnceWith({ timeout: 0 });
+    },
+  );
 });

@@ -8,3 +8,9 @@ Use Supabase's Session pooler for migrations and connection smoke tests, and its
 **Why:** The user requested pooler routing because Supabase direct connections are IPv6-only by default, then explicitly restricted integration tests to plain PostgreSQL.
 
 **How to apply:** Follow `docs/DECISIONS.md` and `docs/PHASE_ZERO_DATABASE.md`. Supabase compatibility is verified by applying migrations to the real project plus a connection smoke test, not by altering managed auth tables for integration tests.
+
+Code merges must not automatically apply external database migrations or seeds.
+
+**Why:** A Supabase integration retry applied migrations before its setup assertion failed; a failed test run does not imply that the database was untouched. Merging code is not separate authorization to mutate the database behind saved migration credentials.
+
+**How to apply:** Keep automatic reconciliation limited to dependency and code checks. Verify the intended target and authorization separately before any external database mutation.

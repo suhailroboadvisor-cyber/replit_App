@@ -1,8 +1,17 @@
 import { ESLint } from "eslint";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import path from "node:path";
 
 const eslint = new ESLint();
+
+// Tooling bootstrap, not a behavior test: concurrent completion checks can make
+// Next/TypeScript ESLint's cold plugin/config load exceed Vitest's 5s test limit.
+// Keep the actual boundary assertions on their normal timeout.
+beforeAll(async () => {
+  await eslint.lintText("export const fixture = 0;", {
+    filePath: path.resolve("src/engine/fixture.ts"),
+  });
+}, 30_000);
 
 async function restrictionCount(file: string, importedPath: string) {
   const [result] = await eslint.lintText(
@@ -15,6 +24,33 @@ async function restrictionCount(file: string, importedPath: string) {
 }
 
 describe("import boundaries", () => {
+  it.each(["@/db/schema", "../db/schema", "node:fs", "node:http", "postgres", "../../scripts/db/fixtures", "./__fixtures__/synthetic"])(
+    "rejects IO/database/test coupling %s in engine production modules",
+    async (importedPath) => {
+      expect(await restrictionCount("src/engine/fixture.ts", importedPath)).toBeGreaterThan(0);
+    },
+  );
+  it.each(["./types", "../math", "node:crypto", "zod"])(
+    "allows pure engine dependency %s", async (importedPath) => {
+      expect(await restrictionCount("src/engine/fixture.ts", importedPath)).toBe(0);
+    },
+  );
+  it.each([
+    "Date.now()", "new Date()", "Date()", "Math.random()", "fetch('/test')", "process.env.SECRET",
+    "setTimeout(() => {}, 1)", "performance.now()",
+    "import { randomUUID } from 'node:crypto'; randomUUID()",
+    "import { createHash } from 'node:crypto'; createHash('md5')",
+  ])("rejects impure engine code %s", async (code) => {
+    const [result] = await eslint.lintText(`${code};`, { filePath: path.resolve("src/engine/fixture.ts") });
+    expect(result.messages.some((m) => m.ruleId === "no-restricted-syntax")).toBe(true);
+  });
+  it("allows supplied-date calculations and SHA-256", async () => {
+    const [result] = await eslint.lintText(
+      "import { createHash } from 'node:crypto'; export const hash = createHash('sha256'); export const date = new Date('2026-01-01');",
+      { filePath: path.resolve("src/engine/fixture.ts") },
+    );
+    expect(result.messages).toEqual([]);
+  });
   it("rejects the app database client in public routes", async () => {
     expect(
       await restrictionCount(
