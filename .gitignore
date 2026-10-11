@@ -11,3 +11,4 @@ test-results/
 *.tsbuildinfo
 .env*
 !.env.example
+attached_assets/
