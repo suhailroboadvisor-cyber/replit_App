@@ -12,3 +12,4 @@ test-results/
 .env*
 !.env.example
 attached_assets/
+/generated-artifacts/
