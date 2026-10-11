@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { execFileSync } from "node:child_process";
+import createNextIntlPlugin from "next-intl/plugin";
 
 function getGitSha() {
   const suppliedSha = process.env.GIT_SHA ?? process.env.GITHUB_SHA;
@@ -28,4 +29,4 @@ const nextConfig: NextConfig = {
   env: { APP_GIT_SHA: getGitSha() },
 };
 
-export default nextConfig;
+export default createNextIntlPlugin("./src/i18n/request.ts")(nextConfig);

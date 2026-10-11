@@ -70,4 +70,12 @@ jobs:
       # The isolated suite applies migrations and seeds twice before role tests.
       - run: pnpm test:db
       - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - run: pnpm exec playwright test --config playwright.production.config.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: foundation-browser-checks
+          path: generated-artifacts/
       - run: docker build --build-arg GIT_SHA="$GITHUB_SHA" .

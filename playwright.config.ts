@@ -4,6 +4,10 @@ import { defineConfig, devices } from "@playwright/test";
 // is managed by the environment and must not be triggered by this project.
 export default defineConfig({
   testDir: "./e2e",
+  // Cold Next/font compilation in the workspace can exceed 30 seconds.
+  timeout: 120_000,
+  testIgnore: "**/production.spec.ts",
+  outputDir: "generated-artifacts/playwright",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
@@ -11,6 +15,10 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:3100",
     ...devices["Desktop Chrome"],
+    launchOptions: {
+      // Workspace can use its managed Chromium; CI uses the versioned download.
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+    },
   },
   projects: [
     {

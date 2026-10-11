@@ -1,0 +1,72 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "MeJJZabN3qIPKszKK0xEm"
+uri = "file://generated-artifacts/foundation-handoff.html"
+type = "html"
+title = "Step 4 foundation handoff"
+description = "Complete file/dependency list, decisions, 59 actual contrast pairs, all 119 Arabic review keys and verification results. Also saved in docs/FOUNDATION_HANDOFF.md."
+logical_id = "3eee4abc-df5d-4ed7-b1e5-70d677049ed8"
+content_hash = "sha256:478486aec5afbbf7a809f56d59aabc5fff9ba60369d77643398c36c0c669a05a"
+size = 16768
+mtime_ms = 1791711802766
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/3eee4abc-df5d-4ed7-b1e5-70d677049ed8/7cc886e3-f472-435a-bd71-ef4d690da989"
+storage_version_token = "1791711834377177"
+content_type = "text/html"
+
+[[outputs]]
+id = "AXXBnRfmnwJjeWnjCrxXU"
+uri = "file://generated-artifacts/styleguide/ar-dark.png"
+type = "image"
+title = "Styleguide · Arabic · dark"
+description = "Full-page Playwright capture; attached to its test with an axe scan showing no serious or critical violations."
+logical_id = "2b6b8e8a-2e44-49c7-b591-6fd9bece3402"
+content_hash = "sha256:cb1666ef6d12665178a1ea0d378610231e63752535582409e5fc1d31b376aaf6"
+size = 726541
+mtime_ms = 1791711717468
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/2b6b8e8a-2e44-49c7-b591-6fd9bece3402/ec179b5b-c3cc-4f90-b6ad-7ebdbf29c5a9"
+storage_version_token = "1791711835618447"
+content_type = "image/png"
+
+[[outputs]]
+id = "kkgxbUAjV2Gt5D8opL24p"
+uri = "file://generated-artifacts/styleguide/ar-light.png"
+type = "image"
+title = "Styleguide · Arabic · light"
+description = "Full-page Playwright capture; attached to its test with an axe scan showing no serious or critical violations."
+logical_id = "c516e0fb-348c-43c6-95cb-351b02cc9339"
+content_hash = "sha256:036b68a3bcc36cf8d939f777817b0970fcf23d73c00a68cf6da3878b676c6a35"
+size = 712715
+mtime_ms = 1791711717760
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/c516e0fb-348c-43c6-95cb-351b02cc9339/8c74f725-2b5d-45fc-817e-4c3ae8c43ee6"
+storage_version_token = "1791711836862575"
+content_type = "image/png"
+
+[[outputs]]
+id = "vOkkMBK9tHYZ91zdMcfKE"
+uri = "file://generated-artifacts/styleguide/en-dark.png"
+type = "image"
+title = "Styleguide · English · dark"
+description = "Full-page Playwright capture; attached to its test with an axe scan showing no serious or critical violations."
+logical_id = "34dad03f-93ae-4c72-92ae-fa496c7dc0e5"
+content_hash = "sha256:38c5b3f0284247473d3b8802f3676d0d0787b2afed6fd74578246493c1d1e06c"
+size = 679262
+mtime_ms = 1791711721844
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/34dad03f-93ae-4c72-92ae-fa496c7dc0e5/3a77c07f-e772-4ab7-90cd-fec6666bbc6d"
+storage_version_token = "1791711838132551"
+content_type = "image/png"
+
+[[outputs]]
+id = "fQvTqehRGiGdc9enF3wvY"
+uri = "file://generated-artifacts/styleguide/en-light.png"
+type = "image"
+title = "Styleguide · English · light"
+description = "Full-page Playwright capture; attached to its test with an axe scan showing no serious or critical violations."
+logical_id = "b709c27d-d774-4b78-b0ef-ba07130b7b61"
+content_hash = "sha256:2b419eed439ed9e854117a3cbf440ff0922c6422ba5e8a97b88a6ffb97d61343"
+size = 664949
+mtime_ms = 1791711722019
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/b709c27d-d774-4b78-b0ef-ba07130b7b61/8d4623d9-be40-4c62-bfe6-1131c6e74ac4"
+storage_version_token = "1791711839345616"
+content_type = "image/png"
