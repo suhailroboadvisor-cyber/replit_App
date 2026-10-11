@@ -18,6 +18,7 @@ const config = [
       "coverage/**",
       "playwright-report/**",
       "test-results/**",
+      "generated-artifacts/**",
     ],
   },
   {

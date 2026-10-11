@@ -8,6 +8,13 @@ import {
   ThemeToggle,
 } from "../../../components/foundation";
 import { FullDisclaimerLink } from "../../../components/foundation/FullDisclaimerLink";
+import { LocaleDocument, documentMetadata } from "../../../components/foundation/LocaleDocument";
+import { AccountControl } from "../../../components/accounts/AccountControl";
+import { routing } from "../../../i18n/routing";
+export const metadata = documentMetadata;
+export function generateStaticParams() {
+  return routing.locales.map(locale => ({locale}));
+}
 
 export default async function PublicLayout({
   children,
@@ -20,7 +27,7 @@ export default async function PublicLayout({
   setRequestLocale(locale);
   const t = await getTranslations({ locale });
   return (
-    <>
+    <LocaleDocument locale={locale}>
       <a
         href="#content"
         className="fixed start-4 top-2 z-50 -translate-y-24 bg-card px-4 py-2 text-card-foreground focus:translate-y-0"
@@ -41,6 +48,7 @@ export default async function PublicLayout({
                 {t("nav.methodologies")}
               </Link>
             </nav>
+              <AccountControl locale={locale === "en" ? "en" : "ar"} />
             <div className="flex items-center gap-3 border-s border-[var(--divider)] ps-5">
               <LocaleSwitcher className="text-sm hover:underline" />
               <ThemeToggle />
@@ -61,6 +69,6 @@ export default async function PublicLayout({
         </details>
         <FullDisclaimerLink />
       </footer>
-    </>
+    </LocaleDocument>
   );
 }

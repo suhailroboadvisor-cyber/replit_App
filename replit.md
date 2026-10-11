@@ -14,7 +14,7 @@ If the reference and the decision log are both silent on behaviour, **stop and a
 - Next.js 16+ App Router, React, TypeScript `strict`, pnpm, Node 22 LTS. Use `proxy.ts`, not `middleware.ts`. `params` and `cookies()` are async.
 - Tailwind CSS v4 + shadcn/ui + lucide-react (stroke width 1.6).
 - PostgreSQL on **Supabase** through **Drizzle ORM** + drizzle-kit. All tables are in schema `app`.
-- Supabase Auth (admins and editors only, TOTP MFA, AAL2) via `@supabase/ssr`.
+- Supabase Auth for everyone (Google only); promoted admins/editors additionally require verified TOTP and AAL2, via `@supabase/ssr` (D-45–D-51).
 - Supabase Storage through the **S3 API** (`@aws-sdk/client-s3`).
 - next-intl: `ar` is the default with no URL prefix; `en` lives under `/en`.
 - Anthropic API (`@anthropic-ai/sdk`); model from env `LLM_MODEL`.

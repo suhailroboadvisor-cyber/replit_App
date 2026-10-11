@@ -103,7 +103,7 @@ describe("exact environment inventory", () => {
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://auth.example.test");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "test-only-anon-key");
     vi.stubEnv("SUPABASE_SECRET_KEY", undefined);
-    expect(getAuthEnv().SUPABASE_SECRET_KEY).toBeUndefined();
+    expect(getAuthEnv()).not.toHaveProperty("SUPABASE_SECRET_KEY");
   });
 
   it("uses only the specified storage names", () => {

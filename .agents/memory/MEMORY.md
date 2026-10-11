@@ -8,3 +8,4 @@
 - [Supabase connection modes](supabase-connection-modes.md) — Session for migrations/smoke checks, Transaction for app; integration tests only on disposable plain PostgreSQL 17.
 - [Validation startup budgets](validation-startup-budgets.md) — concurrent completion checks can make cold tooling initialization exceed ordinary assertion timeouts.
 - [Locale theme navigation](locale-theme-navigation.md) — locale-owned root layouts need document navigation to rerun the early theme restore script.
+- [Auth test isolation](auth-test-boundaries.md) — privileged browser fixtures must not bypass runtime auth; final policies need new versions after draft acceptance.

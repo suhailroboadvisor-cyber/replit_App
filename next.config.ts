@@ -22,10 +22,12 @@ const nextConfig: NextConfig = {
     ...(process.env.REPLIT_DEV_DOMAIN ? [process.env.REPLIT_DEV_DOMAIN] : []),
   ],
   output: "standalone",
+  outputFileTracingIncludes: {"/terms":["./content/legal/*.md"],"/en/terms":["./content/legal/*.md"],"/privacy":["./content/legal/*.md"],"/en/privacy":["./content/legal/*.md"]},
   poweredByHeader: false,
   reactStrictMode: true,
   // D-19: keep classic ISR; Cache Components are not enabled in Phase 0.
   cacheComponents: false,
+  experimental: { authInterrupts: true },
   env: { APP_GIT_SHA: getGitSha() },
 };
 
