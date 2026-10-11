@@ -2,6 +2,7 @@
 - [Next development origins](next-dev-origins.md) — use the exact Replit development domain; a single-subdomain wildcard may miss cluster-qualified hosts.
 - [Build guide scope](build-guide-scope.md) — BUILD_GUIDE.md is intentionally absent; the founder supplies the environment inventory directly.
 - [Next dev test locks](next-dev-test-locks.md) — pause the preview workflow before Playwright starts its own Next dev server in this repo.
+- [Next route type caches](next-route-type-caches.md) — route-moving merges can leave stale validators in both build and dev type directories.
 - [Drizzle/Postgres serialization](drizzle-postgres-serialization.md) — attaching Drizzle changes JSON serializers; raw queries on the same client need serialized JSON.
 - [Database CLI modules](database-cli-modules.md) — Vitest imports can pass while tsx commands fail; keep runner and schema module scopes compatible.
 - [Supabase connection modes](supabase-connection-modes.md) — Session for migrations/smoke checks, Transaction for app; integration tests only on disposable plain PostgreSQL 17.
