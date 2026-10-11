@@ -1,8 +1,8 @@
 import "server-only";
-import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "./schema";
-import { databaseUrl } from "./connection-url";
+import { connectDatabase } from "./connect";
+import { verifyRuntimeRole } from "./verified-sql";
 
 export const runtimeOptions = {
   prepare: false,
@@ -14,15 +14,24 @@ export const runtimeOptions = {
 export function lazyRuntimeClient(
   key: "DATABASE_URL_PUBLIC" | "DATABASE_URL_APP",
 ) {
-  const create = () =>
-    drizzle(postgres(databaseUrl(key), runtimeOptions), { schema });
+  const create = () => {
+    const sql = connectDatabase(key, {
+      ...runtimeOptions,
+      ssl: process.env.NODE_ENV === "test" ? false : "require",
+    });
+    return drizzle(verifyRuntimeRole(sql, key), { schema });
+  };
   let client: ReturnType<typeof create> | undefined;
   // No environment reads or connections during module import / Next build.
   return new Proxy({} as ReturnType<typeof create>, {
     get(_target, property) {
       client ??= create();
       const value = Reflect.get(client, property);
-      return typeof value === "function" ? value.bind(client) : value;
+      // $client is a callable SQL object, not a Drizzle method. Binding it
+      // would discard unsafe/end/options and the rest of its public API.
+      return typeof value === "function" && property !== "$client"
+        ? value.bind(client)
+        : value;
     },
   });
 }

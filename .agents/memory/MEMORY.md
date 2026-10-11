@@ -9,3 +9,4 @@
 - [Validation startup budgets](validation-startup-budgets.md) — concurrent completion checks can make cold tooling initialization exceed ordinary assertion timeouts.
 - [Locale theme navigation](locale-theme-navigation.md) — locale-owned root layouts need document navigation to rerun the early theme restore script.
 - [Auth test isolation](auth-test-boundaries.md) — privileged browser fixtures must not bypass runtime auth; final policies need new versions after draft acceptance.
+- [Postgres option fallbacks](postgres-option-fallbacks.md) — empty passwords still inherit ambient credentials; IPv6 requires the driver's array-host form.

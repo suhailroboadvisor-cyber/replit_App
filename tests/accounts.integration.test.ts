@@ -7,6 +7,9 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "../src/db/schema";
 import { cliConnection } from "../scripts/db/connection";
 import { testDatabaseUrl } from "../scripts/db/test-target";
+import { connectDatabase } from "../src/db/connect";
+import { verifyRuntimeRole } from "../src/db/verified-sql";
+import { lazyRuntimeClient } from "../src/db/runtime-client";
 import { applyMigrations } from "../scripts/db/migrate";
 import { seedDatabase } from "../scripts/db/seed";
 import type { User } from "@supabase/supabase-js";
@@ -297,7 +300,7 @@ describe("actual workspace CLI entry points (local-only)",()=>{
     await new Promise<void>(resolve=>server.listen(0,"127.0.0.1",resolve));
     const address=server.address();if(!address || typeof address==="string") throw new Error("fixture bind");
     try {
-      const config={NEXT_PUBLIC_SUPABASE_URL:`http://127.0.0.1:${address.port}`,SUPABASE_SECRET_KEY:"fixture-shell-only",NODE_ENV:"development"};
+      const config={NEXT_PUBLIC_SUPABASE_URL:`http://127.0.0.1:${address.port}`,SUPABASE_SECRET_KEY:"fixture-shell-only",NODE_ENV:"test"};
       const result=await cli("admin:reset-mfa",["reset@example.test"],config);
       expect(result.code).toBe(1);
       expect(result.output).toContain("1 removed, 1 failed; audited");
@@ -306,4 +309,44 @@ describe("actual workspace CLI entry points (local-only)",()=>{
       expect((await cli("admin:reset-mfa",["reset@example.test"],{...config,NODE_ENV:"production"})).code).toBe(1);
     } finally {await new Promise<void>(resolve=>server.close(()=>resolve()));}
   },30000);
+});
+
+describe("native driver identity gate on disposable PostgreSQL", () => {
+  it("refuses the actual lazy runtime client using an owner URL even in test mode", async () => {
+    vi.stubEnv("DATABASE_URL_APP", fixtureUrl);
+    const db = lazyRuntimeClient("DATABASE_URL_APP");
+    try {
+      await expect(db.execute("select 1")).rejects.toThrow();
+      await expect(db.$client.unsafe("select 1")).rejects.toThrow("DATABASE_URL_APP");
+    } finally {
+      await db.$client.end();
+      vi.unstubAllEnvs();
+    }
+  });
+  it.each(["suhail_app", "suhail_public"] as const)(
+    "supports real Drizzle queries and transactions after verifying %s", async role => {
+      const native = connectDatabase("DATABASE_URL_TEST",
+        { ssl:false, max:1, prepare:false }, fixtureUrl);
+      try {
+        await native.unsafe(`set role ${role}`);
+        const key = role === "suhail_app" ? "DATABASE_URL_APP" : "DATABASE_URL_PUBLIC";
+        const db = drizzle(verifyRuntimeRole(native, key), {schema});
+        const [rows, transaction] = await Promise.all([
+          db.select({code:schema.exchange.code}).from(schema.exchange),
+          db.transaction(tx => tx.execute("select current_user")),
+        ]);
+        expect(rows).toHaveLength(2);
+        expect(transaction[0].current_user).toBe(role);
+      } finally { await native.end(); }
+    },
+  );
+  it("refuses real owner credentials before business SQL and stays refused", async () => {
+    const native = connectDatabase("DATABASE_URL_TEST",
+      {ssl:false, max:1, prepare:false}, fixtureUrl);
+    try {
+      const db = drizzle(verifyRuntimeRole(native, "DATABASE_URL_APP"), {schema});
+      await expect(db.execute("select 1")).rejects.toThrow();
+      await expect(db.transaction(tx => tx.execute("select 1"))).rejects.toThrow("DATABASE_URL_APP");
+    } finally { await native.end(); }
+  });
 });
