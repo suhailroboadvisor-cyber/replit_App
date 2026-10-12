@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { approvedArabicCopy } from "../src/i18n/approved-arabic";
 for (const prefix of ["", "/en"]) {
   test(`${prefix || "ar"} embedded sign-in directs users to a separate tab without starting OAuth`, async ({
     page,
@@ -28,15 +29,15 @@ for (const prefix of ["", "/en"]) {
     });
     await page.goto("/embed-parent");
     const frame = page.frameLocator("iframe");
-    await frame.getByRole("button", { name: /Continue with Google/ }).click();
+    await frame.getByRole("button", { name: prefix ? "Continue with Google" : approvedArabicCopy["Continue with Google"], exact: true }).click();
     await expect(frame.getByRole("alert")).toContainText(
       "separate browser tab",
     );
     await expect(
-      frame.getByRole("link", { name: /Open sign-in in a new tab/ }),
+      frame.getByRole("link", { name: prefix ? "Open sign-in in a new tab" : approvedArabicCopy["Open sign-in in a new tab"], exact: true }),
     ).toHaveAttribute("target", "_blank");
     await expect(
-      frame.getByRole("link", { name: /Open sign-in in a new tab/ }),
+      frame.getByRole("link", { name: prefix ? "Open sign-in in a new tab" : approvedArabicCopy["Open sign-in in a new tab"], exact: true }),
     ).toHaveAttribute("href", `${prefix}/auth/sign-in`);
     expect(starts).toBe(0);
   });

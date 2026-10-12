@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "@/i18n/navigation";
 import {
   Activity,
@@ -158,6 +158,20 @@ export function UsersAdminScreen({
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const roleDialog = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (!selected || !roleDialog.current) return;
+    const dialog = roleDialog.current;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    // Native modal semantics keep the background inert, contain Tab navigation
+    // and support Escape, without touching role/AAL2 authorization.
+    dialog.showModal();
+    return () => {
+      dialog.close();
+      opener?.focus();
+    };
+  }, [selected]);
 
   const runSearch = (nextPage = 1) => {
     const params = new URLSearchParams();
@@ -268,8 +282,23 @@ export function UsersAdminScreen({
         </div>
       </div>
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-5" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }}>
-          <section role="dialog" aria-modal="true" aria-labelledby="role-dialog-title" className="w-full max-w-lg border border-border bg-card p-6 text-card-foreground sm:p-8">
+          <dialog ref={roleDialog} aria-modal="true" aria-labelledby="role-dialog-title"
+            onCancel={() => setSelected(null)}
+            onKeyDown={(event) => {
+              if (event.key !== "Tab") return;
+              const controls = event.currentTarget.querySelectorAll<HTMLElement>("button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled)");
+              const first = controls[0], last = controls[controls.length - 1];
+              if ((!event.shiftKey && document.activeElement === last) || (event.shiftKey && document.activeElement === first)) {
+                event.preventDefault();
+                (event.shiftKey ? last : first)?.focus();
+              }
+            }}
+            onClick={(event) => {
+              if (event.target !== event.currentTarget) return;
+              const bounds = event.currentTarget.getBoundingClientRect();
+              if (event.clientX < bounds.x || event.clientX > bounds.right || event.clientY < bounds.y || event.clientY > bounds.bottom) setSelected(null);
+            }}
+            className="fixed inset-0 mx-auto mb-0 mt-auto max-h-[90dvh] w-full max-w-lg overflow-y-auto border border-border bg-card p-6 text-card-foreground backdrop:bg-black/50 sm:m-auto sm:p-8">
             <div className="flex items-start justify-between gap-5">
               <div>
                 <p className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground">{reviewText(locale, "ROLE CHANGE")}</p>
@@ -302,8 +331,7 @@ export function UsersAdminScreen({
                 </button>
               </div>
             </form>
-          </section>
-        </div>
+          </dialog>
       )}
     </section>
   );
@@ -429,21 +457,21 @@ export function SettingsAdminScreen({
       <h1 className="mt-4 text-3xl font-semibold">{reviewText(locale, "Settings")}</h1>
       <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">{reviewText(locale, "These settings affect editorial defaults. Changes are audited.")}</p>
       <form onSubmit={(event) => void submit(event)} className="mt-8 divide-y divide-border border border-border bg-card">
-        <label className="block p-5 sm:p-7">
-          <span className="font-medium">{reviewText(locale, "Default methodology version")}</span>
-          <span className="mt-1 block text-sm text-muted-foreground">{reviewText(locale, "Only public, eligible versions are listed.")}</span>
-          <select value={defaultId} onChange={(event) => setDefaultId(event.target.value)} className="mt-4 min-h-11 w-full border border-input bg-background px-3 text-sm">
+        <div className="block p-5 sm:p-7">
+          <label htmlFor="settings-default-version" className="font-medium">{reviewText(locale, "Default methodology version")}</label>
+          <p id="settings-default-help" className="mt-1 block text-sm text-muted-foreground">{reviewText(locale, "Only public, eligible versions are listed.")}</p>
+          <select id="settings-default-version" aria-describedby="settings-default-help" value={defaultId} onChange={(event) => setDefaultId(event.target.value)} className="mt-4 min-h-11 w-full border border-input bg-background px-3 text-sm">
             <option value="">{reviewText(locale, "No default")}</option>
             {versions.map((version) => <option key={version.id} value={version.id}>{version.version_label}</option>)}
           </select>
-        </label>
-        <label className="flex cursor-pointer items-start gap-4 p-5 sm:p-7">
-          <input type="checkbox" checked={allow} onChange={(event) => setAllow(event.target.checked)} className="mt-1 size-4 accent-primary" />
+        </div>
+        <div className="flex items-start gap-4 p-5 sm:p-7">
+          <input id="settings-allow-ineligible" aria-describedby="settings-allow-help" type="checkbox" checked={allow} onChange={(event) => setAllow(event.target.checked)} className="mt-1 size-4 accent-primary" />
           <span>
-            <span className="font-medium">{reviewText(locale, "Allow editor picks for ineligible securities")}</span>
-            <span className="mt-1 block text-sm leading-6 text-muted-foreground">{reviewText(locale, "Editors may publish an explicitly marked pick even when it is not eligible under the selected screening configuration.")}</span>
+            <label htmlFor="settings-allow-ineligible" className="cursor-pointer font-medium">{reviewText(locale, "Allow editor picks for ineligible securities")}</label>
+            <span id="settings-allow-help" className="mt-1 block text-sm leading-6 text-muted-foreground">{reviewText(locale, "Editors may publish an explicitly marked pick even when it is not eligible under the selected screening configuration.")}</span>
           </span>
-        </label>
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-7">
           <p role="status" className="text-sm text-muted-foreground">{feedback}</p>
           <button disabled={pending} className="min-h-11 bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50">{pending ? reviewText(locale, "Saving") : reviewText(locale, "Save settings")}</button>

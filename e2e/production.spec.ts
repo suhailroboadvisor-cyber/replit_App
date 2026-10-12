@@ -1,5 +1,43 @@
 import { expect, test, type Page } from "@playwright/test";
 import enMessages from "../src/i18n/messages/en.json";
+import { approvedArabicCopy } from "../src/i18n/approved-arabic";
+
+for (const locale of ["ar", "en"] as const) {
+  const prefix = locale === "en" ? "/en" : "";
+  const title = locale === "ar" ? approvedArabicCopy.Methodologies : "Methodologies";
+  const unavailable = locale === "ar"
+    ? approvedArabicCopy["This section is not available yet"]
+    : "This section is not available yet";
+
+  test(`${locale} public Methodologies link opens a truthful cookie-free destination`, async ({
+    page, request,
+  }) => {
+    let profiles = 0;
+    page.on("request", (req) => {
+      if (new URL(req.url()).pathname === "/api/account/profile") profiles++;
+    });
+    await page.goto(prefix || "/");
+    const link = page.locator("header").getByRole("link", { name: title, exact: true });
+    await expect(link).toHaveAttribute("href", `${prefix}/methodology`);
+    await link.focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(`${prefix}/methodology`);
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
+    await expect(page.locator("html")).toHaveAttribute("dir", locale === "ar" ? "rtl" : "ltr");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
+    await expect(page.getByRole("main").getByText(unavailable, { exact: true })).toBeVisible();
+    await expect(page.locator("#content")).toHaveCount(1);
+    expect(profiles).toBe(0);
+    const response = await request.get(`${prefix}/methodology`);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["set-cookie"]).toBeUndefined();
+    expect(response.headers()["cache-control"]).toContain("s-maxage=900");
+    // A same-path locale switch must not drop the user onto a missing page.
+    await page.getByRole("link", { name: locale === "ar" ? "تغيير اللغة" : "Change language", exact: true }).click();
+    await expect(page).toHaveURL(locale === "ar" ? "/en/methodology" : "/methodology");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(locale === "ar" ? "Methodologies" : approvedArabicCopy.Methodologies);
+  });
+}
 
 test("encoded private roots including dotted descendants stay private over actual HTTP", async ({
   request,
