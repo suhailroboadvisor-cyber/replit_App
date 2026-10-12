@@ -1,103 +1,175 @@
-import { expect,test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 for (const prefix of ["", "/en"]) {
-  test(`${prefix || "ar"} embedded sign-in directs users to a separate tab without starting OAuth`, async ({page}) => {
+  test(`${prefix || "ar"} embedded sign-in directs users to a separate tab without starting OAuth`, async ({
+    page,
+  }) => {
     let starts = 0;
-    page.on("request", request => { if (request.url().endsWith("/auth/start")) starts++; });
-    await page.route("**/embed-parent", route => route.fulfill({
-      contentType:"text/html",body:`<iframe title="Isolated embedded sign-in" src="${prefix}/?screen=signin"></iframe>`,
-    }));
-    await page.route(`**${prefix}/?screen=signin`, async route => {
+    page.on("request", (request) => {
+      if (request.url().endsWith("/auth/start")) starts++;
+    });
+    await page.route("**/embed-parent", (route) =>
+      route.fulfill({
+        contentType: "text/html",
+        body: `<iframe title="Isolated embedded sign-in" src="${prefix}/?screen=signin"></iframe>`,
+      }),
+    );
+    await page.route(`**${prefix}/?screen=signin`, async (route) => {
       const response = await route.fetch();
       const headers = response.headers();
       // Test transport only: runtime frame-ancestors 'none' remains intact.
       // Permit the isolated component to render inside a same-origin harness.
-      expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
-      headers["content-security-policy"] = headers["content-security-policy"].replace("frame-ancestors 'none'","frame-ancestors 'self'");
-      await route.fulfill({response,headers});
+      expect(headers["content-security-policy"]).toContain(
+        "frame-ancestors 'none'",
+      );
+      headers["content-security-policy"] = headers[
+        "content-security-policy"
+      ].replace("frame-ancestors 'none'", "frame-ancestors 'self'");
+      await route.fulfill({ response, headers });
     });
     await page.goto("/embed-parent");
     const frame = page.frameLocator("iframe");
-    await frame.getByRole("button",{name:/Continue with Google/}).click();
-    await expect(frame.getByRole("alert")).toContainText("separate browser tab");
-    await expect(frame.getByRole("link",{name:/Open sign-in in a new tab/})).toHaveAttribute("target","_blank");
-    await expect(frame.getByRole("link",{name:/Open sign-in in a new tab/})).toHaveAttribute("href",`${prefix}/auth/sign-in`);
+    await frame.getByRole("button", { name: /Continue with Google/ }).click();
+    await expect(frame.getByRole("alert")).toContainText(
+      "separate browser tab",
+    );
+    await expect(
+      frame.getByRole("link", { name: /Open sign-in in a new tab/ }),
+    ).toHaveAttribute("target", "_blank");
+    await expect(
+      frame.getByRole("link", { name: /Open sign-in in a new tab/ }),
+    ).toHaveAttribute("href", `${prefix}/auth/sign-in`);
     expect(starts).toBe(0);
   });
 }
-test("anonymous header makes zero private profile requests; browser sessions clear old roles",async({page})=>{
-  let count=0;page.on("request",r=>{if(r.url().includes("/api/account/profile"))count++;});
+test("anonymous header makes zero private profile requests; browser sessions clear old roles", async ({
+  page,
+}) => {
+  let count = 0;
+  page.on("request", (r) => {
+    if (r.url().includes("/api/account/profile")) count++;
+  });
   await page.goto("/");
-  await expect(page.getByRole("link",{name:/Sign in/})).toBeVisible();
+  await expect(page.getByRole("link", { name: "تسجيل الدخول" })).toBeVisible();
   expect(count).toBe(0);
-  await page.evaluate(()=>window.fixture.session({access_token:"fixture-admin",user:{id:"admin"}}));
+  await page.evaluate(() =>
+    window.fixture.session({
+      access_token: "fixture-admin",
+      user: { id: "admin" },
+    }),
+  );
   await expect(page.locator("summary")).toBeVisible();
   await page.locator("summary").click();
-  await expect(page.getByRole("link",{name:/Admin/})).toBeVisible();
+  await expect(page.getByRole("link", { name: "الإدارة" })).toBeVisible();
   expect(count).toBeGreaterThan(0);
-  await page.evaluate(()=>window.fixture.session({access_token:"fixture-user",user:{id:"user"}}));
-  await expect(page.getByRole("link",{name:/Admin/})).toHaveCount(0);
+  await page.evaluate(() =>
+    window.fixture.session({
+      access_token: "fixture-user",
+      user: { id: "user" },
+    }),
+  );
+  await expect(page.getByRole("link", { name: "الإدارة" })).toHaveCount(0);
   await expect(page.locator("summary")).toHaveText(/OU/);
-  await page.evaluate(()=>window.fixture.session(null));
-  await expect(page.getByRole("link",{name:/Sign in/})).toBeVisible();
+  await page.evaluate(() => window.fixture.session(null));
+  await expect(page.getByRole("link", { name: "تسجيل الدخول" })).toBeVisible();
   await expect(page.locator("summary")).toHaveCount(0);
 });
-test("late prior-session response cannot restore privileged menu; sign-out uses POST",async({page})=>{
+test("late prior-session response cannot restore privileged menu; sign-out uses POST", async ({
+  page,
+}) => {
   await page.goto("/en");
-  const slowRequest=page.waitForRequest("**/api/account/profile");
-  await page.evaluate(()=>window.fixture.session({access_token:"slow",user:{id:"slow-admin"}}));
+  const slowRequest = page.waitForRequest("**/api/account/profile");
+  await page.evaluate(() =>
+    window.fixture.session({
+      access_token: "slow",
+      user: { id: "slow-admin" },
+    }),
+  );
   await slowRequest;
-  await page.evaluate(()=>window.fixture.session(null));
+  await page.evaluate(() => window.fixture.session(null));
   await page.waitForTimeout(500);
-  await expect(page.getByRole("link",{name:"Sign in",exact:true})).toBeVisible();
-  await page.evaluate(()=>window.fixture.session({access_token:"admin",user:{id:"admin"}}));
+  await expect(
+    page.getByRole("link", { name: "Sign in", exact: true }),
+  ).toBeVisible();
+  await page.evaluate(() =>
+    window.fixture.session({ access_token: "admin", user: { id: "admin" } }),
+  );
   await page.locator("summary").click();
-  const request=page.waitForRequest(r=>r.url().endsWith("/en/auth/sign-out")&&r.method()==="POST");
-  await page.getByRole("button",{name:"Sign out",exact:true}).click();
+  const request = page.waitForRequest(
+    (r) => r.url().endsWith("/en/auth/sign-out") && r.method() === "POST",
+  );
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await request;
-  await expect(page.getByRole("link",{name:"Sign in",exact:true})).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Sign in", exact: true }),
+  ).toBeVisible();
 });
-test("consent and authenticator enrollment/verification use real UI with mocked auth boundary",async({page})=>{
+test("consent and authenticator enrollment/verification use real UI with mocked auth boundary", async ({
+  page,
+}) => {
   await page.goto("/en?screen=consent");
-  await expect(page.getByRole("link",{name:"Terms of Use",exact:true})).toHaveAttribute("href","/en/terms");
-  await page.getByRole("button",{name:"Accept and continue"}).click();
+  await expect(
+    page.getByRole("link", { name: "Terms of Use", exact: true }),
+  ).toHaveAttribute("href", "/en/terms");
+  await page.getByRole("button", { name: "Accept and continue" }).click();
   await expect(page.locator("body")).toContainText("decision=accept");
   await page.goto("/en?screen=consent");
-  await page.getByRole("button",{name:"Decline and sign out"}).click();
+  await page.getByRole("button", { name: "Decline and sign out" }).click();
   await expect(page.locator("body")).toContainText("decision=decline");
   await page.goto("/en?screen=enroll");
-  await page.getByRole("button",{name:"Begin setup"}).click();
-  await expect(page.getByRole("img",{name:"Authenticator setup QR code"})).toBeVisible();
+  await page.getByRole("button", { name: "Begin setup" }).click();
+  await expect(
+    page.getByRole("img", { name: "Authenticator setup QR code" }),
+  ).toBeVisible();
   await expect(page.locator("code")).toContainText("FIXTURESETUPKEY");
-  await page.getByRole("textbox",{name:"Enter the six-digit code"}).fill("123456");
-  await page.getByRole("button",{name:"Verify and continue"}).click();
+  await page
+    .getByRole("textbox", { name: "Enter the six-digit code" })
+    .fill("123456");
+  await page.getByRole("button", { name: "Verify and continue" }).click();
   await expect(page).toHaveURL(/\/done$/);
   await page.goto("/en?screen=verify");
-  await page.getByRole("textbox",{name:"Authenticator code"}).fill("123456");
-  await page.getByRole("button",{name:"Verify and continue"}).click();
+  await page
+    .getByRole("textbox", { name: "Authenticator code" })
+    .fill("123456");
+  await page.getByRole("button", { name: "Verify and continue" }).click();
   await expect(page).toHaveURL(/\/done$/);
 });
-test("production nonce CSP permits fixture scripts and early light restoration without violations",async({page})=>{
-  const violations:string[]=[];
-  page.on("console",message=>{if(/Content Security Policy|Refused to execute/.test(message.text()))violations.push(message.text());});
-  await page.addInitScript(()=>localStorage.setItem("suhail-theme","light"));
-  const response=await page.goto("/en?screen=signin");
-  expect(response?.headers()["content-security-policy"]).toContain("'strict-dynamic'");
+test("production nonce CSP permits fixture scripts and early light restoration without violations", async ({
+  page,
+}) => {
+  const violations: string[] = [];
+  page.on("console", (message) => {
+    if (/Content Security Policy|Refused to execute/.test(message.text()))
+      violations.push(message.text());
+  });
+  await page.addInitScript(() => localStorage.setItem("suhail-theme", "light"));
+  const response = await page.goto("/en?screen=signin");
+  expect(response?.headers()["content-security-policy"]).toContain(
+    "'strict-dynamic'",
+  );
   await expect(page.locator("html")).not.toHaveClass(/dark/);
-  await expect(page.getByRole("button",{name:"Continue with Google"})).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Continue with Google" }),
+  ).toBeVisible();
   expect(violations).toEqual([]);
 });
-test("minimal account supports null email, language preference and typed deletion; privileged UI refuses deletion",async({page})=>{
+test("minimal account supports null email, language preference and typed deletion; privileged UI refuses deletion", async ({
+  page,
+}) => {
   await page.goto("/en?screen=account");
-  await expect(page.getByText("Not provided",{exact:true})).toBeVisible();
-  await expect(page.getByText("Google",{exact:true})).toBeVisible();
+  await expect(page.getByText("Not provided", { exact: true })).toBeVisible();
+  await expect(page.getByText("Google", { exact: true })).toBeVisible();
   await page.getByRole("combobox").selectOption("en");
-  await page.getByRole("button",{name:"Save language"}).click();
+  await page.getByRole("button", { name: "Save language" }).click();
   await expect(page.getByRole("status")).toContainText("Language saved");
-  const remove=page.getByRole("button",{name:"Delete my account"});
+  const remove = page.getByRole("button", { name: "Delete my account" });
   await expect(remove).toBeDisabled();
-  await page.getByRole("textbox",{name:'Type "DELETE" to confirm'}).fill("DELETE");
+  await page
+    .getByRole("textbox", { name: 'Type "DELETE" to confirm' })
+    .fill("DELETE");
   await expect(remove).toBeEnabled();
   await page.goto("/en?screen=account&role=admin");
   await expect(page.getByText(/Ask another admin/)).toBeVisible();
-  await expect(page.getByRole("textbox",{name:'Type "DELETE" to confirm'})).toHaveCount(0);
+  await expect(
+    page.getByRole("textbox", { name: 'Type "DELETE" to confirm' }),
+  ).toHaveCount(0);
 });

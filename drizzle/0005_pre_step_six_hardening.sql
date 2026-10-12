@@ -9,7 +9,7 @@ CREATE OR REPLACE FUNCTION app.guard_methodology_version() RETURNS trigger
 LANGUAGE plpgsql SET search_path = '' AS $$
 DECLARE allowed text[] := ARRAY['workflow_status','workflow_history','production_enabled','production_blocked','impact_report_id','test_report_id','approval_id','approved_by','approved_at','is_public','updated_at'];
 BEGIN
-  IF OLD.workflow_status <> 'draft' THEN
+  IF OLD.workflow_status <> 'draft' OR OLD.production_enabled THEN
     IF TG_OP = 'DELETE' THEN RAISE EXCEPTION 'non-draft methodology version is immutable'; END IF;
     IF NEW.workflow_status = 'draft' THEN RAISE EXCEPTION 'methodology version cannot return to draft'; END IF;
     IF (to_jsonb(NEW) - allowed) IS DISTINCT FROM (to_jsonb(OLD) - allowed) THEN
@@ -19,7 +19,34 @@ BEGIN
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
   RETURN NEW;
 END $$;
-UPDATE app.methodology SET production_blocked = true WHERE is_demo OR official_or_inspired = 'internal_example';
+CREATE OR REPLACE FUNCTION app.guard_methodology_criterion() RETURNS trigger
+LANGUAGE plpgsql SET search_path = '' AS $$
+DECLARE state app.workflow_status; enabled boolean;
+BEGIN
+  IF TG_OP <> 'INSERT' THEN
+    SELECT workflow_status, production_enabled INTO state, enabled FROM app.methodology_version WHERE id = OLD.methodology_version_id FOR SHARE;
+    IF state <> 'draft' OR enabled THEN RAISE EXCEPTION 'non-draft methodology criteria are immutable'; END IF;
+  END IF;
+  IF TG_OP <> 'DELETE' THEN
+    SELECT workflow_status, production_enabled INTO state, enabled FROM app.methodology_version WHERE id = NEW.methodology_version_id FOR SHARE;
+    IF state <> 'draft' OR enabled THEN RAISE EXCEPTION 'non-draft methodology criteria are immutable'; END IF;
+    RETURN NEW;
+  END IF;
+  RETURN OLD;
+END $$;
+CREATE FUNCTION app.guard_criterion_truncate() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM app.methodology_criterion c JOIN app.methodology_version v ON v.id = c.methodology_version_id
+      WHERE v.workflow_status <> 'draft' OR v.production_enabled) THEN
+    RAISE EXCEPTION 'non-draft methodology criteria are immutable';
+  END IF;
+  RETURN NULL;
+END $$;
+REVOKE ALL ON FUNCTION app.guard_criterion_truncate() FROM PUBLIC, suhail_app, suhail_public;
+-- Alphabetical trigger order ensures production_gate_lock runs before this check.
+CREATE TRIGGER z_guard_criterion_truncate BEFORE TRUNCATE ON app.methodology_criterion FOR EACH STATEMENT EXECUTE FUNCTION app.guard_criterion_truncate();
+UPDATE app.methodology SET production_blocked = true WHERE is_demo OR official_or_inspired = 'internal_example' OR slug IN ('ex-a','ex-b') OR short_label IN ('EX-A','EX-B');
 UPDATE app.methodology_version SET production_blocked = true WHERE is_demo;
 UPDATE app.source SET production_blocked = true WHERE is_demo OR is_synthetic OR source_type = 'internal';
 CREATE FUNCTION app.latch_production_origin() RETURNS trigger
@@ -47,8 +74,10 @@ SELECT EXISTS (
   JOIN app.methodology m ON m.id = v.methodology_id
   JOIN app.methodology_version_report impact ON impact.id = v.impact_report_id AND impact.kind = 'impact' AND impact.methodology_version_id = v.id AND NOT impact.is_demo
   JOIN app.methodology_version_report test ON test.id = v.test_report_id AND test.kind = 'test' AND test.methodology_version_id = v.id AND NOT test.is_demo
-  JOIN app.audit_event approval ON approval.id = v.approval_id AND approval.event_type = 'approval_recorded' AND approval.entity_name = 'methodology_version' AND approval.entity_id = v.id::text AND NOT approval.is_demo
-  WHERE v.id = version_id AND NOT v.is_demo AND NOT v.production_blocked
+   JOIN app.audit_event approval ON approval.id = v.approval_id AND approval.event_type = 'approval_recorded' AND approval.entity_name = 'methodology_version' AND approval.entity_id = v.id::text AND approval.actor_id = v.approved_by AND NOT approval.is_demo
+   WHERE v.id = version_id AND NOT v.is_demo AND NOT v.production_blocked
+     AND v.workflow_status = 'approved'
+     AND EXISTS (SELECT 1 FROM app.methodology_criterion c WHERE c.methodology_version_id = v.id)
     AND NOT m.is_demo AND NOT m.production_blocked AND m.official_or_inspired <> 'internal_example'
     AND m.source_url ~ '^https://[^/[:space:]]+' AND length(btrim(m.source_title)) > 0
     AND length(btrim(m.verified_by)) > 0 AND m.verification_date IS NOT NULL
@@ -80,9 +109,7 @@ CREATE FUNCTION app.enforce_production_gate() RETURNS trigger
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
 BEGIN
   IF EXISTS (SELECT 1 FROM app.methodology m WHERE m.production_enabled AND
-       (m.is_demo OR m.production_blocked OR
-        (m.current_version_id IS NOT NULL AND NOT EXISTS (
-          SELECT 1 FROM app.methodology_version current_v WHERE current_v.id = m.current_version_id AND current_v.methodology_id = m.id AND app.production_eligible(current_v.id))) OR NOT EXISTS (
+        (m.is_demo OR m.production_blocked OR NOT EXISTS (
          SELECT 1 FROM app.methodology_version v WHERE v.methodology_id = m.id AND app.production_eligible(v.id))))
     OR EXISTS (SELECT 1 FROM app.methodology_version v JOIN app.methodology m ON m.id = v.methodology_id
        WHERE v.production_enabled AND (NOT m.production_enabled OR NOT app.production_eligible(v.id))) THEN
@@ -94,10 +121,22 @@ REVOKE ALL ON FUNCTION app.production_gate_lock(), app.enforce_production_gate()
 DO $$
 DECLARE table_name text;
 BEGIN
-  FOREACH table_name IN ARRAY ARRAY['methodology','methodology_version','source','methodology_version_report','audit_event'] LOOP
+  FOREACH table_name IN ARRAY ARRAY['methodology','methodology_version','methodology_criterion','source','methodology_version_report','audit_event'] LOOP
     EXECUTE format('CREATE TRIGGER production_gate_lock BEFORE INSERT OR UPDATE OR DELETE OR TRUNCATE ON app.%I FOR EACH STATEMENT EXECUTE FUNCTION app.production_gate_lock()', table_name);
     EXECUTE format('CREATE TRIGGER enforce_production_gate AFTER INSERT OR UPDATE OR DELETE OR TRUNCATE ON app.%I FOR EACH STATEMENT EXECUTE FUNCTION app.enforce_production_gate()', table_name);
   END LOOP;
+END $$;
+--> statement-breakpoint
+-- Refuse invalid pre-existing production state; never silently demote or repair it.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM app.methodology m WHERE m.production_enabled AND
+       (m.is_demo OR m.production_blocked OR NOT EXISTS (
+         SELECT 1 FROM app.methodology_version v WHERE v.methodology_id = m.id AND app.production_eligible(v.id))))
+    OR EXISTS (SELECT 1 FROM app.methodology_version v JOIN app.methodology m ON m.id = v.methodology_id
+       WHERE v.production_enabled AND (NOT m.production_enabled OR NOT app.production_eligible(v.id))) THEN
+    RAISE EXCEPTION 'hardening migration refuses pre-existing ineligible production methodology';
+  END IF;
 END $$;
 --> statement-breakpoint
 -- D-17: row triggers cannot see TRUNCATE; use a statement trigger on every history table.

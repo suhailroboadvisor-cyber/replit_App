@@ -1,7 +1,55 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
+
+const diagnosticLogs = new WeakMap<Page, string[]>();
+
+test.beforeEach(async ({ page }) => {
+  // Record actual document requests (not HMR history/soft refresh events).
+  // Reload loops can otherwise look like an ordinary hydration timeout.
+  const diagnostics: string[] = [];
+  page.on("request", (request) => {
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+      diagnostics.push(`document ${request.url()}`);
+  });
+  page.on("pageerror", (error) => diagnostics.push(`pageerror ${error.message}`));
+  page.on("requestfailed", (request) =>
+    diagnostics.push(`requestfailed ${request.url()} ${request.failure()?.errorText}`),
+  );
+  page.on("console", (message) => {
+    if (message.type() === "error" || message.type() === "warning")
+      diagnostics.push(`console ${message.type()} ${message.text()}`);
+  });
+  page.on("websocket", (socket) => {
+    diagnostics.push(`websocket ${socket.url()}`);
+    socket.on("framereceived", ({ payload }) => {
+      // Keep protocol metadata, not streamed page data or session payloads.
+      if (typeof payload !== "string" || !payload.startsWith("{")) return;
+      try {
+        const message = JSON.parse(payload);
+        if (["reloadPage", "serverComponentChanges", "turbopack-connected"].includes(message.type))
+          diagnostics.push(`hmr ${message.type}`);
+      } catch {
+        // Non-JSON websocket frames are normal in the development protocol.
+      }
+    });
+  });
+  await page.addInitScript(() => {
+    // This counter survives reloads but is independent of the product's theme.
+    const key = "foundation-document-count";
+    sessionStorage.setItem(key, String(Number(sessionStorage.getItem(key) ?? 0) + 1));
+  });
+  test.info().annotations.push({ type: "origin", description: test.info().project.use.baseURL });
+  diagnosticLogs.set(page, diagnostics);
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  await testInfo.attach("browser-origin-and-reloads", {
+    body: (diagnosticLogs.get(page) ?? []).join("\n"),
+    contentType: "text/plain",
+  });
+});
 
 for (const locale of ["ar", "en"] as const) {
   for (const theme of ["dark", "light"] as const) {
@@ -22,8 +70,11 @@ for (const locale of ["ar", "en"] as const) {
         await expect(page.locator("html")).toHaveClass(/dark/);
       else await expect(page.locator("html")).not.toHaveClass(/dark/);
       await expect(
-        page.getByRole("button", { name: /Change theme/ }),
+        page.getByRole("button", {
+          name: locale === "ar" ? "تغيير المظهر" : "Change theme",
+        }),
       ).toBeEnabled();
+      await expectNoAutomaticReloads(page);
       await page.evaluate(() => document.fonts.ready);
       for (const surface of ["dark", "light"]) {
         const section = page.getByTestId(`surface-${surface}`);
@@ -73,7 +124,7 @@ test("same-path locale switching, persisted theme and full disclaimer", async ({
   page,
 }) => {
   await page.goto("/styleguide");
-  await page.getByRole("link", { name: /Change language/ }).click();
+  await page.getByRole("link", { name: "تغيير اللغة" }).click();
   await expect(page).toHaveURL(/\/en\/styleguide$/);
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   await page.getByRole("button", { name: "Change theme" }).click();
@@ -84,14 +135,20 @@ test("same-path locale switching, persisted theme and full disclaimer", async ({
   await expect(page).toHaveURL(/\/styleguide$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "ar");
   await expect(page.locator("html")).not.toHaveClass(/dark/);
-  await page.getByRole("button", { name: /Change theme/ }).click();
+  await page.getByRole("button", { name: "تغيير المظهر" }).click();
   await page.reload();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await page.getByRole("link", { name: /Full disclaimer/ }).click();
+  await page.getByRole("link", { name: "إخلاء المسؤولية الكامل" }).click();
   await expect(page.locator("#full-disclaimer")).toHaveAttribute("open", "");
 });
+async function expectNoAutomaticReloads(page: Page, expectedDocuments = 1) {
+  // Give the development HMR handshake time to settle. Do not suppress it:
+  // controls must hydrate and the document must remain the original load.
+  await page.waitForTimeout(1_000);
+  expect(await page.evaluate(() => Number(sessionStorage.getItem("foundation-document-count")))).toBe(expectedDocuments);
+}
 test("default theme, home locales, keyboard and no external font requests", async ({
   page,
 }) => {
@@ -100,6 +157,7 @@ test("default theme, home locales, keyboard and no external font requests", asyn
     if (/fonts\.googleapis|fonts\.gstatic/.test(req.url()))
       externalFonts.push(req.url());
   });
+  let documentCount = 0;
   for (const [url, locale, dir] of [
     ["/", "ar", "rtl"],
     ["/en", "en", "ltr"],
@@ -108,6 +166,12 @@ test("default theme, home locales, keyboard and no external font requests", asyn
     await expect(page.locator("html")).toHaveAttribute("lang", locale);
     await expect(page.locator("html")).toHaveAttribute("dir", dir);
     await expect(page.locator("html")).toHaveClass(/dark/);
+    await expect(
+      page.getByRole("button", {
+        name: locale === "ar" ? "تغيير المظهر" : "Change theme",
+      }),
+    ).toBeEnabled();
+    await expectNoAutomaticReloads(page, ++documentCount);
     await page.keyboard.press("Tab");
     await expect(page.locator('a[href="#content"]')).toBeFocused();
   }

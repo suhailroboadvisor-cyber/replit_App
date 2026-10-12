@@ -1,10 +1,33 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
   testMatch: "**/production.spec.ts",
   outputDir: "generated-artifacts/playwright-production",
-  use: { baseURL: "http://127.0.0.1:3200",launchOptions:{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE} },
+  use: {
+    baseURL: "http://127.0.0.1:3200",
+    trace: "retain-on-failure",
+    launchOptions: {
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+    },
+  },
+  projects: [
+    {
+      name: "desktop",
+      grepInvert: /@phone/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+    ...[320, 390].map((width) => ({
+      name: `phone-${width}`,
+      grep: /@phone/,
+      use: {
+        ...devices["Pixel 7"],
+        viewport: { width, height: 844 },
+      },
+    })),
+  ],
+  // Pause any Next development server before building/running this suite;
+  // production and development share generated metadata in this repository.
   webServer: {
     command: "pnpm start",
     url: "http://127.0.0.1:3200/api/health",

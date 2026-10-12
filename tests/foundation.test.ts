@@ -8,6 +8,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { NextIntlClientProvider } from "next-intl";
 import ar from "../src/i18n/messages/ar.json";
 import en from "../src/i18n/messages/en.json";
+import { approvedArabicCopy } from "../src/i18n/approved-arabic";
 import baseline from "./fixtures/brand-sha256.json";
 import {
   StatusBadge,
@@ -144,7 +145,7 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
       }
     }
   });
-  it("marks every newly missing Arabic leaf with the exact prefix and English", async () => {
+  it("uses approved translations and marks all other newly missing Arabic leaves", async () => {
     const ref = await readFile("docs/SUHAIL_BUILD_REFERENCE.md", "utf8");
     const original = JSON.parse(
       ref
@@ -163,7 +164,11 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
         !(key in prior) &&
         !(key.startsWith("status.") && labels.includes(key.slice(7)))
       )
-        expect(value).toBe(`⟦AR-REVIEW⟧ ${english[key]}`);
+        expect(value, key).toBe(
+          (key.startsWith("controls.") || key.startsWith("styleguide.")
+            ? approvedArabicCopy[english[key]!]
+            : undefined) ?? `⟦AR-REVIEW⟧ ${english[key]}`,
+        );
     }
     expect(ar.status.runHash).toBe("بصمة التشغيل");
     expect(ar.governance.hashMatch).toBe("تطابق البصمة");

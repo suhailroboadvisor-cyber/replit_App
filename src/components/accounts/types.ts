@@ -1,3 +1,5 @@
+import { approvedArabicCopy } from "@/i18n/approved-arabic";
+
 export type Locale = "ar" | "en";
 export type Role = "admin" | "editor" | "user";
 
@@ -196,7 +198,10 @@ const accountMessages = [
 export const accountCopyDictionary = Object.fromEntries(
   accountMessages.map((english) => [
     english,
-    { en: english, ar: `⟦AR-REVIEW⟧ ${english}` },
+    {
+      en: english,
+      ar: approvedArabicCopy[english] ?? `⟦AR-REVIEW⟧ ${english}`,
+    },
   ]),
 ) as Record<string, { ar: string; en: string }>;
 
