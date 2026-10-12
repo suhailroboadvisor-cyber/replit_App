@@ -92,11 +92,12 @@ describe("exact environment inventory", () => {
     vi.stubEnv("DATABASE_URL_APP", "postgresql://app.example.test/db");
     vi.stubEnv("DATABASE_URL_MIGRATIONS", "");
     vi.stubEnv("DATABASE_URL_TEST", undefined);
+    vi.stubEnv("SUPABASE_DB_CA_CERT", undefined);
     expect(getDbEnv()).toEqual({
       DATABASE_URL_PUBLIC: "postgresql://public.example.test/db",
       DATABASE_URL_APP: "postgresql://app.example.test/db",
       DATABASE_URL_MIGRATIONS: undefined,
-      DATABASE_URL_TEST: undefined,
+      SUPABASE_DB_CA_CERT: undefined,
     });
   });
 

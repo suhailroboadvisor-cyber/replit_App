@@ -14,3 +14,4 @@
 - [Browser verification origins](browser-verification-origins.md) — distinguish loopback reload failures from proxied-preview behavior; report both results.
 - [Native dialog keyboard checks](native-dialog-keyboard-checks.md) — browser-native background inertness does not guarantee immediate cyclic Tab wrapping.
 - [Structural merge conflicts](structural-merge-conflicts.md) — compare whole staged versions; unmarked code can also be damaged during structural reconciliation.
+- [WebKit browser verification](webkit-browser-verification.md) — isolate engine-specific overrides and distinguish automated WebKit results from physical iPhone Safari checks.
