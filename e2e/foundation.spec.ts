@@ -22,7 +22,9 @@ for (const locale of ["ar", "en"] as const) {
         await expect(page.locator("html")).toHaveClass(/dark/);
       else await expect(page.locator("html")).not.toHaveClass(/dark/);
       await expect(
-        page.getByRole("button", { name: /Change theme/ }),
+        page.getByRole("button", {
+          name: locale === "ar" ? "تغيير المظهر" : "Change theme",
+        }),
       ).toBeEnabled();
       await page.evaluate(() => document.fonts.ready);
       for (const surface of ["dark", "light"]) {
@@ -73,7 +75,7 @@ test("same-path locale switching, persisted theme and full disclaimer", async ({
   page,
 }) => {
   await page.goto("/styleguide");
-  await page.getByRole("link", { name: /Change language/ }).click();
+  await page.getByRole("link", { name: "تغيير اللغة" }).click();
   await expect(page).toHaveURL(/\/en\/styleguide$/);
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   await page.getByRole("button", { name: "Change theme" }).click();
@@ -84,12 +86,12 @@ test("same-path locale switching, persisted theme and full disclaimer", async ({
   await expect(page).toHaveURL(/\/styleguide$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "ar");
   await expect(page.locator("html")).not.toHaveClass(/dark/);
-  await page.getByRole("button", { name: /Change theme/ }).click();
+  await page.getByRole("button", { name: "تغيير المظهر" }).click();
   await page.reload();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await page.getByRole("link", { name: /Full disclaimer/ }).click();
+  await page.getByRole("link", { name: "إخلاء المسؤولية الكامل" }).click();
   await expect(page.locator("#full-disclaimer")).toHaveAttribute("open", "");
 });
 test("default theme, home locales, keyboard and no external font requests", async ({

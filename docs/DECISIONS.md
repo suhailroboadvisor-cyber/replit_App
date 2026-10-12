@@ -181,3 +181,7 @@ or empty version is insufficient. Content and criteria remain immutable after
 finalization, with explicit production-enabled checks as defense in depth.
 Criterion TRUNCATE cannot bypass finalized-rule immutability; criterion writes
 participate in the same serialized production-prerequisite gate.
+
+| ID | Decision |
+| --- | --- |
+| D-96 | **Founder-approved Arabic UI wording.** The founder approved all wording in the seven-group headings/labels review: sign-in and consent, account/profile, authenticator setup/verification, administration/users, audit/settings, public controls/empty state, and the developer styleguide. Apply the exact approved strings, recorded in `src/i18n/approved-arabic.ts`, without review markers. Approval does not cover unlisted help/error messages, legal-document bodies, disclaimers, screening explanations, or future-screen labels. Keep those review markers and retain the existing Arabic tagline. The deletion confirmation token remains literal `DELETE`. “غير المؤهلة” in the editor-pick setting means ineligible under the selected screening configuration, not a standalone religious verdict. |
