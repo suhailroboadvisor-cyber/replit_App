@@ -1,5 +1,7 @@
 import { Node, Project, SyntaxKind, type SourceFile, type Statement } from "ts-morph";
 import path from "node:path";
+import { createHash } from "node:crypto";
+import { handlerPolicies } from "./authorization-policies";
 const allowed = new Map([
   ["requireRole","src/lib/auth/guards.ts"],["requireUser","src/lib/auth/guards.ts"],
   ["withAdminAction","src/lib/auth/actions.ts"],["withUserAction","src/lib/auth/actions.ts"],
@@ -66,7 +68,14 @@ export function authorizationViolations(source: SourceFile): string[] {
   if(source.getExportDeclarations().length) return ["re-exported handler/action cannot be authorized locally"];
   const errors:string[]=[];
   for(const [name,nodes] of source.getExportedDeclarations()) {
-    if(["dynamic","revalidate","runtime","maxDuration","preferredRegion"].includes(name) && nodes.every(node=>Node.isVariableDeclaration(node) && node.getInitializer() && !Node.isArrowFunction(node.getInitializer()!) && !Node.isFunctionExpression(node.getInitializer()!))) continue;
+    if(["dynamic","revalidate","runtime","maxDuration","preferredRegion"].includes(name)) {
+      const literal = (node: Node): boolean => Node.isStringLiteral(node) || Node.isNumericLiteral(node) ||
+        node.getKind()===SyntaxKind.TrueKeyword || node.getKind()===SyntaxKind.FalseKeyword ||
+        (Node.isArrayLiteralExpression(node) && node.getElements().every(literal));
+      if (!nodes.every(node=>Node.isVariableDeclaration(node) && node.getInitializer() && literal(node.getInitializer()!)))
+        errors.push(`${name}: route config must be a static literal`);
+      continue;
+    }
     for(const node of nodes) {
       if(!Node.isFunctionDeclaration(node) || !node.isAsync()) {errors.push(`${name}: aliases and non-async exports are forbidden`);continue;}
       const body=node.getBody();
@@ -76,20 +85,47 @@ export function authorizationViolations(source: SourceFile): string[] {
   return errors;
 }
 export function scanAuthorization() {
-  const project=new Project({skipAddingFilesFromTsConfig:true});
-  project.addSourceFilesAtPaths(["src/**/*.ts","src/**/*.tsx"]);
+  const project=new Project({skipAddingFilesFromTsConfig:true,compilerOptions:{allowJs:true}});
+  project.addSourceFilesAtPaths(["src/**/*.ts","src/**/*.tsx","src/**/*.js","src/**/*.jsx"]);
+  return scanAuthorizationSources(project.getSourceFiles());
+}
+
+export function scanAuthorizationSources(sources: SourceFile[]) {
   const errors:string[]=[];
-  for(const source of project.getSourceFiles()) {
+  for(const source of sources) {
     const relative=path.relative(process.cwd(),source.getFilePath()).replaceAll("\\","/");
     const isAction=source.getStatements().some(statement=>{
       if(!Node.isExpressionStatement(statement)) return false;
       const expression=statement.getExpression();
       return Node.isStringLiteral(expression) && expression.getLiteralValue()==="use server";
     });
-    const isApi=/^src\/app\/api\/.*\/route\.ts$/.test(relative);
-    if(!isAction && !isApi) continue;
-    if(relative==="src/app/api/health/route.ts" || relative.startsWith("src/app/api/internal/") || relative.startsWith("src/app/api/hooks/")) continue;
-    errors.push(...authorizationViolations(source).map(e=>`${relative}: ${e}`));
+    const isRoute=/^src\/app\/(?:.*\/)?route\.(ts|tsx|js|jsx)$/.test(relative);
+    if(isAction || isRoute) {
+      const policy = isRoute ? handlerPolicies[relative] : undefined;
+      if (policy) {
+        // Exact reviewed lifecycle handlers, not auth/internal/hooks directory exemptions.
+        const hash = createHash("sha256").update(source.getFullText()).digest("hex");
+        if (hash !== policy.sha256) errors.push(`${relative}: lifecycle policy changed; authorization/security review required (${policy.reason})`);
+      } else {
+        errors.push(...authorizationViolations(source).map(e=>`${relative}: ${e}`));
+      }
+    }
+    // Inline server functions are independent entry points even inside pages,
+    // route handlers or module actions. A layout never authorizes these.
+    for (const node of source.getDescendants()) {
+      if (!Node.isFunctionDeclaration(node) && !Node.isArrowFunction(node) && !Node.isFunctionExpression(node) && !Node.isMethodDeclaration(node)) continue;
+      const body = node.getBody();
+      if (!body || !Node.isBlock(body)) continue;
+      const statements = body.getStatements();
+      const directive = statements.find(s => {
+        if (!Node.isExpressionStatement(s)) return false;
+        const expression = s.getExpression();
+        return Node.isStringLiteral(expression) && expression.getLiteralValue() === "use server";
+      });
+      if (!directive) continue;
+      const first = statements.find(s => !(Node.isExpressionStatement(s) && Node.isStringLiteral(s.getExpression())));
+      if (!guarded(first, source)) errors.push(`${relative}: inline server function authorization must be first awaited operation`);
+    }
   }
   return errors;
 }

@@ -1,3 +1,19 @@
+it.each(["/%61dmin","/%65n/%61dmin","/%61r/%61ccount","/en/%61uth/sign-in","/en/%61dmin/hidden.json"])("protects encoded private path %s",async path=>{
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL",undefined);
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY",undefined);
+  const response=await proxy(new NextRequest(`https://fixture.test${path}`,{headers:{"x-private-path":"/terms","x-nonce":"spoof"}}));
+  expect(response.headers.get("content-security-policy")).toContain("strict-dynamic");
+  expect(response.headers.get("cache-control")).toBe("private, no-store");
+  expect(response.headers.get("cdn-cache-control")).toBe("no-store");
+  expect(response.headers.get("x-robots-tag")).toContain("noindex");
+  expect(response.headers.get("x-middleware-request-x-private-path")).not.toBe("/terms");
+});
+it("malformed encoding fails closed without auth refresh",async()=>{
+  const response=await proxy(new NextRequest("https://fixture.test/%ZZ"));
+  expect(response.status).toBe(400);
+  expect(response.headers.get("cache-control")).toContain("no-store");
+  expect(fixtures.createClient).not.toHaveBeenCalled();
+});
 import { beforeEach, afterEach, expect, it, vi } from "vitest";
 import { NextRequest,NextResponse } from "next/server";
 const fixtures=vi.hoisted(()=>({getUser:vi.fn(),createClient:vi.fn(),localize:vi.fn()}));
@@ -11,10 +27,13 @@ beforeEach(()=>{
 });
 afterEach(()=>vi.unstubAllEnvs());
 it("public localization never creates an auth client or cookies/CSP",async()=>{
-  const response=await proxy(new NextRequest("https://fixture.test/terms",{headers:{cookie:"ignored-fixture-cookie"}}));
+  const response=await proxy(new NextRequest("https://fixture.test/terms",{headers:{cookie:"ignored-fixture-cookie","x-nonce":"spoof","x-private-path":"/en/admin","Content-Security-Policy":"script-src 'nonce-spoof'"}}));
   expect(fixtures.createClient).not.toHaveBeenCalled();
   expect(response.headers.get("content-security-policy")).toBeNull();
   expect(response.cookies.getAll()).toEqual([]);
+  expect(response.headers.get("x-middleware-request-x-nonce")).toBeNull();
+  expect(response.headers.get("x-middleware-request-x-private-path")).toBeNull();
+  expect(response.headers.get("x-middleware-request-content-security-policy")).toBeNull();
   expect(response.headers.get("x-middleware-rewrite")).toContain("/ar/terms");
 });
 it("private refresh retains localization rewrites, forwarded nonce and all refreshed cookies",async()=>{

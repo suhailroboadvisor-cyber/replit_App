@@ -1,3 +1,19 @@
+test("encoded private roots including dotted descendants stay private over actual HTTP",async({request})=>{
+  for (const path of ["/%61dmin","/%65n/%61dmin","/en/%61uth/sign-in","/en/%61dmin/hidden.json"]) {
+    const response=await request.get(path,{maxRedirects:0});
+    const headers=response.headers();
+    expect(headers["cache-control"]).toContain("private");
+    expect(headers["cache-control"]).toContain("no-store");
+    expect(headers["cdn-cache-control"]).toBe("no-store");
+    expect(headers["x-robots-tag"]).toContain("noindex");
+    expect(headers["content-security-policy"]).toMatch(/nonce-[^']+'/);
+  }
+  const malformed=await request.get("/%ZZ",{maxRedirects:0});
+  expect(malformed.status()).toBe(400);
+  const publicResponse=await request.get("/en/terms",{headers:{"x-private-path":"/en/admin","x-nonce":"spoofed"},maxRedirects:0});
+  expect(publicResponse.headers()["content-security-policy"]).toBeUndefined();
+  expect(publicResponse.headers()["set-cookie"]).toBeUndefined();
+});
 import { expect, test } from "@playwright/test";
 test("private production scripts use nonce CSP and restore theme; legal remains cookie-free ISR",async({page,request})=>{
   const violations:string[]=[];

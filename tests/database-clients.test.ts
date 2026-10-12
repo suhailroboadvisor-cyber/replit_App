@@ -1,3 +1,4 @@
+import { rootCertificates } from "node:tls";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { databaseUrl } from "../src/db/connection-url";
@@ -116,6 +117,7 @@ describe("database credential separation", () => {
     "wires role refusal into the actual lazy %s client in %s mode",
     async (key, mode) => {
       vi.stubEnv("NODE_ENV", mode);
+      vi.stubEnv("SUPABASE_DB_CA_CERT", rootCertificates[0]);
       const username =
         key === "DATABASE_URL_APP"
           ? "suhail_app.project"

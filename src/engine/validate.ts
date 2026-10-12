@@ -1,13 +1,9 @@
 import { z } from "zod";
 import type { EngineInput, JsonValue } from "./types";
-
-/** D-83: invalid contracts never produce or persist a screening result. */
-export class EngineInputError extends Error {
-  constructor(public readonly field: string, message: string) {
-    super(`${field}: ${message}`);
-    this.name = "EngineInputError";
-  }
-}
+import { EngineInputError } from "./errors";
+export { EngineInputError } from "./errors";
+import { ENGINE_VERSION, CALCULATION_VERSION } from "./versions";
+import { validateShares } from "./shares";
 const states = z.enum(["reported", "derived", "estimated", "unknown"]);
 const tiers = z.enum(["Verified", "Calculated", "Estimated", "AI Interpretation"]);
 const categories = [
@@ -30,14 +26,14 @@ const categoryList = z.array(z.enum(categories));
 const contract = z.object({
   securityId: z.string(), asOf: z.string(),
   stalenessLimitDays: z.number().finite().int().positive().optional(),
-  engineVersion: z.string(), calculationVersion: z.string(),
+    engineVersion: z.literal(ENGINE_VERSION), calculationVersion: z.literal(CALCULATION_VERSION),
   period: z.object({ id: z.string(), label: z.string(), periodEnd: z.string() }),
   facts: z.array(z.object({
     lineItem: z.string(), value: numeric, inputState: states, confidenceTier: tiers, sourceId: z.string(),
   })),
   segments: z.array(z.object({
     segmentName: z.string(), activityCategory: z.enum(categories),
-    revenueAmount: numeric, revenueShare: numeric, inputState: states, confidenceTier: tiers, sourceId: z.string(),
+     revenueAmount: numeric, revenueShare: z.number().finite().min(0).max(1).nullable(), inputState: states, confidenceTier: tiers, sourceId: z.string(),
   })),
   methodologyVersion: z.object({
     id: z.string(), label: z.string(),
@@ -45,13 +41,13 @@ const contract = z.object({
       id: z.string(), criterionType: z.string(), label: z.string(),
       definition: z.string(), formulaText: z.string(), numeratorDefinition: z.string(), denominatorDefinition: z.string(),
       numeratorLineItems: z.array(z.string()), denominatorLineItems: z.array(z.string()),
-      threshold: numeric, borderlineMargin: numeric,
+      threshold: numeric, borderlineMargin: z.number().finite().min(0).nullable(),
       thresholdDirection: z.enum(["max", "min", "boolean"]),
       thresholdUnit: z.enum(["percent_of_total_revenue", "percent_of_total_assets", "percent_of_market_cap", "boolean", "absolute"]),
       treatmentRules: z.string(), treatmentRuleData: z.record(z.string(), json),
       edgeCases: z.string(), requiredInputs: z.array(z.string()), sourceReference: z.string(),
       effectiveDate: z.string(), sortOrder: z.number().finite(), notes: z.string(),
-    })),
+    })).min(1),
   }),
 });
 function unique(values: string[], field: string) {
@@ -77,6 +73,7 @@ export function validate(input: EngineInput): void {
   unique(input.facts.map((f) => f.lineItem), "facts.lineItem");
   unique(input.segments.map((s) => s.segmentName), "segments.segmentName");
   unique(input.methodologyVersion.criteria.map((c) => c.id), "criteria.id");
+  validateShares(input.segments);
   for (const f of input.facts) {
     // D-88: ingestion must flag absent values as unknown, not reported/derived/estimated.
     if (f.value === null && f.inputState !== "unknown") throw new EngineInputError("fact.value", "null value requires unknown inputState");

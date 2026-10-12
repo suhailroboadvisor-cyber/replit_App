@@ -19,8 +19,6 @@ describe("D-89: all output-affecting inputs are hashed", () => {
     ["security ID", (i: EngineInput) => i.securityId += "-corrected"],
     ["period ID", (i: EngineInput) => i.period.id += "-corrected"],
     ["methodology ID", (i: EngineInput) => i.methodologyVersion.id += "-corrected"],
-    ["engine version", (i: EngineInput) => i.engineVersion += "-corrected"],
-    ["calculation version", (i: EngineInput) => i.calculationVersion += "-corrected"],
   ])("%s changes the hash even with unchanged status/quality", (_, mutate) => {
     const i = goldenInput("A", "pass");
     const before = screen(i);

@@ -1,6 +1,6 @@
 import { amount, combine, distinct, factSum, segmentEvidence, share, weakest, type Evidence } from "./evidence";
 import { compareCodePoints } from "./canonical";
-import { decide, formatNumber, roundRatio, unitSuffix } from "./math";
+import { add, finite, decide, formatNumber, roundRatio, unitSuffix } from "./math";
 import type { Criterion, CriterionResult, EngineInput, ReasonCode, ScreeningUnknown } from "./types";
 import { ratioTypes } from "./validate";
 
@@ -72,12 +72,12 @@ const businessActivity: Evaluator = (c, input) => {
   }
   if (segments.length === 0) return unavailable("no_segments", "no segment disclosure recorded"); // D-13
   const amounts = segments.map(amount);
-  const total = amounts.some((a) => a === null) ? null : amounts.reduce<number>((sum, a) => sum + a!, 0);
+  const total = amounts.some((a) => a === null) ? null : amounts.reduce<number>((sum, a) => add(sum, a!), 0);
   const shares = segments.map((s) => {
     const disclosed = share(s);
     if (disclosed !== null) return disclosed;
     // D-85: derive only with exhaustive available amounts and a positive total.
-    return total !== null && total > 0 ? amount(s)! / total : null;
+    return total !== null && total > 0 ? finite(amount(s)! / total, "segment.share") : null;
   });
   if (shares.some((s) => s === null)) return unavailable("shares_unavailable", "segment revenue share unavailable; primary activity not assumed");
   const largest = Math.max(...shares as number[]);
@@ -102,7 +102,7 @@ const nonPermissibleRevenue: Evaluator = (c, input) => {
   // Even permissible segments need amounts/categories to establish an exhaustive numerator.
   const unavailable = segments.length === 0 || segments.some((s) => s.activityCategory === "unclassified" || amount(s) === null);
   const numerator = unavailable ? null : segments.reduce((sum, s) =>
-    sum + (categories.includes(s.activityCategory) ? amount(s)! : 0), 0);
+    add(sum, categories.includes(s.activityCategory) ? amount(s)! : 0), 0);
   const denominator = factSum(["total_revenue"], input.facts);
   return finishRatio(c, numerator, denominator.value, combine(segmentEvidence(segments), denominator),
     segments.length === 0 ? "no_segments" : "numerator_unavailable"); // D-86

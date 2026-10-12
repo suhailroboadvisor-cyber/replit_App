@@ -74,6 +74,8 @@ function fixture() {
     {
       unsafe: vi.fn((text: string) => create(text)),
       end: vi.fn(async () => {}),
+      // Unlike lazy unsafe(), postgres-js notify starts execution immediately.
+      notify: vi.fn(async () => { sent.push("notify"); return []; }),
       begin: vi.fn(async (callback: (sql: unknown) => unknown) => {
         sent.push("begin");
         return callback(raw);
@@ -250,6 +252,23 @@ describe("first-use role verification", () => {
     f.check.resolve([{ current_user: "suhail_app" }]);
     await next;
     expect(f.sent).toEqual(["select current_user", "business"]);
+  });
+  it("gates eager notify until role verification completes",async()=>{
+    const f=fixture();
+    const result=f.guarded.notify("fixture","payload");
+    await tick();
+    expect(f.sent).toEqual(["select current_user"]);
+    expect(f.raw.notify).not.toHaveBeenCalled();
+    f.check.resolve([{current_user:"suhail_app"}]);
+    await result;
+    expect(f.sent).toEqual(["select current_user","notify"]);
+  });
+  it("a refused role never executes eager notify",async()=>{
+    const f=fixture();
+    const result=f.guarded.notify("fixture","payload");
+    f.check.resolve([{current_user:"postgres"}]);
+    await expect(result).rejects.toThrow("DATABASE_URL_APP");
+    expect(f.raw.notify).not.toHaveBeenCalled();
   });
   it("allows shutdown without opening a connection", async () => {
     const f = fixture();

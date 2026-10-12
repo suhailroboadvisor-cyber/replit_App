@@ -51,6 +51,10 @@ describe("import boundaries", () => {
     );
     expect(result.messages).toEqual([]);
   });
+  it.each(["../../../db/app", "../../../../db/app", "@/db/app"])("public rejects %s", async imported =>
+    expect(await restrictionCount("src/app/[locale]/(public)/fixture.ts",imported)).toBe(1));
+  it.each(["src/app/[locale]/(private)/account/fixture.ts","src/app/[locale]/(private)/auth/fixture.ts","src/app/[locale]/admin/fixture.ts"])("does not allow jobs in %s",async file =>
+    expect(await restrictionCount(file,"../../jobs/weekly")).toBe(1));
   it("rejects the app database client in public routes", async () => {
     expect(
       await restrictionCount(
@@ -76,7 +80,7 @@ describe("import boundaries", () => {
     },
   );
 
-  it.each(["src/jobs/fixture.ts", "src/app/[locale]/admin/fixture.ts"])(
+  it.each(["src/jobs/fixture.ts", "src/app/[locale]/(private)/admin/fixture.ts"])(
     "allows job imports in %s",
     async (file) => {
       expect(await restrictionCount(file, "@/jobs/weekly")).toBe(0);

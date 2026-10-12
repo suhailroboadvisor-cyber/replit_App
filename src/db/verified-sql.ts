@@ -103,6 +103,7 @@ export function verifyRuntimeRole(sql: Sql, key: RuntimeCredential): Sql {
           "subscribe",
           "file",
           "largeObject",
+          "notify",
         ].includes(String(property))
       )
         return (...args: unknown[]) =>

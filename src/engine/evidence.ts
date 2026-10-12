@@ -1,5 +1,6 @@
 import { compareCodePoints } from "./canonical";
 import type { ConfidenceTier, EvidenceState, Fact, Segment } from "./types";
+import { add } from "./math";
 
 export interface Evidence {
   states: EvidenceState[];
@@ -12,7 +13,7 @@ export function factSum(keys: string[], facts: Fact[]): Sum {
   const used = keys.map((key) => facts.find((f) => f.lineItem === key));
   return {
     value: used.some((f) => !f || f.inputState === "unknown" || f.value === null)
-      ? null : used.reduce((total, f) => total + f!.value!, 0),
+      ? null : used.reduce((total, f) => add(total, f!.value!), 0),
     states: used.map((f) => f ? f.inputState : "missing"),
     tiers: used.flatMap((f) => f ? [f.confidenceTier] : []),
     sources: used.flatMap((f) => f ? [f.sourceId] : []),

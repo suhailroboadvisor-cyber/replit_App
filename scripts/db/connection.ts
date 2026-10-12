@@ -11,10 +11,6 @@ export function cliConnection(
     {
       prepare: false,
       max: 1,
-      ssl:
-        key === "DATABASE_URL_TEST" || process.env.NODE_ENV === "test"
-          ? false
-          : "require",
       connect_timeout: 10,
       idle_timeout: 5,
     },

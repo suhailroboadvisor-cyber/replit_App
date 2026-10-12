@@ -1,6 +1,16 @@
 import type { Criterion, CriterionResultCode, ReasonCode } from "./types";
+import { EngineInputError } from "./errors";
 
-function decimal(value: number): { coefficient: bigint; scale: number } {
+export function finite(value: number, field: string): number {
+  if (!Number.isFinite(value)) throw new EngineInputError(field, "non-finite calculated value or arithmetic overflow");
+  return value;
+}
+export function add(a: number, b: number): number {
+  return finite(a + b, "sum");
+}
+
+export function decimal(value: number): { coefficient: bigint; scale: number } {
+  finite(value, "decimal");
   const [mantissa, exponent = "0"] = value.toString().split("e");
   const [whole, fraction = ""] = mantissa.split(".");
   return { coefficient: BigInt(whole + fraction), scale: fraction.length - Number(exponent) };
@@ -14,6 +24,7 @@ function withinMargin(value: number, threshold: number, margin: number): boolean
 }
 /** Decimal half-away-from-zero, without binary .xx5 tie drift (e.g. 1.005). */
 export function roundRatio(value: number): number {
+  finite(value, "ratio");
   const [mantissa, exponent = "0"] = Math.abs(value).toString().split("e");
   const [whole, fraction = ""] = mantissa.split(".");
   const digits = BigInt(whole + fraction);
@@ -24,7 +35,7 @@ export function roundRatio(value: number): number {
     const divisor = 10n ** BigInt(-shift);
     rounded = digits / divisor + (digits % divisor * 2n >= divisor ? 1n : 0n);
   }
-  const magnitude = Number(`${rounded}e-2`);
+  const magnitude = finite(Number(`${rounded}e-2`), "roundedRatio");
   return magnitude === 0 ? 0 : value < 0 ? -magnitude : magnitude;
 }
 

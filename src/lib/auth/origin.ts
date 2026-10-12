@@ -9,11 +9,16 @@ function configuredOrigin(value: string | undefined) {
 }
 
 // D-46: callback origins come from deployment configuration, never forwarded headers.
-export function authOrigin(request: Request) {
+export function authOrigin(request?: Request) {
   const site = configuredOrigin(process.env.SITE_URL);
   const development = process.env.NODE_ENV === "development";
   const preview = development && process.env.REPLIT_DEV_DOMAIN
     ? configuredOrigin(`https://${process.env.REPLIT_DEV_DOMAIN}`) : null;
+  if (!request) {
+    const canonical = preview ?? site;
+    if (!canonical) throw new AuthError(503, "auth_origin_not_configured");
+    return canonical;
+  }
   const incoming = new URL(request.url);
   const host = request.headers.get("host");
   if (host && preview && host === new URL(preview).host) return preview;

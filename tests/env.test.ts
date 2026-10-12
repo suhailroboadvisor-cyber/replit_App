@@ -46,6 +46,7 @@ describe("exact environment inventory", () => {
     expect(activeLines.map((line) => line.slice(0, -1)).sort()).toEqual(
       [
         "DATABASE_URL_MIGRATIONS",
+        "SUPABASE_DB_CA_CERT",
         "DATABASE_URL_PUBLIC",
         "DATABASE_URL_APP",
         "DATABASE_URL_TEST",

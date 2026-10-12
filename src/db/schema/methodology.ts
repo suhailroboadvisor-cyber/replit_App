@@ -48,6 +48,8 @@ export const licensingStatus = appSchema.enum("licensing_status", [
 ]);
 export const methodology = appSchema.table("methodology", {
   ...base(),
+  // D-93: latched by database triggers; demo origins cannot be promoted.
+  production_blocked: boolean("production_blocked").notNull().default(false),
   created_by: mutableCreator(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
@@ -73,6 +75,7 @@ export const methodologyVersion = appSchema.table(
   "methodology_version",
   {
     ...base(),
+    production_blocked: boolean("production_blocked").notNull().default(false),
     created_by: historicalCreator(),
     methodology_id: uuid("methodology_id")
       .notNull()

@@ -41,6 +41,7 @@ import { GET as profile } from "../src/app/api/account/profile/route";
 import { GET as callback } from "../src/app/[locale]/(private)/auth/callback/route";
 import { GET as recover } from "../src/app/[locale]/(private)/auth/recover/route";
 import { POST as consent } from "../src/app/[locale]/(private)/auth/consent/accept/route";
+import { POST as signOut } from "../src/app/[locale]/(private)/auth/sign-out/route";
 import { searchUsers, readAudit, readSettings } from "../src/lib/auth/admin-data";
 let owner:Sql, app:Sql, control:Sql, fixtureUrl:string;
 const database=`accounts_${randomUUID().replaceAll("-","")}`;
@@ -85,6 +86,22 @@ function post(url:string,values:Record<string,string>) {
   return new Request(`https://fixture.test${url}`,{method:"POST",headers:{origin:"https://fixture.test"},body:new URLSearchParams(values)});
 }
 describe("verified auth and atomic callbacks",()=>{
+  it.each(["accept","decline"])("consent %s ignores forged request/forwarded hosts",async decision=>{
+    boundary.identity=await user();
+    const request=new Request("https://evil.invalid/auth/consent/accept",{method:"POST",headers:{origin:"https://fixture.test",host:"evil.invalid","x-forwarded-host":"evil.invalid","x-forwarded-proto":"http"},body:new URLSearchParams({decision,next:"/account"})});
+    const response=await consent(request,context);
+    expect(response.status).toBe(303);
+    expect(new URL(response.headers.get("location")!).origin).toBe("https://fixture.test");
+  });
+  it("recovery success/failure and sign-out always use the configured origin",async()=>{
+    boundary.identity=await user();
+    const request=new Request("https://evil.invalid/auth/recover?next=/account",{headers:{host:"evil.invalid","x-forwarded-host":"evil.invalid"}});
+    expect((await recover(request,context)).headers.get("location")).toBe("https://fixture.test/account");
+    boundary.identity=null;
+    expect((await recover(request,context)).headers.get("location")).toBe("https://fixture.test/auth/sign-in");
+    const loggedOut=await signOut(new Request("https://evil.invalid/auth/sign-out",{method:"POST",headers:{origin:"https://fixture.test",host:"evil.invalid","x-forwarded-host":"evil.invalid"}}),context);
+    expect(loggedOut.headers.get("location")).toBe("https://fixture.test/");
+  });
   it("concurrent OAuth route callbacks commit only one registration/consent pair",async()=>{
     const person=identity();
     await owner`insert into auth.users(id,email) values(${person.id},${person.email!})`;

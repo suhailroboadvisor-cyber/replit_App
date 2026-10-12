@@ -117,6 +117,86 @@ afterAll(async () => {
   await sql?.end();
 });
 
+describe("D-17/D-92/D-93 SQL hardening", () => {
+  it("refuses prerequisite writes from a stale snapshot isolation level",async()=>{
+    await asRole("postgres",async tx=>{
+      await tx`SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`;
+      await rejects(tx,"update app.methodology set production_enabled=false",/require READ COMMITTED/);
+    });
+  });
+  it.each(appendOnly)("refuses owner TRUNCATE %s, including CASCADE", async table => {
+    await asRole("postgres",async tx=>{
+      await rejects(tx,`TRUNCATE app.${table} CASCADE`,/append-only table cannot be truncated/);
+      expect((await tx.unsafe(`select count(*)::int n from app.${table}`))[0].n).toBeGreaterThanOrEqual(0);
+    });
+  });
+  it.each(["40","-0.001","1.000001","NaN","Infinity"])("refuses non-fraction segment %s on insert/update",async value=>{
+    await asRole("postgres",async tx=>{
+      await rejects(tx,`insert into app.business_segment(company_id,segment_name,revenue_share) values ('${f.companies[0].id}','bad-share','${value}')`,/business_segment_share_fraction|numeric field overflow/);
+      await rejects(tx,`update app.business_segment set revenue_share='${value}'`,/business_segment_share_fraction|numeric field overflow/);
+    });
+  });
+  it.each(["0","0.333333","1",null])("allows valid or unknown persisted share %s",async value=>{
+    await asRole("postgres",async tx=>{
+      await tx`insert into app.business_segment(company_id,segment_name,revenue_share) values (${f.companies[0].id},'valid-share',${value})`;
+    });
+  });
+  it("EX-A/EX-B and demo versions cannot be enabled or relabelled",async()=>{
+    await asRole("postgres",async tx=>{
+      await rejects(tx,"update app.methodology set production_enabled=true where short_label in ('EX-A','EX-B')",/production methodology gate/);
+      await rejects(tx,"update app.methodology_version set production_enabled=true where is_demo",/production methodology gate/);
+      await tx`update app.methodology set is_demo=false,official_or_inspired='official',production_blocked=false where short_label='EX-A'`;
+      expect((await tx`select production_blocked from app.methodology where short_label='EX-A'`)[0].production_blocked).toBe(true);
+      await rejects(tx,"update app.methodology set production_enabled=true where short_label='EX-A'",/production methodology gate/);
+      await rejects(tx,"insert into app.methodology(name,slug,official_or_inspired,production_enabled) values ('internal','hardening-internal','internal_example',true)",/production methodology gate/);
+      await rejects(tx,"insert into app.methodology(name,slug,official_or_inspired,production_enabled) values ('unverified','hardening-official','official',true)",/production methodology gate/);
+    });
+  });
+  it("allows only isolated non-demo metadata with same-version reports/approval, and guards removal",async()=>{
+    await asRole("postgres",async tx=>{
+      const m=randomUUID(), v=randomUUID(), source=randomUUID(), impact=randomUUID(), test=randomUUID(), approval=randomUUID(), approver=randomUUID();
+      await tx`insert into app.source(id,label,source_type,document_title,source_url,is_synthetic,is_demo)
+        values (${source},'ISOLATED TEST ONLY','methodology_document','Synthetic eligibility test document','https://fixture.invalid/rules',false,false)`;
+      await tx`insert into app.methodology(id,name,slug,official_or_inspired,source_title,source_url,verified_by,verification_date)
+        values (${m},'ISOLATED TEST ONLY',${m},'official','Synthetic eligibility test document','https://fixture.invalid/rules','test fixture','2026-10-01')`;
+      await tx`insert into app.methodology_version(id,methodology_id,version,version_label,effective_date,source_ids)
+        values (${v},${m},'1','ISOLATED TEST ONLY','2026-01-01',ARRAY[${source}]::uuid[])`;
+      await rejects(tx,`update app.methodology set production_enabled=true where id='${m}'`,/production methodology gate/);
+      await tx`insert into app.methodology_version_report(id,methodology_version_id,kind,payload)
+        values (${impact},${v},'impact','{}'::jsonb),(${test},${v},'test','{}'::jsonb)`;
+      await tx`insert into app.audit_event(id,event_type,entity_name,entity_id,actor_id,summary)
+        values (${approval},'approval_recorded','methodology_version',${v},${approver},'ISOLATED TEST ONLY')`;
+      await tx`update app.methodology_version set impact_report_id=${impact},test_report_id=${test},approval_id=${approval},approved_by=${approver},approved_at=now() where id=${v}`;
+      await tx`update app.methodology set production_enabled=true where id=${m}`;
+      await tx`update app.methodology_version set production_enabled=true where id=${v}`;
+      for(const statement of [
+        `update app.methodology set source_url=null where id='${m}'`,
+        `update app.methodology set verified_by='' where id='${m}'`,
+        `update app.methodology set verification_date=null where id='${m}'`,
+        `update app.methodology set production_enabled=false where id='${m}'`,
+        `update app.methodology set current_version_id='${f.publicVersion}' where id='${m}'`,
+        `update app.methodology_version set test_report_id=null where id='${v}'`,
+        `update app.methodology_version set impact_report_id=null where id='${v}'`,
+        `update app.methodology_version set approval_id=null where id='${v}'`,
+        `update app.methodology_version set approved_by=null where id='${v}'`,
+        `update app.methodology_version set source_ids='{}' where id='${v}'`,
+        `update app.source set is_synthetic=true where id='${source}'`,
+        `update app.source set confidence_tier='Estimated' where id='${source}'`,
+        `delete from app.source where id='${source}'`,
+      ]) await rejects(tx,statement,/production methodology gate/);
+      // Same event type alone is insufficient: an approval for a different entity/version is refused.
+      const wrong=randomUUID();
+      await tx`insert into app.audit_event(id,event_type,entity_name,entity_id,summary)
+        values (${wrong},'approval_recorded','methodology_version',${m},'ISOLATED TEST ONLY')`;
+      await rejects(tx,`update app.methodology_version set approval_id='${wrong}' where id='${v}'`,/production methodology gate/);
+      await rejects(tx,`update app.methodology_version set test_report_id='${impact}' where id='${v}'`,/test report must belong to version/);
+      await rejects(tx,`update app.methodology_version set impact_report_id='${test}' where id='${v}'`,/impact report must belong to version/);
+      await tx`update app.methodology_version set workflow_status='approved' where id=${v}`;
+      await rejects(tx,`update app.methodology_version set changelog='rewrite' where id='${v}'`,/non-draft methodology content is immutable/);
+    });
+  });
+});
+
 describe("schema and reference fixtures", () => {
   it("has exactly 25 app tables, all with RLS and safe roles/defaults", async () => {
     const rows =
@@ -528,7 +608,7 @@ describe("immutability and relational integrity", () => {
       );
       const [testReport] =
         await tx`insert into app.methodology_version_report (methodology_version_id,kind,payload) values (${f.publicVersion},'test','{}') returning id`;
-      await tx`update app.methodology_version set workflow_status='rules_normalized',workflow_history='[]',production_enabled=true,is_public=false,impact_report_id=${f.report},test_report_id=${testReport.id},approval_id=${f.audit},approved_by=${f.user},approved_at=now(),updated_at=now() where id=${f.publicVersion}`;
+      await tx`update app.methodology_version set workflow_status='rules_normalized',workflow_history='[]',is_public=false,impact_report_id=${f.report},test_report_id=${testReport.id},approval_id=${f.audit},approved_by=${f.user},approved_at=now(),updated_at=now() where id=${f.publicVersion}`;
       const [v] =
         await tx`select * from app.methodology_version where id=${f.publicVersion}`;
       expect(v).toMatchObject({
