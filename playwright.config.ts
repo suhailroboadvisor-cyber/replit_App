@@ -1,19 +1,24 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// An explicit origin runs the same checks against an already-running preview.
+// Never launch a second Next server for that mode.
+const previewOrigin = process.env.PLAYWRIGHT_BASE_URL || undefined;
+
 // Playwright honors PLAYWRIGHT_BROWSERS_PATH automatically; browser installation
 // is managed by the environment and must not be triggered by this project.
 export default defineConfig({
   testDir: "./e2e",
   // Cold Next/font compilation in the workspace can exceed 30 seconds.
   timeout: 120_000,
-  testIgnore: ["**/production.spec.ts","**/accounts-fixture.spec.ts"],
+  testIgnore: ["**/production.spec.ts", "**/accounts-fixture.spec.ts"],
   outputDir: "generated-artifacts/playwright",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:3100",
+    baseURL: previewOrigin ?? "http://127.0.0.1:3100",
+    trace: "retain-on-failure",
     ...devices["Desktop Chrome"],
     launchOptions: {
       // Workspace can use its managed Chromium; CI uses the versioned download.
@@ -26,11 +31,13 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: {
+  webServer: previewOrigin ? undefined : {
     command: "pnpm dev",
     url: "http://127.0.0.1:3100/api/health",
-    env: { PORT: "3100" },
-    reuseExistingServer: !process.env.CI,
+    env: { PORT: "3100", PLAYWRIGHT_TEST_SERVER: "1" },
+    // Fail on an occupied port instead of silently testing an unknown server.
+    // Pause the preview workflow first: Next's lock is per repo, not per port.
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });
