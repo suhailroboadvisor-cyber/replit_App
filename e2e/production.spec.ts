@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import enMessages from "../src/i18n/messages/en.json";
 
 test("encoded private roots including dotted descendants stay private over actual HTTP", async ({
   request,
@@ -127,6 +128,120 @@ async function expectHomeTheme(
   if (theme === "dark") await expect(page.locator("html")).toHaveClass(/dark/);
   else await expect(page.locator("html")).not.toHaveClass(/dark/);
 }
+
+async function expectNoHorizontalOverflow(page: Page) {
+  const widths = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    document: document.documentElement.scrollWidth,
+    body: document.body.scrollWidth,
+  }));
+  expect(widths.document).toBeLessThanOrEqual(widths.viewport);
+  expect(widths.body).toBeLessThanOrEqual(widths.viewport);
+}
+
+async function expectTouchHeader(page: Page) {
+  await expectNoHorizontalOverflow(page);
+  const header = page.getByRole("banner");
+  const controls = header.locator("a, button");
+  expect(await controls.count()).toBeGreaterThanOrEqual(6);
+  for (const control of await controls.all()) {
+    await expect(control).toBeVisible();
+    // Full bounds, not just intersection: a partially clipped control fails.
+    const bounds = await control.boundingBox();
+    expect(bounds).not.toBeNull();
+    const viewport = page.viewportSize()!;
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.y).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewport.width);
+    expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(viewport.height);
+    // Playwright checks enabled, stable, and receiving touch events without
+    // navigating away through each header link.
+    await control.tap({ trial: true });
+  }
+}
+
+test.describe("@phone public production touch controls", () => {
+  for (const locale of ["ar", "en"] as const) {
+    test(`${locale}: header fits, theme and locale respond to touch, full disclaimer is readable`, async ({
+      page,
+    }) => {
+      const home = publicHomes[locale];
+      const otherLocale = locale === "ar" ? "en" : "ar";
+      const otherHome = publicHomes[otherLocale];
+      await page.goto(home.path);
+      await expectHomeTheme(page, locale, "dark");
+      await expectTouchHeader(page);
+
+      await page.getByRole("button", { name: home.theme, exact: true }).tap();
+      await expectHomeTheme(page, locale, "light");
+      expect(await page.evaluate(() => localStorage.getItem("suhail-theme"))).toBe("light");
+      await expectTouchHeader(page);
+      await page.reload();
+      await expectHomeTheme(page, locale, "light");
+
+      await page.getByRole("link", { name: home.language, exact: true }).tap();
+      await expectHomeTheme(page, otherLocale, "light");
+      await expectTouchHeader(page);
+      await page.getByRole("button", { name: otherHome.theme, exact: true }).tap();
+      await expectHomeTheme(page, otherLocale, "dark");
+      await page.getByRole("link", { name: otherHome.language, exact: true }).tap();
+      await expectHomeTheme(page, locale, "dark");
+      await page.reload();
+      await expectHomeTheme(page, locale, "dark");
+      await expectTouchHeader(page);
+
+      const details = page.locator("#full-disclaimer");
+      const paragraph = details.locator("p");
+      const summary = details.locator("summary");
+      await expect(details).not.toHaveAttribute("open");
+      await expect(paragraph).toBeHidden();
+      await page.getByRole("link", { name: home.disclaimer, exact: true }).tap();
+      await expect(page).toHaveURL(/#full-disclaimer$/);
+      await expect(details).toHaveAttribute("open", "");
+      await expect(paragraph).toBeVisible();
+      // Check the entire current disclaimer, including the Arabic review
+      // placeholder, rather than accepting only its first sentence.
+      await expect(paragraph).toContainText(enMessages.disclaimer.full);
+      await expectNoHorizontalOverflow(page);
+      const lines = await paragraph.evaluate((element) => {
+        function textRects() {
+          // LocalizedText may wrap review wording in an inline-block span.
+          // Measure text nodes, not the wrapper's single aggregate rectangle.
+          const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+          const rects: DOMRect[] = [];
+          let node: Node | null;
+          while ((node = walker.nextNode())) {
+            if (!node.textContent?.trim()) continue;
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            rects.push(...Array.from(range.getClientRects()));
+          }
+          return rects;
+        }
+        const last = textRects().at(-1)!;
+        window.scrollBy(0, last.bottom - window.innerHeight + 24);
+        return textRects().map((rect) => ({
+          left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom,
+        }));
+      });
+      expect(lines.length).toBeGreaterThan(1);
+      const viewport = page.viewportSize()!;
+      for (const line of lines) {
+        expect(line.left).toBeGreaterThanOrEqual(0);
+        expect(line.right).toBeLessThanOrEqual(viewport.width);
+      }
+      expect(lines.at(-1)!.top).toBeGreaterThanOrEqual(0);
+      expect(lines.at(-1)!.bottom).toBeLessThanOrEqual(viewport.height);
+      await summary.tap();
+      await expect(details).not.toHaveAttribute("open");
+      await expect(paragraph).toBeHidden();
+      await summary.tap();
+      await expect(details).toHaveAttribute("open", "");
+      await expect(paragraph).toBeVisible();
+      await expectNoHorizontalOverflow(page);
+    });
+  }
+});
 
 for (const locale of ["ar", "en"] as const) {
   const home = publicHomes[locale];
