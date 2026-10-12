@@ -8,6 +8,7 @@ import {
   unique,
   uniqueIndex,
   index,
+  check,
 } from "drizzle-orm/pg-core";
 import {
   appSchema,
@@ -127,6 +128,8 @@ export const sourceType = appSchema.enum("source_type", [
 ]);
 export const source = appSchema.table("source", {
   ...base(),
+  // D-93: synthetic/demo provenance cannot later be relabelled production evidence.
+  production_blocked: boolean("production_blocked").notNull().default(false),
   created_by: mutableCreator(),
   label: text("label").notNull(),
   source_type: sourceType("source_type").notNull(),
@@ -237,7 +240,10 @@ export const businessSegment = appSchema.table(
       .default("Verified"),
     source_id: uuid("source_id").references(() => source.id),
   },
-  (t) => [index("business_segment_source_idx").on(t.source_id)],
+  (t) => [
+    index("business_segment_source_idx").on(t.source_id),
+    check("business_segment_share_fraction", sql`${t.revenue_share} >= 0 AND ${t.revenue_share} <= 1`),
+  ],
 );
 export const priceBar = appSchema.table("price_bar", {
   ...base(),

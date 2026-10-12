@@ -6,7 +6,6 @@ import { verifyRuntimeRole } from "./verified-sql";
 
 export const runtimeOptions = {
   prepare: false,
-  ssl: "require",
   max: 3,
   idle_timeout: 20,
   connect_timeout: 10,
@@ -15,10 +14,7 @@ export function lazyRuntimeClient(
   key: "DATABASE_URL_PUBLIC" | "DATABASE_URL_APP",
 ) {
   const create = () => {
-    const sql = connectDatabase(key, {
-      ...runtimeOptions,
-      ssl: process.env.NODE_ENV === "test" ? false : "require",
-    });
+    const sql = connectDatabase(key, runtimeOptions);
     return drizzle(verifyRuntimeRole(sql, key), { schema });
   };
   let client: ReturnType<typeof create> | undefined;

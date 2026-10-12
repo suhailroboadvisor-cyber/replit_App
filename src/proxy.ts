@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { privateCsp } from "./lib/auth/csp";
 import { routing } from "./i18n/routing";
+import { privatePath } from "./lib/auth/private-path";
 
 type Stage = (request: NextRequest) => NextResponse | undefined;
 const localize = createMiddleware(routing);
@@ -18,7 +19,11 @@ export function localizationChain(...stages: Stage[]) {
 }
 export default async function proxy(request: NextRequest) {
   // D-51: never refresh or inspect session cookies on public ISR routes.
-  if (!/^\/(?:en\/|ar\/)?(?:auth|account|admin)(?:\/|$)/.test(request.nextUrl.pathname)) return localize(request);
+  request.headers.delete("x-private-path");
+  request.headers.delete("x-nonce");
+  request.headers.delete("Content-Security-Policy");
+  const classified = privatePath(request.nextUrl.pathname);
+  if (!classified.private) return localize(request);
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -26,9 +31,9 @@ export default async function proxy(request: NextRequest) {
   request.headers.set("x-nonce",nonce);
   request.headers.set("Content-Security-Policy",csp);
   // Untrusted inbound x-private-path cannot affect guards.
-  request.headers.set("x-private-path", request.nextUrl.pathname + request.nextUrl.search);
-  let response = localize(request);
-  if (url && key) {
+  request.headers.set("x-private-path", classified.path + request.nextUrl.search);
+  let response = classified.malformed ? NextResponse.json({error:"invalid_path"}, {status:400}) : localize(request);
+  if (!classified.malformed && url && key) {
     const auth = createServerClient(url,key,{cookies:{
       getAll:()=>request.cookies.getAll(),
       setAll(values) {
@@ -51,8 +56,10 @@ export default async function proxy(request: NextRequest) {
   response.headers.set("Content-Security-Policy",csp);
   response.headers.set("X-Robots-Tag","noindex, nofollow");
   response.headers.set("Cache-Control","private, no-store");
+  response.headers.set("CDN-Cache-Control","no-store");
+  response.headers.set("Cloudflare-CDN-Cache-Control","no-store");
   return response;
 }
 export const config = {
-  matcher: ["/((?!api|_next|_vercel|icons|brand|.*\\..*).*)","/auth/:path*","/account/:path*","/admin/:path*","/en/auth/:path*","/en/account/:path*","/en/admin/:path*","/ar/auth/:path*","/ar/account/:path*","/ar/admin/:path*"],
+  matcher: ["/((?!api|_next|_vercel|icons|brand|favicon\\.ico|robots\\.txt|sitemap\\.xml|manifest\\.webmanifest).*)"],
 };

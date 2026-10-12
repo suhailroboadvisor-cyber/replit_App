@@ -23,7 +23,7 @@ const config = [
   },
   {
     files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
-    ignores: ["src/jobs/**", "src/app/\\[locale\\]/admin/**"],
+    ignores: ["src/jobs/**", "src/app/\\[locale\\]/\\(private\\)/admin/**"],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -67,7 +67,7 @@ const config = [
           patterns: [
             jobsRestriction,
             {
-              group: ["@/db/app", "@/db/app/**"],
+              group: ["@/db/app", "@/db/app/**", "**/db/app", "**/db/app/**"],
               message: "Public routes must not import the app database client.",
             },
           ],

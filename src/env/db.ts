@@ -4,6 +4,8 @@ import { blankToUndefined, parseEnv } from "./shared";
 
 const postgresUrl = z.url({ protocol: /^postgres(?:ql)?$/ });
 const dbEnvSchema = z.object({
+  // Required only when a non-test database connection opens; non-secret Supabase CA PEM.
+  SUPABASE_DB_CA_CERT: z.preprocess(blankToUndefined, z.string().optional()),
   // Optional for app reads; required by workspace/CI migration commands only.
   DATABASE_URL_MIGRATIONS: z.preprocess(
     blankToUndefined,

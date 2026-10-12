@@ -7,6 +7,6 @@ export function safeNext(input: unknown): string | null {
   if (/[%\\\s\u0000-\u001f\u007f]/.test(input)) return null;
   const url = new URL(input, "https://relative.invalid");
   if (url.origin !== "https://relative.invalid" || url.pathname !== input.split(/[?#]/)[0]) return null;
-  if (/^\/(?:en\/)?auth(?:\/|$)/.test(url.pathname)) return null;
+  if (/^\/(?:(?:en|ar)\/)?(?:auth|admin\/mfa)(?:\/|$)/.test(url.pathname)) return null;
   return input;
 }

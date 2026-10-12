@@ -230,8 +230,8 @@ describe("primary business activity (D-13/D-80/D-84/D-85)", () => {
 describe("non-permissible revenue", () => {
   it.each([[4, "pass"], [6, "fail"]])("%s% → %s", (value, result) => {
     const r = screen(nonpermissible([
-      segment({ revenueAmount: 100 - Number(value) }),
-      segment({ segmentName: "Alcohol", revenueAmount: Number(value), activityCategory: "alcohol" }),
+      segment({ revenueAmount: 100 - Number(value), revenueShare: 1 - Number(value) / 100 }),
+      segment({ segmentName: "Alcohol", revenueAmount: Number(value), revenueShare: Number(value) / 100, activityCategory: "alcohol" }),
     ]));
     expect(r.criteria[0]).toMatchObject({ numeratorValue: value, denominatorValue: 100, ratio: value, result });
   });
