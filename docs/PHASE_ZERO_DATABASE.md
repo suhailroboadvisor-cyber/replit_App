@@ -93,21 +93,13 @@ are not public. No generic public list endpoint is supplied.
 3. `drizzle/0002_integrity.sql`: idempotent immutability/timestamps,
    approval/report checks, audit privacy, historical UUID comments, deletion.
 4. `drizzle/0003_evidence_shape.sql`: idempotent editor-evidence shape guard.
-5. `drizzle/0004_account_security.sql`: account/session authorization policies and guards.
-6. `drizzle/0005_pre_step_six_hardening.sql`: permanent demo-provenance latch,
-   production prerequisite gate, segment-share check and history TRUNCATE refusal
-   (D-92–D-94). Review the separate
-   [security handoff](PRE_STEP_SIX_SECURITY_HANDOFF.md) before rollout.
 
 Never edit an applied migration. `pnpm db:generate` does not need a database.
 `pnpm db:migrate`, `pnpm db:seed`, `pnpm db:studio` use only
 `DATABASE_URL_MIGRATIONS` (owner `postgres`); runtime clients lazily validate
 only their own `DATABASE_URL_PUBLIC` / `DATABASE_URL_APP`.
-Both runtime clients are server-only, verified TLS, prepare:false, max:3.
-Every non-test connection requires the explicit public PEM CA bundle in
-`SUPABASE_DB_CA_CERT` (D-94), with certificate-chain and hostname verification.
-Only disposable loopback test connections can omit TLS. Credentials and the CA
-are read lazily on connection; imports/builds/schema generation do not require them.
+Both runtime clients are server-only, mandatory TLS, prepare:false, max:3.
+Only CLI/test connections to loopback can omit TLS.
 
 ### Supabase connection modes from Replit
 
@@ -126,7 +118,7 @@ Copy the exact host and connection string from Supabase's **Connect** dialog;
 do not construct the pooler hostname from the region. Shared-pooler usernames
 include the project reference (`postgres.<PROJECT_REF>` or
 `<ROLE>.<PROJECT_REF>`). Keep passwords only in secrets, not documentation.
-Verified TLS with `SUPABASE_DB_CA_CERT` remains required. Runtime `prepare: false` is required for Transaction
+TLS remains required. Runtime `prepare: false` is required for Transaction
 pooling; session-level state must not be assumed to persist between transactions.
 
 **D-78 supersedes the earlier Supabase-hosted integration-test guidance:**
@@ -224,11 +216,9 @@ End-user registration/consent/deletion events require `entity_name='users'`,
 UUID `entity_id`, fixed summary equal to event type, no details/email/role;
 actor/creator IDs, if supplied, must equal that user ID.
 Non-draft versions cannot be returned to draft to bypass content protection.
-Allowed metadata: workflow_status/history, production_enabled, production_blocked,
+Allowed metadata: workflow_status/history, production_enabled,
 impact_report_id/test_report_id/approval_id, approved_by/approved_at,
 is_public, updated_at. Criteria lock their parent while checking draft state.
-The provenance latch cannot be cleared, and production flags/prerequisites are
-subject to D-93's cross-table gate. All eight append-only tables reject TRUNCATE.
 
 ## Verification and open scope
 
