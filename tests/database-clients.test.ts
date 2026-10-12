@@ -63,10 +63,11 @@ describe("database credential separation", () => {
         }),
       );
       expect(runtimeOptions).toMatchObject({
-        ssl: "require",
         prepare: false,
         max: 3,
       });
+      // TLS is supplied centrally by connectDatabase, not an encryption-only default.
+      expect(runtimeOptions).not.toHaveProperty("ssl");
     },
   );
   it.each(["DATABASE_URL_MIGRATIONS", "DATABASE_URL_TEST"] as const)(
