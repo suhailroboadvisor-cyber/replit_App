@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { approvedArabicCopy } from "../src/i18n/approved-arabic";
+import { fixtureQr } from "../tests/browser-fixture/auth";
 for (const prefix of ["", "/en"]) {
   test(`${prefix || "ar"} embedded sign-in directs users to a separate tab without starting OAuth`, async ({
     page,
@@ -174,3 +175,90 @@ test("minimal account supports null email, language preference and typed deletio
     page.getByRole("textbox", { name: 'Type "DELETE" to confirm' }),
   ).toHaveCount(0);
 });
+
+test("raw Supabase SVG is normalized and decoded without page errors", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/en?screen=enroll");
+  await page.getByRole("button", { name: "Begin setup", exact: true }).click();
+  const image = page.getByRole("img", { name: "Authenticator setup QR code", exact: true });
+  await expect(image).toHaveAttribute("src", `data:image/svg+xml;charset=utf-8,${encodeURIComponent(fixtureQr.slice(fixtureQr.indexOf(",") + 1).trim())}`);
+  await expect(image).toHaveAttribute("width", "144");
+  await expect(image).toHaveAttribute("height", "144");
+  await image.evaluate((element) => (element as HTMLImageElement).decode());
+  expect(await image.evaluate((element) => (element as HTMLImageElement).naturalWidth)).toBe(160);
+  await expect(page.locator("code")).toHaveText("FIXTURESETUPKEY");
+  expect(errors).toEqual([]);
+});
+
+for (const source of [null, "", "data:image/png,abc", "https://example.test/qr.svg",
+  "data:image/svg+xml-fake,<svg></svg>", "data:image/svg+xml<svg></svg>",
+  "data:image/svg+xml,not svg", "data:image/svg+xml,<svg><broken></svg>"]) {
+  test(`unusable QR retains the setup key: ${source}`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto("/en?screen=enroll");
+    await page.evaluate((qrCode) => { window.fixture.mfa.qrCode = qrCode; }, source);
+    await page.getByRole("button", { name: "Begin setup", exact: true }).click();
+    await expect(page.getByText("QR code unavailable. Use the setup key instead.", { exact: true })).toBeVisible();
+    await expect(page.getByRole("img")).toHaveCount(0);
+    await expect(page.locator("code")).toHaveText("FIXTURESETUPKEY");
+    await expect(page.getByRole("textbox", { name: "Enter the six-digit code" })).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+}
+
+for (const count of [1, 3]) {
+  test(`recovers ${count} abandoned factors before enrollment, preserving verified and other types`, async ({ page }) => {
+    await page.goto("/en?screen=enroll");
+    const protectedFactors = [
+      { id: "verified", factor_type: "totp", status: "verified" },
+      { id: "phone-unverified", factor_type: "phone", status: "unverified" },
+      { id: "phone-verified", factor_type: "phone", status: "verified" },
+      { id: "other", factor_type: "webauthn", status: "unverified" },
+    ];
+    const abandoned = Array.from({ length: count }, (_, index) => ({
+      id: `abandoned-${index}`, factor_type: "totp", status: "unverified",
+    }));
+    await page.evaluate((factors) => { window.fixture.mfa.factors = factors; }, [...protectedFactors, ...abandoned]);
+    await page.getByRole("button", { name: "Begin setup", exact: true }).click();
+    await expect(page.getByRole("img", { name: "Authenticator setup QR code" })).toBeVisible();
+    const state = await page.evaluate(() => window.fixture.mfa);
+    expect(state.calls).toEqual([
+      { action: "listFactors" },
+      ...abandoned.map((factor) => ({ action: "unenroll", factorId: factor.id })),
+      { action: "enroll" },
+    ]);
+    expect(state.factors).toEqual([...protectedFactors, { id: "factor-fixture", factor_type: "totp", status: "unverified" }]);
+  });
+}
+
+for (const failureControl of ["listFailure", "unenrollFailure"] as const) {
+  for (const failure of ["error", "throw", ...(failureControl === "listFailure" ? ["missing"] as const : [])] as const) {
+    test(`${failureControl} ${failure} stops enrollment and permits retry`, async ({ page }) => {
+      await page.goto("/en?screen=enroll");
+      await page.evaluate(({ failureControl, failure }) => {
+        window.fixture.mfa.factors = [{ id: "abandoned", factor_type: "totp", status: "unverified" }];
+        window.fixture.mfa[failureControl] = failure;
+      }, { failureControl, failure });
+      const begin = page.getByRole("button", { name: "Begin setup", exact: true });
+      await begin.click();
+      await expect(page.getByRole("alert")).toHaveText("Could not prepare authenticator enrollment. Try again.");
+      await expect(begin).toBeEnabled();
+      expect(await page.evaluate(() => window.fixture.mfa.calls)).toEqual([
+        { action: "listFactors" },
+        ...(failureControl === "unenrollFailure" ? [{ action: "unenroll", factorId: "abandoned" }] : []),
+      ]);
+      expect(await page.evaluate(() => window.fixture.mfa.factors)).toEqual([
+        { id: "abandoned", factor_type: "totp", status: "unverified" },
+      ]);
+      await page.evaluate((control) => { window.fixture.mfa[control] = null; window.fixture.mfa.calls = []; }, failureControl);
+      await begin.click();
+      await expect(page.getByRole("img", { name: "Authenticator setup QR code" })).toBeVisible();
+      await expect(page.getByRole("alert")).toHaveCount(0);
+      expect(await page.evaluate(() => window.fixture.mfa.calls)).toEqual([
+        { action: "listFactors" }, { action: "unenroll", factorId: "abandoned" }, { action: "enroll" },
+      ]);
+    });
+  }
+}

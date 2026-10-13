@@ -242,6 +242,8 @@ for (const locale of ["ar", "en"] as const) {
         await tab(page, begin);
         await page.keyboard.press("Enter");
         await expect(page.getByRole("img", { name: text("Authenticator setup QR code"), exact: true })).toBeVisible();
+        await page.getByRole("img", { name: text("Authenticator setup QR code"), exact: true })
+          .evaluate((element) => (element as HTMLImageElement).decode());
         await headings(page, [text("Set up an authenticator"), text("Scan with your authenticator app")]);
         await expect(page.locator("code")).toHaveAttribute("dir", "ltr");
         await expect(page.locator("code")).toHaveText("FIXTURESETUPKEY");

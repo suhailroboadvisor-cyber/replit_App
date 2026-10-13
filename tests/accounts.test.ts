@@ -2,7 +2,31 @@ import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { safeNext, localePath } from "../src/lib/auth/paths";
 import { CURRENT_TERMS_VERSION, CURRENT_PRIVACY_VERSION } from "../src/lib/auth/policies";
+import { abandonedTotpFactors, normalizeTotpQr } from "../src/lib/auth/mfa-enrollment";
 vi.mock("server-only",()=>({}));
+describe("TOTP enrollment inputs", () => {
+  const svg = '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg"><text>a,b &amp; c</text></svg>';
+  it.each(["data:image/svg+xml,", "data:image/svg+xml;utf-8,", "data:image/svg+xml;charset=utf-8,"])("normalizes raw provider SVG with prefix %s", (prefix) => {
+    expect(normalizeTotpQr(`${prefix} \n${svg}\n`)).toBe(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`);
+  });
+  it.each([undefined, null, "", 42, "https://example.test/qr.svg", "data:image/png,abc",
+    "data:image/svg+xml-fake,<svg></svg>", "data:image/svg+xml<svg></svg>",
+    "data:image/svg+xml;base64,PHN2Zz4=", "data:image/svg+xml,", "data:image/svg+xml,not svg",
+    "data:image/svg+xml,%3Csvg%3E%3C/svg%3E", "data:image/svg+xml,<svg>", "data:image/svg+xml,<svg>\ud800</svg>",
+  ])("rejects unusable QR source %s", (source) => expect(normalizeTotpQr(source)).toBe(""));
+  it("selects only abandoned TOTP factors without mutating or removing protected factors", () => {
+    const factors = [
+      { id: "old-1", factor_type: "totp", status: "unverified" },
+      { id: "verified", factor_type: "totp", status: "verified" },
+      { id: "phone", factor_type: "phone", status: "unverified" },
+      { id: "old-2", factor_type: "totp", status: "unverified" },
+      { id: "unknown", factor_type: "webauthn", status: "unverified" },
+    ];
+    expect(abandonedTotpFactors(factors).map((factor) => factor.id)).toEqual(["old-1", "old-2"]);
+    expect(factors).toHaveLength(5);
+    expect(abandonedTotpFactors([])).toEqual([]);
+  });
+});
 describe("safe OAuth destination",()=>{
   it.each(["https://evil.test","//evil.test","/%2fevil.test","/%252f%252fevil.test","/\\evil.test","/a/../admin","/auth/callback","/en/auth/sign-in","/\nevil.test"])("rejects %s",value=>expect(safeNext(value)).toBeNull());
   it.each(["/account","/en/admin/users?query=fixture","/"])("preserves %s",value=>expect(safeNext(value)).toBe(value));
