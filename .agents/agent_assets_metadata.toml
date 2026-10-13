@@ -70,3 +70,17 @@ mtime_ms = 1791711722019
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/b709c27d-d774-4b78-b0ef-ba07130b7b61/8d4623d9-be40-4c62-bfe6-1131c6e74ac4"
 storage_version_token = "1791711839345616"
 content_type = "image/png"
+
+[[outputs]]
+id = "z-s-TQMXn9TAPm03MBkn8"
+uri = "file://generated-artifacts/supabase-migration-0005-report.html"
+type = "html"
+title = "Supabase migration execution report"
+description = "Exact database commands, temporary verification scripts, and complete outputs for the read-only 0004 baseline check, authorized 0005 migration, and post-migration verification. No credentials or connection strings included."
+logical_id = "bd0b27df-ae25-48df-973d-975f8281bd04"
+content_hash = "sha256:90186d35ed51adb7d4589795f1850dc4ba726bffba1244575c894dffd2c3a7f7"
+size = 61167
+mtime_ms = 1791930409916
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/bd0b27df-ae25-48df-973d-975f8281bd04/7e19eebb-cfc0-4e1d-aa23-90d2899d961e"
+storage_version_token = "1791930411547662"
+content_type = "text/html"
