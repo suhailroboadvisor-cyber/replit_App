@@ -237,6 +237,7 @@ for (const locale of ["ar", "en"] as const) {
       await page.goto(screen(mode));
       await headings(page, [text(mode === "enroll" ? "Set up an authenticator" : "Verify your identity")]);
       if (mode === "enroll") {
+        await expect(page.getByText(text("Admin access requires a time-based authenticator. Your role alone does not grant access."), { exact: true })).toBeVisible();
         const begin = page.getByRole("button", { name: text("Begin setup"), exact: true });
         await page.getByRole("link").focus();
         await tab(page, begin);
@@ -245,6 +246,7 @@ for (const locale of ["ar", "en"] as const) {
         await page.getByRole("img", { name: text("Authenticator setup QR code"), exact: true })
           .evaluate((element) => (element as HTMLImageElement).decode());
         await headings(page, [text("Set up an authenticator"), text("Scan with your authenticator app")]);
+        await expect(page.getByText(text("If scanning is unavailable, enter this key manually."), { exact: true })).toBeVisible();
         await expect(page.locator("code")).toHaveAttribute("dir", "ltr");
         await expect(page.locator("code")).toHaveText("FIXTURESETUPKEY");
         await page.getByRole("link").focus();
@@ -274,4 +276,14 @@ for (const locale of ["ar", "en"] as const) {
       await expect(page).toHaveURL(/\/done$/);
     });
   }
+
+  test(`${locale} MFA enrollment approved helper text when QR is unavailable`, async ({ page }) => {
+    await page.goto(screen("enroll"));
+    await page.evaluate(() => { window.fixture.mfa.qrCode = null; });
+    await page.getByRole("button", { name: text("Begin setup"), exact: true }).click();
+    await expect(page.getByText(text("QR code unavailable. Use the setup key instead."), { exact: true })).toBeVisible();
+    await expect(page.getByText(text("If scanning is unavailable, enter this key manually."), { exact: true })).toBeVisible();
+    await expect(page.locator("code")).toHaveText("FIXTURESETUPKEY");
+    await expect(page.getByText(/⟦AR-REVIEW⟧/)).toHaveCount(0);
+  });
 }
