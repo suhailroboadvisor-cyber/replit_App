@@ -32,3 +32,14 @@ acceptance of different, approved terms.
 
 **How to apply:** Update both locale documents and current constants together,
 retain review markers until human approval, and let stale acceptance re-consent.
+
+Use provider-representative serialized fixtures when testing authentication
+images, not just minimal hand-written SVGs.
+
+**Why:** a minimal QR SVG fixture rendered successfully while a legitimate
+provider XML prolog/comment caused the real enrollment screen to reject the image.
+
+**How to apply:** check the provider's serializer and installed SDK transformation
+when diagnosing image failures. Preserve representative prologs and comments in
+fixtures, use only synthetic factor material, and verify actual browser decoding
+under the existing CSP rather than weakening it.

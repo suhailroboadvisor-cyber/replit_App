@@ -176,7 +176,7 @@ test("minimal account supports null email, language preference and typed deletio
   ).toHaveCount(0);
 });
 
-test("raw Supabase SVG is normalized and decoded without page errors", async ({ page }) => {
+test("Supabase SVGo SVG with a generated comment is decoded without page errors", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/en?screen=enroll");

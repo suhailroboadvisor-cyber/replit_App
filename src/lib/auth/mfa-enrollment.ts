@@ -1,13 +1,13 @@
 export type MfaFactor = { id: string; factor_type: string; status: string };
 
-/** Supabase returns raw SVG, not a percent-encoded or base64 payload. */
+/** Supabase returns raw SVGo XML, including a generated comment before <svg>. */
 export function normalizeTotpQr(source: unknown): string {
   if (typeof source !== "string") return "";
   const prefix = /^data:image\/svg\+xml(?:;charset=utf-8|;utf-8)?,/;
   const match = prefix.exec(source);
   if (!match) return "";
   const svg = source.slice(match[0].length).trim();
-  if (!/^(?:<\?xml\b[^?]*\?>\s*)?<svg\b[\s\S]*<\/svg>$/.test(svg)) return "";
+  if (!/^(?:<\?xml\b[^?]*\?>\s*)?(?:<!--[\s\S]*?-->\s*)*<svg\b[\s\S]*<\/svg>$/.test(svg)) return "";
   try {
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   } catch {
