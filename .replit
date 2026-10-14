@@ -123,5 +123,3 @@ isValidation = true
 path = "scripts/post-merge.sh"
 timeoutMs = 180000
 
-[objectStorage]
-defaultBucketID = "replit-objstore-d9b9b9c9-3ae4-4a05-bb43-9bae1957b574"
