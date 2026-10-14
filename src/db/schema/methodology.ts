@@ -100,6 +100,9 @@ export const methodologyVersion = appSchema.table(
     purification_treatment: jsonb(
       "purification_treatment",
     ).$type<PurificationTreatment>(),
+    // D-100: private candidate cases; D-11 freezes this content on finalization.
+    analyst_test_cases: jsonb("analyst_test_cases")
+      .$type<JsonObject[]>().notNull().default([]),
     impact_report_id: uuid("impact_report_id").references(
       (): AnyPgColumn => methodologyVersionReport.id,
     ),

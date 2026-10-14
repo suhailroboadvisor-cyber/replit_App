@@ -7,6 +7,7 @@ import { AccountScreen } from "../../src/components/accounts/AccountScreen";
 import { fixture } from "./auth";
 import { accountFixture } from "./actions";
 import { AdminFixture } from "./AdminFixture";
+import { MethodologyFixture } from "./MethodologyFixture";
 import en from "../../src/i18n/messages/en.json";
 import ar from "../../src/i18n/messages/ar.json";
 import { CURRENT_TERMS_VERSION,CURRENT_PRIVACY_VERSION } from "../../src/lib/auth/policies";
@@ -17,6 +18,7 @@ const locale=window.location.pathname.startsWith("/en")?"en":"ar";
 const mode=new URLSearchParams(window.location.search).get("screen")??
   (window.location.pathname.endsWith("/account")?"account":"header");
 const content=mode==="signin"?<SignInScreen locale={locale} valueStatement={locale==="en"?en.app.tagline:ar.app.tagline}/>:
+  mode==="methodologies"?<MethodologyFixture locale={locale}/>:
   ["users","audit","settings","deferred"].includes(mode)?<AdminFixture locale={locale} mode={mode}/>:
   mode==="consent"?<ConsentScreen locale={locale} next="/account"/>:
   mode==="enroll"||mode==="verify"?<MfaClientPanel locale={locale} mode={mode} next="/done"/>:

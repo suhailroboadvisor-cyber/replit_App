@@ -43,6 +43,13 @@
       "when": 1791830995867,
       "tag": "0005_pre_step_six_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792014270130,
+      "tag": "0006_motionless_maggott",
+      "breakpoints": true
     }
   ]
 }

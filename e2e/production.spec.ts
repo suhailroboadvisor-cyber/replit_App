@@ -1,13 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
 import enMessages from "../src/i18n/messages/en.json";
+import arMessages from "../src/i18n/messages/ar.json";
 import { approvedArabicCopy } from "../src/i18n/approved-arabic";
 
 for (const locale of ["ar", "en"] as const) {
   const prefix = locale === "en" ? "/en" : "";
   const title = locale === "ar" ? approvedArabicCopy.Methodologies : "Methodologies";
-  const unavailable = locale === "ar"
-    ? approvedArabicCopy["This section is not available yet"]
-    : "This section is not available yet";
+  const messages=locale==="ar"?arMessages:enMessages;
 
   test(`${locale} public Methodologies link opens a truthful cookie-free destination`, async ({
     page, request,
@@ -24,8 +23,8 @@ for (const locale of ["ar", "en"] as const) {
     await expect(page).toHaveURL(`${prefix}/methodology`);
     await expect(page.locator("html")).toHaveAttribute("lang", locale);
     await expect(page.locator("html")).toHaveAttribute("dir", locale === "ar" ? "rtl" : "ltr");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
-    await expect(page.getByRole("main").getByText(unavailable, { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(messages.methodologies.title);
+    await expect(page.getByRole("main").getByText(messages.controls.sectionUnavailable, { exact: true })).toHaveCount(0);
     await expect(page.locator("#content")).toHaveCount(1);
     expect(profiles).toBe(0);
     const response = await request.get(`${prefix}/methodology`);
@@ -35,7 +34,23 @@ for (const locale of ["ar", "en"] as const) {
     // A same-path locale switch must not drop the user onto a missing page.
     await page.getByRole("link", { name: locale === "ar" ? "تغيير اللغة" : "Change language", exact: true }).click();
     await expect(page).toHaveURL(locale === "ar" ? "/en/methodology" : "/methodology");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(locale === "ar" ? "Methodologies" : approvedArabicCopy.Methodologies);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(locale === "ar" ? enMessages.methodologies.title : arMessages.methodologies.title);
+  });
+  test(`${locale} example-a public documentation renders literal criteria and no-margin evidence`,async({page,request})=>{
+    const response=await page.goto(`${prefix}/methodology/example-a`);
+    expect(response?.status()).toBe(200);
+    await expect(page.getByText(messages.banner.exampleMethodology,{exact:true})).toBeVisible();
+    await expect(page.getByRole("table")).toBeVisible();
+    const row=page.getByRole("row").filter({hasText:"Accounts receivable"});
+    await expect(row).toContainText(messages.stock.noMarginDefined);
+    await expect(page.getByText(messages.methodology.pageNote,{exact:true})).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("dir",locale==="ar"?"rtl":"ltr");
+    const html=await request.get(`${prefix}/methodology/example-a?version=private-version`);
+    expect(html.headers()["set-cookie"]).toBeUndefined();
+    expect(html.headers()["cache-control"]).toContain("s-maxage=900");
+    const body=await html.text();
+    expect(body).not.toContain("analyst_test_cases");
+    expect(body).not.toContain("workflow_history");
   });
 }
 

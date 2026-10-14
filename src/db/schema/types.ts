@@ -17,7 +17,12 @@ export type EditorEvidence = {
   value: JsonValue;
 };
 export type WorkflowEntry = {
-  status: string;
+  // Legacy evidence stays verbatim; new entries use D-97's explicit operation.
+  status?: string;
+  from?: string;
+  to?: string;
+  actor?: string;
+  operation?: string;
   at: string;
   actor_id?: string;
   note?: string;
@@ -26,13 +31,7 @@ export type TreatmentRuleData = {
   prohibited_categories?: string[];
   non_permissible_categories?: string[];
 };
-export type PurificationTreatment = {
-  formula: string;
-  inputs: string[];
-  example_ratio: number;
-  confidence_tier: "Estimated";
-  verified: false;
-};
+export type PurificationTreatment = JsonObject;
 export type HashPayload = {
   engine_version: string;
   calculation_version: string;
