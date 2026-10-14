@@ -49,6 +49,27 @@ Legacy workflow entries and example purification JSON remain readable.
 The founder-owned `docs/SUHAIL_BUILD_REFERENCE.md` was not edited.
 No dependencies were added.
 
+## Pre-merge integrity fixes
+
+- D-101 identifies the separate Arabic copy approval; D-97 remains production
+  enablement.
+- Under D-19/D-20, both public methodology routes retain `force-static` and
+  900-second classic ISR. The public parent layout generates the locale params,
+  so the directory prerenders at build time and **the build requires a reachable
+  read-only public database** (DATABASE_URL_PUBLIC and its verified CA). An empty
+  page-level `generateStaticParams()` does not suppress those inherited locale
+  paths in Next 16. Unknown detail slugs use empty `generateStaticParams()` and
+  generate on demand. Database failures throw: failed builds cannot publish
+  unavailable placeholders, and failed revalidation retains the last good page.
+- Migration `0007_methodology_visibility` requires public production versions,
+  refuses unpublishing production-enabled/default versions, and serializes
+  editorial-default pointer changes with the existing prerequisite lock.
+  Existing visibility violations stop the migration without data repair.
+- The Python module was unused by application scripts, tests and workflows and
+  was removed. PostgreSQL 17 and Node 22 remain.
+- This migration is tested only on disposable local PostgreSQL. Applying it to
+  Supabase requires separate approval; merging or building does not apply it.
+
 ## Changed implementation files
 
 ### Data, contracts, actions and reports

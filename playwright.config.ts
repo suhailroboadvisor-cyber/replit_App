@@ -10,7 +10,7 @@ export default defineConfig({
   testDir: "./e2e",
   // Cold Next/font compilation in the workspace can exceed 30 seconds.
   timeout: 120_000,
-  testIgnore: ["**/production.spec.ts", "**/accounts-fixture.spec.ts"],
+  testIgnore: ["**/production.spec.ts", "**/accounts-fixture.spec.ts", "**/methodology-isr.spec.ts"],
   outputDir: "generated-artifacts/playwright",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),

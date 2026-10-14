@@ -87,10 +87,91 @@ async function advance(tx:Tx,actor:AppUser,v:string,to:string) {
   }
 }
 describe("audited governed lifecycle and SQL boundaries",()=>{
+  it("refuses private production enablement in the service and direct owner SQL",()=>isolated(async(tx,actor)=>{
+    const {v,c}=await fixture(tx,actor);
+    await service.saveCases(tx,actor,v,cases(c));await advance(tx,actor,v,"approved");
+    await expect(service.enableProduction(tx,actor,v,"Private")).rejects.toThrow("Publish the version before enabling production");
+    await expect(tx.transaction(async ownerTx=>{
+      await ownerTx.execute(sql`set local role postgres`);
+      await ownerTx.update(schema.methodologyVersion).set({production_enabled:true}).where(eq(schema.methodologyVersion.id,v));
+    })).rejects.toMatchObject({cause:{code:"23514",message:expect.stringContaining("production-enabled version cannot be private")}});
+    const [version]=await tx.select().from(schema.methodologyVersion).where(eq(schema.methodologyVersion.id,v));
+    expect(version).toMatchObject({is_public:false,production_enabled:false});
+  }));
+  it("refuses unpublishing production in the service and direct owner SQL",()=>isolated(async(tx,actor)=>{
+    const {v,c}=await fixture(tx,actor);
+    await service.saveCases(tx,actor,v,cases(c));await advance(tx,actor,v,"approved");
+    await service.setVisibility(tx,actor,v,true);await service.enableProduction(tx,actor,v,"Public");
+    await expect(service.setVisibility(tx,actor,v,false)).rejects.toThrow("production-enabled version cannot be unpublished");
+    await expect(tx.transaction(async ownerTx=>{
+      await ownerTx.execute(sql`set local role postgres`);
+      await ownerTx.update(schema.methodologyVersion).set({is_public:false}).where(eq(schema.methodologyVersion.id,v));
+    })).rejects.toMatchObject({cause:{code:"23514",message:expect.stringContaining("production-enabled version cannot be private")}});
+  }));
+  it("protects the editorial default even when production is disabled",()=>isolated(async(tx,actor)=>{
+    const {v}=await fixture(tx,actor);
+    await service.setVisibility(tx,actor,v,true);
+    await tx.update(schema.editorialSetting).set({default_shariah_methodology_version_id:v});
+    await expect(service.setVisibility(tx,actor,v,false)).rejects.toThrow("select another default first");
+    await expect(tx.transaction(async ownerTx=>{
+      await ownerTx.execute(sql`set local role postgres`);
+      await ownerTx.update(schema.methodologyVersion).set({is_public:false}).where(eq(schema.methodologyVersion.id,v));
+    })).rejects.toMatchObject({cause:{code:"23514",message:expect.stringContaining("editorial default methodology version cannot be unpublished")}});
+    await tx.update(schema.editorialSetting).set({default_shariah_methodology_version_id:null});
+    await service.setVisibility(tx,actor,v,false);
+    const [version]=await tx.select().from(schema.methodologyVersion).where(eq(schema.methodologyVersion.id,v));
+    expect(version).toMatchObject({is_public:false,production_enabled:false});
+  }));
+  it("refuses assigning a private default through direct owner SQL",()=>isolated(async(tx,actor)=>{
+    const {v}=await fixture(tx,actor);
+    await expect(tx.transaction(async ownerTx=>{
+      await ownerTx.execute(sql`set local role postgres`);
+      await ownerTx.update(schema.editorialSetting).set({default_shariah_methodology_version_id:v});
+    })).rejects.toMatchObject({cause:{code:"23514",message:expect.stringContaining("editorial default methodology version must be public")}});
+  }));
+  it("serializes concurrent default selection and unpublishing",async()=>{
+    const id=randomUUID();
+    const [parent]=await owner`select id from app.methodology where slug='example-a'`;
+    const [setting]=await owner`select id,default_shariah_methodology_version_id from app.editorial_setting where setting_key='editorial'`;
+    await owner`insert into app.methodology_version(id,methodology_id,version,is_public) values(${id},${parent.id},${id},true)`;
+    let release!:()=>void,ready!:()=>void;
+    const held=new Promise<void>(resolve=>{release=resolve;});
+    const started=new Promise<void>(resolve=>{ready=resolve;});
+    const selecting=owner.begin(async tx=>{
+      await tx`update app.editorial_setting set default_shariah_methodology_version_id=${id} where id=${setting.id}`;
+      ready();await held;
+    });
+    let hiding:Promise<unknown>|undefined;
+    try {
+      await started;
+      let identify!:(pid:number)=>void;
+      const identified=new Promise<number>(resolve=>{identify=resolve;});
+      hiding=app.begin(async tx=>{
+        const [backend]=await tx`select pg_backend_pid() as pid`;identify(backend.pid);
+        await tx`update app.methodology_version set is_public=false where id=${id}`;
+      }).then(()=>null,error=>error);
+      const pid=await identified;
+      let waiting=false;
+      for(let attempt=0;attempt<100;attempt++) {
+        const [row]=await control`select exists(select 1 from pg_locks where pid=${pid} and locktype='advisory' and not granted) as waiting`;
+        if(row.waiting){waiting=true;break;}
+        await new Promise(resolve=>setTimeout(resolve,10));
+      }
+      expect(waiting).toBe(true);
+      release();await selecting;
+      expect(await hiding).toMatchObject({code:"23514",message:expect.stringContaining("editorial default methodology version cannot be unpublished")});
+      expect((await owner`select is_public from app.methodology_version where id=${id}`)[0].is_public).toBe(true);
+    } finally {
+      release();await selecting;await hiding;
+      await owner`update app.editorial_setting set default_shariah_methodology_version_id=${setting.default_shariah_methodology_version_id} where id=${setting.id}`;
+      await owner`delete from app.methodology_version where id=${id}`;
+    }
+  });
   it("each successful gate, approval and separate production operation are atomic",()=>isolated(async(tx,actor)=>{
     const {v,c}=await fixture(tx,actor);await service.saveCases(tx,actor,v,cases(c));
     const before=await tx.execute(sql`select (select count(*) from app.screening_run)::int runs,(select count(*) from app.screening_criterion_result)::int criteria,(select count(*) from app.screening_unknown)::int unknowns`);
     await advance(tx,actor,v,"approved");
+    await service.setVisibility(tx,actor,v,true);
     await service.enableProduction(tx,actor,v,"Local test only");
     const [version]=await tx.select().from(schema.methodologyVersion).where(eq(schema.methodologyVersion.id,v));
     expect(version).toMatchObject({workflow_status:"approved",production_enabled:true,approved_by:actor.id});
@@ -200,6 +281,7 @@ describe("evidence selection and permissions",()=>{
       {company_id:company.id,period_id:p.id,line_item:"total_assets",value:100},
     ]);
     await tx.insert(schema.businessSegment).values({company_id:company.id,period_id:periods[1].id,segment_name:"Quarter only",activity_category:"alcohol"});
+    await service.setVisibility(tx,actor,v,true);
     await tx.update(schema.editorialSetting).set({default_shariah_methodology_version_id:v}).where(eq(schema.editorialSetting.setting_key,"editorial"));
     await advance(tx,actor,v,"universe_tested");
     const reports=await tx.select().from(schema.methodologyVersionReport).where(eq(schema.methodologyVersionReport.methodology_version_id,v));
@@ -265,8 +347,8 @@ describe("evidence selection and permissions",()=>{
       const {m,v,c}=await fixture(tx,actor);
       const [parent]=await tx.select().from(schema.methodology).where(eq(schema.methodology.id,m));slug=parent.slug;
       await service.saveCases(tx,actor,v,cases(c));await advance(tx,actor,v,"approved");
-      await service.enableProduction(tx,actor,v,"Disposable local fixture only");
       await service.setVisibility(tx,actor,v,true);
+      await service.enableProduction(tx,actor,v,"Disposable local fixture only");
       await service.saveVersion(tx,actor,m,null,null,{...content,version:"2",effective_date:"2026-12-01",is_public:true});
     });
     const page=await getPublicMethodology(slug);

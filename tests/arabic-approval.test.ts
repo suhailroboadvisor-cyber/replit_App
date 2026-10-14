@@ -11,7 +11,7 @@ import Forbidden from "../src/app/[locale]/(private)/forbidden";
 import ar from "../src/i18n/messages/ar.json";
 import en from "../src/i18n/messages/en.json";
 
-// Historical Phase 1 rows are the review baseline; D-97's explicit edits override it.
+// Historical Phase 1 rows are the review baseline; D-101's explicit edits override it.
 const sheet = readFileSync("docs/ARABIC_REVIEW.md", "utf8");
 const rows = sheet.split("\n")
   .filter((line) => /^\| (J-|A-|F-|E-|I-|L-)/.test(line))
@@ -38,7 +38,7 @@ const json = ar as Record<string, Record<string, string>>;
 const english = en as Record<string, Record<string, string>>;
 const deferred = (id: string) => /^J-(methodologies-|admin-|nav-screen$)/.test(id);
 
-describe("D-97 row-level Arabic approval boundary", () => {
+describe("D-101 row-level Arabic approval boundary", () => {
   it("applies exactly the 11 approved JSON rows and leaves all 82 deferred rows marked", () => {
     const jsonRows = rows.filter(([id]) => id.startsWith("J-"));
     expect(jsonRows).toHaveLength(93);
