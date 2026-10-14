@@ -19,6 +19,24 @@ async function tab(page: Page, target: Locator, key = "Tab") {
   await expect(target).toBeFocused();
 }
 
+async function pendingSubmit(page: Page, submit: Locator, calls: number) {
+  await expect(submit).toHaveAttribute("aria-disabled", "true");
+  expect(await submit.evaluate((element) => (element as HTMLButtonElement).disabled)).toBe(false);
+  await expect(submit).toBeFocused();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
+  // Native clicks and same-turn form events also must not invoke the action again.
+  // No focus() here: retry must use the focus retained by the real component.
+  await submit.evaluate((element) => {
+    const button = element as HTMLButtonElement;
+    button.click();
+    button.form?.requestSubmit();
+    button.form?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+  });
+  expect(await page.evaluate(() => window.accountFixture.calls.length)).toBe(calls);
+  await expect(submit).toBeFocused();
+}
+
 for (const locale of ["ar", "en"] as const) {
   const prefix = locale === "en" ? "/en" : "";
   const text = (english: string) => locale === "ar" ? approvedArabicCopy[english] : english;
@@ -111,9 +129,19 @@ for (const locale of ["ar", "en"] as const) {
     await associated(role, text("New role"));
     await associated(reason, text("Reason (required)"));
     await expect(role.locator("option")).toHaveText(["user", "editor", "admin"].map(text));
-    const confirm = dialog.getByRole("button", { name: text("Confirm role change"), exact: true });
+    const confirm = dialog.locator("form button").last();
     const cancel = dialog.getByRole("button", { name: text("Cancel"), exact: true });
     await expect(confirm).toBeDisabled();
+    for (const invalid of ["abc", "   ", "  abc  "]) {
+      await reason.fill(invalid);
+      await expect(confirm).toBeDisabled();
+      await reason.evaluate((element) => {
+        (element as HTMLTextAreaElement).form?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      });
+      expect(await page.evaluate(() => window.accountFixture.calls)).toEqual([]);
+    }
+    await reason.fill("");
+    await close.focus();
     await tab(page, role);
     await page.keyboard.press("ArrowDown");
     await expect(role).toHaveValue("admin");
@@ -135,15 +163,30 @@ for (const locale of ["ar", "en"] as const) {
     await page.keyboard.press("Enter");
     await role.selectOption("admin");
     await reason.fill("Keyboard fixture reason");
-    await page.evaluate(() => { window.accountFixture.fail = true; });
-    await confirm.press("Enter");
+    await page.evaluate(() => { window.accountFixture.fail = true; window.accountFixture.hold = true; });
+    await reason.focus();
+    await tab(page, cancel);
+    await tab(page, confirm);
+    await page.keyboard.press("Enter");
+    await expect(confirm).toHaveText(text("Saving"));
+    await pendingSubmit(page, confirm, 1);
+    await page.evaluate(() => window.accountFixture.release?.());
     await expect(page.getByRole("status")).toContainText("Role could not be updated");
     if (locale === "ar") await expect(page.getByRole("status")).toContainText("⟦AR-REVIEW⟧");
     await expect(dialog).toBeVisible();
+    await expect(confirm).toBeFocused();
+    await expect(confirm).toHaveAttribute("aria-disabled", "false");
     await page.evaluate(() => { window.accountFixture.fail = false; });
-    await confirm.press("Enter");
+    await page.keyboard.press("Enter");
+    await pendingSubmit(page, confirm, 2);
+    await page.evaluate(() => window.accountFixture.release?.());
     await expect(dialog).toHaveCount(0);
     await expect(opener).toBeFocused();
+    await expect(page.getByRole("status")).toContainText("Role updated.");
+    expect(await page.evaluate(() => window.accountFixture.calls)).toEqual([
+      { action: "changeRole", args: ["fixture-user", "admin", "Keyboard fixture reason"] },
+      { action: "changeRole", args: ["fixture-user", "admin", "Keyboard fixture reason"] },
+    ]);
     expect(await page.evaluate(() => window.accountFixture.calls.at(-1))).toEqual({
       action: "changeRole", args: ["fixture-user", "admin", "Keyboard fixture reason"],
     });
@@ -214,15 +257,31 @@ for (const locale of ["ar", "en"] as const) {
     await tab(page, allow);
     await page.keyboard.press("Space");
     await expect(allow).toBeChecked();
-    await tab(page, page.getByRole("button", { name: text("Save settings"), exact: true }));
+    const save = page.locator("form").filter({ has: version }).getByRole("button");
+    await expect(save).toHaveText(text("Save settings"));
+    await tab(page, save);
+    await page.evaluate(() => { window.accountFixture.hold = true; });
     await page.keyboard.press("Enter");
+    await expect(save).toHaveText(text("Saving"));
+    await pendingSubmit(page, save, 1);
+    await page.evaluate(() => window.accountFixture.release?.());
     await expect(page.getByRole("status")).toContainText("Settings saved.");
+    await expect(save).toBeFocused();
+    await expect(save).toHaveAttribute("aria-disabled", "false");
     expect(await page.evaluate(() => window.accountFixture.calls)).toEqual([
       { action: "saveSettings", args: ["fixture-version", true] },
     ]);
     await page.evaluate(() => { window.accountFixture.fail = true; });
     await page.keyboard.press("Enter");
+    await pendingSubmit(page, save, 2);
+    await page.evaluate(() => window.accountFixture.release?.());
     await expect(page.getByRole("status")).toContainText("Settings could not be saved");
+    await expect(save).toBeFocused();
+    await expect(save).toHaveAttribute("aria-disabled", "false");
+    expect(await page.evaluate(() => window.accountFixture.calls)).toEqual([
+      { action: "saveSettings", args: ["fixture-version", true] },
+      { action: "saveSettings", args: ["fixture-version", true] },
+    ]);
     if (locale === "ar") await expect(page.getByRole("status")).toContainText("⟦AR-REVIEW⟧");
     await page.goto(screen("deferred", "&role=editor"));
     await headings(page, [text("Methodologies"), text("This section is not available yet")]);
