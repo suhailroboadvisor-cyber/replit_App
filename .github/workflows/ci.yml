@@ -69,10 +69,11 @@ jobs:
       - run: pnpm test
       # The isolated suite applies migrations and seeds twice before role tests.
       - run: pnpm test:db
-      - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright install --with-deps chromium webkit
       - run: pnpm test:e2e
       - run: pnpm test:e2e:accounts
+      # Finish all self-managed Next dev servers before building production.
+      - run: pnpm build
       - run: pnpm exec playwright test --config playwright.production.config.ts
       - uses: actions/upload-artifact@v4
         if: always()

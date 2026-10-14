@@ -358,6 +358,7 @@
     "coverage": "Analyst coverage",
     "emptyTitle": "No published research yet",
     "emptyBody": "Published research will appear here.",
+    "sectionUnavailable": "This section is not available yet",
     "skip": "Skip to content"
   },
   "styleguide": {

@@ -1,7 +1,45 @@
 import { expect, test, type Page } from "@playwright/test";
 import enMessages from "../src/i18n/messages/en.json";
+import { approvedArabicCopy } from "../src/i18n/approved-arabic";
 
-test("encoded private roots including dotted descendants stay private over actual HTTP", async ({
+for (const locale of ["ar", "en"] as const) {
+  const prefix = locale === "en" ? "/en" : "";
+  const title = locale === "ar" ? approvedArabicCopy.Methodologies : "Methodologies";
+  const unavailable = locale === "ar"
+    ? approvedArabicCopy["This section is not available yet"]
+    : "This section is not available yet";
+
+  test(`${locale} public Methodologies link opens a truthful cookie-free destination`, async ({
+    page, request,
+  }) => {
+    let profiles = 0;
+    page.on("request", (req) => {
+      if (new URL(req.url()).pathname === "/api/account/profile") profiles++;
+    });
+    await page.goto(prefix || "/");
+    const link = page.locator("header").getByRole("link", { name: title, exact: true });
+    await expect(link).toHaveAttribute("href", `${prefix}/methodology`);
+    await link.focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(`${prefix}/methodology`);
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
+    await expect(page.locator("html")).toHaveAttribute("dir", locale === "ar" ? "rtl" : "ltr");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
+    await expect(page.getByRole("main").getByText(unavailable, { exact: true })).toBeVisible();
+    await expect(page.locator("#content")).toHaveCount(1);
+    expect(profiles).toBe(0);
+    const response = await request.get(`${prefix}/methodology`);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["set-cookie"]).toBeUndefined();
+    expect(response.headers()["cache-control"]).toContain("s-maxage=900");
+    // A same-path locale switch must not drop the user onto a missing page.
+    await page.getByRole("link", { name: locale === "ar" ? "تغيير اللغة" : "Change language", exact: true }).click();
+    await expect(page).toHaveURL(locale === "ar" ? "/en/methodology" : "/methodology");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(locale === "ar" ? "Methodologies" : approvedArabicCopy.Methodologies);
+  });
+}
+
+test("@security encoded private roots including dotted descendants stay private over actual HTTP", async ({
   request,
 }) => {
   for (const path of [
@@ -27,7 +65,7 @@ test("encoded private roots including dotted descendants stay private over actua
   expect(publicResponse.headers()["content-security-policy"]).toBeUndefined();
   expect(publicResponse.headers()["set-cookie"]).toBeUndefined();
 });
-test("private production scripts use nonce CSP and restore theme; legal remains cookie-free ISR", async ({
+test("@security private production scripts use nonce CSP and restore theme; legal remains cookie-free ISR", async ({
   page,
   request,
 }) => {
@@ -164,11 +202,29 @@ test.describe("@phone public production touch controls", () => {
   for (const locale of ["ar", "en"] as const) {
     test(`${locale}: header fits, theme and locale respond to touch, full disclaimer is readable`, async ({
       page,
-    }) => {
+      context,
+      browser,
+      browserName,
+    }, testInfo) => {
+      // Record the actual engine, not only a Safari-looking user agent.
+      if (testInfo.project.name.startsWith("webkit-iphone-")) {
+        expect(browserName).toBe("webkit");
+        expect(browser.browserType().name()).toBe("webkit");
+      }
+      await testInfo.attach("touch-browser", {
+        body: JSON.stringify({
+          engine: browser.browserType().name(),
+          version: browser.version(),
+          viewport: page.viewportSize(),
+          userAgent: await page.evaluate(() => navigator.userAgent),
+        }),
+        contentType: "application/json",
+      });
       const home = publicHomes[locale];
       const otherLocale = locale === "ar" ? "en" : "ar";
       const otherHome = publicHomes[otherLocale];
       await page.goto(home.path);
+      expect(await page.evaluate(() => localStorage.getItem("suhail-theme"))).toBeNull();
       await expectHomeTheme(page, locale, "dark");
       await expectTouchHeader(page);
 
@@ -184,11 +240,17 @@ test.describe("@phone public production touch controls", () => {
       await expectTouchHeader(page);
       await page.getByRole("button", { name: otherHome.theme, exact: true }).tap();
       await expectHomeTheme(page, otherLocale, "dark");
+      expect(await page.evaluate(() => localStorage.getItem("suhail-theme"))).toBe("dark");
       await page.getByRole("link", { name: otherHome.language, exact: true }).tap();
       await expectHomeTheme(page, locale, "dark");
       await page.reload();
       await expectHomeTheme(page, locale, "dark");
       await expectTouchHeader(page);
+      // A fresh document in another tab must restore the saved choice too.
+      const restored = await context.newPage();
+      await restored.goto(home.path);
+      await expectHomeTheme(restored, locale, "dark");
+      await restored.close();
 
       const details = page.locator("#full-disclaimer");
       const paragraph = details.locator("p");
@@ -203,7 +265,7 @@ test.describe("@phone public production touch controls", () => {
       // placeholder, rather than accepting only its first sentence.
       await expect(paragraph).toContainText(enMessages.disclaimer.full);
       await expectNoHorizontalOverflow(page);
-      const lines = await paragraph.evaluate((element) => {
+      const textLines = () => paragraph.evaluate((element) => {
         function textRects() {
           // LocalizedText may wrap review wording in an inline-block span.
           // Measure text nodes, not the wrapper's single aggregate rectangle.
@@ -218,12 +280,18 @@ test.describe("@phone public production touch controls", () => {
           }
           return rects;
         }
-        const last = textRects().at(-1)!;
-        window.scrollBy(0, last.bottom - window.innerHeight + 24);
         return textRects().map((rect) => ({
           left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom,
         }));
       });
+      await paragraph.evaluate((element) => {
+        element.scrollIntoView({ block: "end", behavior: "instant" });
+      });
+      // WebKit may settle scrolling after evaluate returns. Poll the rendered
+      // text instead of assuming synchronous scroll coordinates.
+      await expect.poll(async () => (await textLines()).at(-1)!.bottom)
+        .toBeLessThanOrEqual(page.viewportSize()!.height);
+      const lines = await textLines();
       expect(lines.length).toBeGreaterThan(1);
       const viewport = page.viewportSize()!;
       for (const line of lines) {

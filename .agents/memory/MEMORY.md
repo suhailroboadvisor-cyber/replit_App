@@ -12,3 +12,6 @@
 - [Postgres option fallbacks](postgres-option-fallbacks.md) — empty passwords still inherit ambient credentials; IPv6 requires the driver's array-host form.
 - [PostgreSQL trigger planning](postgres-trigger-planning.md) — successful CREATE FUNCTION does not prove SQL references are valid; exercise initial writes.
 - [Browser verification origins](browser-verification-origins.md) — distinguish loopback reload failures from proxied-preview behavior; report both results.
+- [Native dialog keyboard checks](native-dialog-keyboard-checks.md) — browser-native background inertness does not guarantee immediate cyclic Tab wrapping.
+- [Structural merge conflicts](structural-merge-conflicts.md) — compare whole staged versions; unmarked code can also be damaged during structural reconciliation.
+- [WebKit browser verification](webkit-browser-verification.md) — isolate engine-specific overrides and distinguish automated WebKit results from physical iPhone Safari checks.

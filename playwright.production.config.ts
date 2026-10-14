@@ -7,15 +7,17 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:3200",
     trace: "retain-on-failure",
-    launchOptions: {
-      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
-    },
   },
   projects: [
     {
       name: "desktop",
       grepInvert: /@phone/,
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+        },
+      },
     },
     ...[320, 390].map((width) => ({
       name: `phone-${width}`,
@@ -23,6 +25,22 @@ export default defineConfig({
       use: {
         ...devices["Pixel 7"],
         viewport: { width, height: 844 },
+        launchOptions: {
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+        },
+      },
+    })),
+    ...[320, 390].map((width) => ({
+      name: `webkit-iphone-${width}`,
+      // Also exercise real private-route CSP without signing in or bypassing auth.
+      grep: /@phone|@security/,
+      use: {
+        ...devices["iPhone 13"],
+        browserName: "webkit" as const,
+        viewport: { width, height: 844 },
+        launchOptions: {
+          executablePath: process.env.PLAYWRIGHT_WEBKIT_EXECUTABLE,
+        },
       },
     })),
   ],

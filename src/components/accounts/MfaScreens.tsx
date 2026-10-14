@@ -2,15 +2,15 @@
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Check, Copy, KeyRound, LoaderCircle, ShieldCheck } from "lucide-react";
-import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Lockup } from "@/components/foundation";
 import { createBrowserAuth } from "@/lib/auth/browser";
 import { localePath } from "@/lib/auth/paths";
+import { abandonedTotpFactors, normalizeTotpQr, type MfaFactor } from "@/lib/auth/mfa-enrollment";
 import type { Locale } from "./types";
 import { reviewText } from "./types";
 
-type Factor = { id: string; factor_type: string; status: string };
+type Factor = MfaFactor;
 export type MfaClient = {
   auth: {
     mfa: {
@@ -24,6 +24,10 @@ export type MfaClient = {
       }>;
       listFactors: () => Promise<{
         data: { all: Factor[]; totp: Factor[]; phone: Factor[] } | null;
+        error: { message: string } | null;
+      }>;
+      unenroll: (input: { factorId: string }) => Promise<{
+        data: unknown;
         error: { message: string } | null;
       }>;
       getAuthenticatorAssuranceLevel: () => Promise<{
@@ -111,6 +115,18 @@ export function MfaEnrollScreen({
     setPending(true);
     setMessage("");
     try {
+      const factors = await client.auth.mfa.listFactors();
+      if (factors.error || !factors.data) {
+        setMessage(reviewText(locale, "Could not prepare authenticator enrollment. Try again."));
+        return;
+      }
+      for (const factor of abandonedTotpFactors(factors.data.all)) {
+        const cleanup = await client.auth.mfa.unenroll({ factorId: factor.id });
+        if (cleanup.error) {
+          setMessage(reviewText(locale, "Could not prepare authenticator enrollment. Try again."));
+          return;
+        }
+      }
       const result = await client.auth.mfa.enroll({
         factorType: "totp",
         friendlyName: "Suhail admin access",
@@ -120,7 +136,7 @@ export function MfaEnrollScreen({
         return;
       }
       setFactorId(result.data.id);
-      setQrCode(result.data.totp?.qr_code ?? "");
+      setQrCode(normalizeTotpQr(result.data.totp?.qr_code));
       setSecret(result.data.totp?.secret ?? "");
     } catch {
       setMessage(reviewText(locale, "Could not prepare authenticator enrollment. Try again."));
@@ -185,7 +201,9 @@ export function MfaEnrollScreen({
           <div className="grid gap-6 sm:grid-cols-[160px_minmax(0,1fr)]">
             <div className="flex min-h-40 items-center justify-center border border-border bg-background p-3">
               {qrCode ? (
-                <Image src={qrCode} alt={reviewText(locale, "Authenticator setup QR code")} width={144} height={144} unoptimized className="size-36 object-contain" />
+                // Provider-owned inline QR bypasses Next image handling after SVG data-URL normalization.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={qrCode} alt={reviewText(locale, "Authenticator setup QR code")} width={144} height={144} onError={() => setQrCode("")} className="size-36 object-contain" />
               ) : (
                 <p className="text-center text-xs text-muted-foreground">{reviewText(locale, "QR code unavailable. Use the setup key instead.")}</p>
               )}
