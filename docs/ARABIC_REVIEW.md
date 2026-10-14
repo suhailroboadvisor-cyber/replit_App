@@ -1,6 +1,6 @@
 # Arabic copy review — inventory and approval record
 
-## 0. Current approval state — D-97
+## 0. Current approval state — D-101
 
 The founder explicitly authorized Phase 2 for **87 rows** and their edits. Applied: all 11 marked disclaimer/banner/methodology-note/styleguide JSON rows; A-001–A-042; all 27 F-* audit codes; all six E-* templates and their explanation substitutions; I-forbidden.
 
@@ -20,7 +20,7 @@ The founder's edits supersede the historical drafts below:
 
 **Still deferred: 84 rows.** All J-methodologies-* (30), J-admin-* (51), J-nav-screen (1) retain Arabic review markers, even when an identical English phrase is approved elsewhere. L-terms-body and L-privacy-body (2) retain both legal and Arabic review markers pending O-7. Arbitrary unapproved audit summaries and future unknown fallback phrases remain marked. No legal bodies, policy versions, fixed status labels, engine decisions or founder reference were changed.
 
-The original Phase 1 inventory follows as a **historical review baseline**. Its “UNAPPROVED” draft column headings and Phase 1-only instructions describe the state when the sheet was first prepared; the explicit D-97 approval record above governs the approved subset now. They do not revoke the founder's Phase 2 authorization or approve the remaining rows.
+The original Phase 1 inventory follows as a **historical review baseline**. Its “UNAPPROVED” draft column headings and Phase 1-only instructions describe the state when the sheet was first prepared; the explicit D-101 approval record above governs the approved subset now. They do not revoke the founder's Phase 2 authorization or approve the remaining rows.
 
 Phase 2 verification after syncing the concurrent methodology work: typecheck, lint, logical-direction lint and 608 unit tests passed; 215 engine tests passed with 100% coverage; all 51 Arabic/English account/methodology browser-fixture tests passed, including the actual forbidden component under each locale's provider. Both methodology and forbidden fixture modes are preserved. The forbidden screen preserves the English denial message on `/en` and uses approved Arabic on Arabic routes. The public home screenshot shows the approved Arabic disclaimer without a marker. Real signed-in UI was not visually verified; authenticated component behavior was exercised only through isolated auth-boundary fixtures. English reason rendering, all legal files, current policy versions and the founder reference have no diff.
 
@@ -28,7 +28,7 @@ Phase 2 verification after syncing the concurrent methodology work: typecheck, l
 
 **Every Arabic draft below is UNAPPROVED.** This sheet is a proposal for the founder's row-level review, not professional legal or religious approval. Implementation awaits the founder's explicit row approvals and separate Phase 2 authorization. Acceptance of this documentation task does not approve any translation.
 
-Only this document is added. Application copy, `approved-arabic.ts`, `ar.json`, tests, legal files, both review markers, the founder-owned reference and the decision log remain untouched. No D-97 is recorded.
+Only this document is added. Application copy, `approved-arabic.ts`, `ar.json`, tests, legal files, both review markers, the founder-owned reference and the decision log remain untouched. No D-101 is recorded.
 
 ## 1. Baseline and review rules
 

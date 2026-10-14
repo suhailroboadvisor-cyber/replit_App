@@ -239,6 +239,7 @@ describe("D-17/D-92/D-93 SQL hardening", () => {
       await tx`insert into app.methodology_criterion(id,methodology_version_id,criterion_type,label)
         values (${criterion},${v},'business_activity','ISOLATED TEST ONLY')`;
       // A populated draft remains mutable and therefore ineligible.
+      await tx`update app.methodology_version set is_public=true where id=${v}`;
       await rejects(
         tx,
         `update app.methodology set production_enabled=true where id='${m}'`,
@@ -734,6 +735,8 @@ describe("immutability and relational integrity", () => {
       );
       const [testReport] =
         await tx`insert into app.methodology_version_report (methodology_version_id,kind,payload) values (${f.publicVersion},'test','{}') returning id`;
+      // Visibility remains editable only after this version is no longer default.
+      await tx`update app.editorial_setting set default_shariah_methodology_version_id=null where default_shariah_methodology_version_id=${f.publicVersion}`;
       await tx`update app.methodology_version set workflow_status='rules_normalized',workflow_history='[]',is_public=false,impact_report_id=${f.report},test_report_id=${testReport.id},approval_id=${f.audit},approved_by=${f.user},approved_at=now(),updated_at=now() where id=${f.publicVersion}`;
       const [v] =
         await tx`select * from app.methodology_version where id=${f.publicVersion}`;

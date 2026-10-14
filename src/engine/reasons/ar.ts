@@ -1,7 +1,7 @@
 import { unitSuffix } from "../math";
 import type { ReasonCode, StatusReason } from "../types";
 
-// D-97: founder-approved deterministic substitutions, never inferred explanations.
+// D-101: founder-approved deterministic substitutions, never inferred explanations.
 const explanations: Record<ReasonCode, string> = {
   boolean_positive: "القيمة أكبر من صفر.",
   boolean_nonpositive: "القيمة صفر أو سالبة.",
@@ -24,7 +24,7 @@ const explanations: Record<ReasonCode, string> = {
   criterion_counts: "",
 };
 
-/** D-97: approved Arabic; keep the exported name for existing callers. */
+/** D-101: approved Arabic; keep the exported name for existing callers. */
 export function renderArabicDraft(reason: StatusReason): string {
   const explanation = explanations[reason.reasonCode];
   // Match English exactly: ratio to 2 decimals, threshold as configured.

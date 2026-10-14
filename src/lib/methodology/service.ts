@@ -6,7 +6,7 @@ import { source, security, financialPeriod, financialFact, businessSegment } fro
 import { editorialSetting } from "../../db/schema/editorial";
 import { audit, type Tx, type AppUser } from "../auth/audit";
 import { criterionSchema, engineCriterion, requiredInputs, metadataSchema, versionSchema, analystCasesSchema, type AnalystCase } from "./contracts";
-import { nextStage, requireGate, GovernanceError } from "./gates";
+import { nextStage, requireGate, requirePublicProduction, requireVisibilityChange, GovernanceError } from "./gates";
 import { testReport, impactReport, type ImpactEvidence } from "./reports";
 import { screen, ENGINE_VERSION, CALCULATION_VERSION } from "../../engine";
 import type { JsonObject } from "../../db/schema/types";
@@ -205,6 +205,7 @@ export async function enableProduction(tx:Tx,actor:AppUser,id:string,note:string
   requireGate(!v.is_demo && !m.is_demo && !v.production_blocked && !m.production_blocked && m.official_or_inspired!=="internal_example","Demo, internal example or permanently blocked provenance cannot be enabled");
   requireGate(v.workflow_status==="approved" && v.approved_by && v.approved_at && v.approval_id,"Approval is required");
   requireGate(!["internal","unknown"].includes(m.licensing_status),"Set an eligible licensing status");
+  requirePublicProduction(v.is_public);
   await sourceVerified(tx,v,m);
   const definition=await candidateDefinition(tx,v.id);
   requireGate(testReport(definition,analystCasesSchema.parse(v.analyst_test_cases) as AnalystCase[]).passed,"All tests and mandatory analyst criterion coverage must pass");
@@ -217,6 +218,9 @@ export async function enableProduction(tx:Tx,actor:AppUser,id:string,note:string
 export async function setVisibility(tx:Tx,actor:AppUser,id:string,isPublic:boolean) {
   await lock(tx);const v=await versionRow(tx,id);
   requireGate(typeof isPublic==="boolean","Invalid visibility");
+  const [defaultSetting]=await tx.select({id:editorialSetting.id}).from(editorialSetting)
+    .where(eq(editorialSetting.default_shariah_methodology_version_id,v.id)).limit(1);
+  requireVisibilityChange(v.production_enabled,isPublic,!!defaultSetting);
   await tx.update(methodologyVersion).set({is_public:isPublic}).where(eq(methodologyVersion.id,v.id));
   await audit(tx,actor,{event_type:"methodology_update",entity_name:"methodology_version",entity_id:v.id,summary:"Public visibility changed",details:{before:v.is_public,after:isPublic}});
 }

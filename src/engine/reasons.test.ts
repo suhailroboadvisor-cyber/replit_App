@@ -52,7 +52,7 @@ describe("D-42: structured reasons and §7.3 precedence", () => {
   });
 });
 
-describe("deterministic English templates and D-97 approved Arabic", () => {
+describe("deterministic English templates and D-101 approved Arabic", () => {
   const base: StatusReason = {
     kind: "failure", criterionId: "fixture", label: "Debt", ratio: 40, threshold: 33,
     thresholdUnit: "percent_of_total_assets", reasonCode: "max_exceeded", field: null,

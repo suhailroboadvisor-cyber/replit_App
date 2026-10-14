@@ -16,3 +16,4 @@
 - [Structural merge conflicts](structural-merge-conflicts.md) — compare whole staged versions; unmarked code can also be damaged during structural reconciliation.
 - [WebKit browser verification](webkit-browser-verification.md) — isolate engine-specific overrides and distinguish automated WebKit results from physical iPhone Safari checks.
 - [Provider test typing](provider-test-typing.md) — required children props and positional React children can disagree; validate provider fixtures with both types and lint.
+- [ISR health verification](isr-health-verification.md) — healthy cached public pages do not establish that live database reads or private application connections work.

@@ -193,7 +193,7 @@ const accountMessages = [
   "Your account",
   "Your agreement needs to be renewed before you continue using your account.",
   "Your public research remains open to everyone.",
-  // D-97: audit event types and current code-valued summaries share approved copy.
+  // D-101: audit event types and current code-valued summaries share approved copy.
   "methodology_create",
   "methodology_update",
   "methodology_version_create",

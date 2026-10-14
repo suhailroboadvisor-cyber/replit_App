@@ -257,8 +257,8 @@ describe("admin settings and minimum-data enrollment projection",()=>{
     expect(await saveSettings(null,true)).toMatchObject({ok:false,status:403});
     boundary.identity=await user("admin");
     expect(await saveSettings("not-a-uuid",true)).toMatchObject({ok:false,status:400});
-    const [privateVersion]=await owner`select id from app.methodology_version limit 1`;
-    await owner`update app.methodology_version set is_public=false where id=${privateVersion.id}`;
+    const [privateVersion]=await owner`insert into app.methodology_version(methodology_id,version,is_public)
+      select methodology_id,'settings-private-fixture',false from app.methodology_version limit 1 returning id`;
     expect(await saveSettings(privateVersion.id,true)).toMatchObject({ok:false,status:400});
     const [version]=await owner`select id from app.methodology_version limit 1`;
     await owner`update app.methodology_version set is_public=true where id=${version.id}`;

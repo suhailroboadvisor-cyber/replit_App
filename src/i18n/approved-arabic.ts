@@ -1,4 +1,4 @@
-// Founder-approved UI wording (D-96/D-97). Unlisted copy must retain its review marker.
+// Founder-approved UI wording (D-96/D-101). Unlisted copy must retain its review marker.
 export const approvedArabicCopy: Readonly<Record<string, string>> = {
   "Sign in": "تسجيل الدخول",
   "ACCOUNT ACCESS": "الدخول إلى الحساب",
@@ -149,7 +149,7 @@ export const approvedArabicCopy: Readonly<Record<string, string>> = {
   "Gregorian date": "التاريخ الميلادي",
   "Money · explicit unit scale": "مبالغ مالية · مع توضيح وحدة القياس",
   "Western digits": "الأرقام الغربية",
-  // D-97: row-approved copy only; deferred methodology/admin JSON remains marked.
+  // D-101: row-approved copy only; deferred methodology/admin JSON remains marked.
   "weekly edition": "العدد الأسبوعي",
   "Enable JavaScript to continue with Google.": "فعّل JavaScript للمتابعة باستخدام Google.",
   "Google sign-in needs a separate browser tab. Open sign-in in a new tab, then continue with Google.": "يتطلب تسجيل الدخول عبر Google علامة تبويب منفصلة في المتصفح. افتح تسجيل الدخول في علامة تبويب جديدة، ثم اختر المتابعة باستخدام Google.",
