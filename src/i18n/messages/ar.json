@@ -373,8 +373,8 @@
     "dataSnapshot": "⟦AR-REVIEW⟧ Data snapshot"
   },
   "disclaimer": {
-    "short": "⟦AR-REVIEW⟧ Informational screening only — not a fatwa. Methodologies and scholarly interpretations differ. Financial analysis is not personalized investment advice.",
-    "full": "⟦AR-REVIEW⟧ This application provides informational stock analysis and Shariah screening based on selected, documented methodologies and publicly available information. It is not a fatwa, does not constitute an individualized religious ruling, and does not represent itself as a Shariah authority. Different scholars, institutions, and methodologies may reach different conclusions. Financial data and screening results can change as new disclosures and methodology updates become available. Users seeking religious guidance for their personal circumstances should consult a qualified Shariah scholar or advisory body. Investment-related analysis is informational and is not personalized investment advice. Investing involves risk, including loss of capital."
+    "short": "نتائج الفحص لأغراض المعلومات فقط — وليست فتوى. تختلف المنهجيات واجتهادات العلماء. التحليل المالي ليس نصيحة استثمارية شخصية.",
+    "full": "يقدّم هذا التطبيق تحليلًا للأسهم وفحصًا شرعيًا لأغراض المعلومات، استنادًا إلى منهجيات مختارة وموثّقة ومعلومات متاحة للعموم. نتائج هذا التطبيق ليست فتوى، ولا تمثّل حكمًا شرعيًا خاصًا بحالة فردية، ولا يقدّم التطبيق نفسه بوصفه مرجعًا شرعيًا. قد يصل علماء وجهات ومنهجيات مختلفة إلى نتائج مختلفة. قد تتغيّر البيانات المالية ونتائج الفحص مع توفر إفصاحات جديدة وتحديثات للمنهجيات. على من يطلب إرشادًا شرعيًا يناسب ظروفه الشخصية الرجوع إلى عالم شرعي مؤهل أو جهة استشارية شرعية مؤهلة. التحليل المتعلق بالاستثمار للمعلومات فقط، وليس نصيحة استثمارية شخصية. ينطوي الاستثمار على مخاطر، منها خسارة رأس المال."
   },
   "publicMethodology": {
     "publicResearchDocumentation": "⟦AR-REVIEW⟧ PUBLIC RESEARCH / DOCUMENTATION",
@@ -408,11 +408,11 @@
     "criterionType": "⟦AR-REVIEW⟧ Criterion type"
   },
   "methodology": {
-    "pageNote": "⟦AR-REVIEW⟧ This page documents how the application implements this methodology. It does not constitute endorsement or a religious ruling."
+    "pageNote": "توثّق هذه الصفحة كيفية تطبيق هذه المنهجية في التطبيق. ولا تمثّل تأييدًا لها أو حكمًا شرعيًا."
   },
   "banner": {
-    "exampleMethodology": "⟦AR-REVIEW⟧ EXAMPLE — not verified — not production. This methodology is a demonstration definition. It is not a published standard and carries no endorsement.",
-    "demo": "⟦AR-REVIEW⟧ SYNTHETIC / DEMO. Every figure, filing, price and methodology on this screen is fabricated for demonstration. No real issuer, market or ruling is described."
+    "exampleMethodology": "مثال — غير مُتحقَّق منه — غير مُعتمد للاستخدام الفعلي. هذه المنهجية تعريف تجريبي، وليست معيارًا منشورًا، ولا تحظى بأي تأييد.",
+    "demo": "بيانات افتراضية / عرض تجريبي. كل الأرقام والإفصاحات والأسعار والمنهجيات في هذه الشاشة افتراضية أُعدّت لأغراض العرض فقط، ولا تصف أي مُصدِر أو سوق أو حكم حقيقي."
   },
   "controls": {
     "light": "فاتح",
@@ -428,14 +428,14 @@
   },
   "styleguide": {
     "title": "الأساس البصري واللغوي",
-    "intro": "⟦AR-REVIEW⟧ Development only. Component samples, not screening results. Derived semantic colors are PROPOSALS, not founder-approved.",
+    "intro": "للتطوير فقط. هذه نماذج للمكوّنات وليست نتائج فحص. الألوان الدلالية المشتقة مقترحات لم يعتمدها المؤسس بعد.",
     "tokens": "لوحة الألوان الأساسية",
     "contrast": "ربط الألوان بدلالاتها · مقترحات",
     "components": "نماذج المكوّنات",
     "typography": "الخطوط والتنسيق",
     "surfaces": "الأسطح الداكنة والفاتحة",
-    "review": "⟦AR-REVIEW⟧ Arabic placeholders require human review.",
-    "decorative": "⟦AR-REVIEW⟧ Decorative dividers do not convey boundaries or state.",
+    "review": "تتطلب النصوص العربية المؤقتة مراجعة بشرية.",
+    "decorative": "الفواصل الزخرفية لا تدل على حدود العناصر أو حالتها.",
     "proposal": "مقترح",
     "text": "النص",
     "outline": "إطار أو أيقونة ذات دلالة",
@@ -443,12 +443,12 @@
     "labels": "الربط / الزوج / النسبة",
     "systemError": "نموذج لخطأ في النظام",
     "analyst": "نموذج لبيانات المحلّل",
-    "emphasis": "⟦AR-REVIEW⟧ Emphasis uses color, not bold body text.",
+    "emphasis": "يُستخدم اللون للتأكيد، لا الخط العريض في متن النص.",
     "negative": "نسبة مئوية سالبة داخل نص عربي",
     "date": "التاريخ الميلادي",
     "money": "مبالغ مالية · مع توضيح وحدة القياس",
     "number": "الأرقام الغربية",
-    "seal": "⟦AR-REVIEW⟧ Coverage eligibility sample: covered and passing only.",
-    "fonts": "⟦AR-REVIEW⟧ Self-hosted IBM Plex Sans Arabic / Sans / Mono"
+    "seal": "نموذج لأهلية إظهار ختم التغطية: للأوراق المالية المشمولة بالتغطية والتي اجتازت الفحص فقط.",
+    "fonts": "خطوط IBM Plex Sans Arabic / Sans / Mono مستضافة محليًا"
   }
 }

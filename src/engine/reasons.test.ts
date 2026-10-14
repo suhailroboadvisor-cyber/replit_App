@@ -52,7 +52,7 @@ describe("D-42: structured reasons and §7.3 precedence", () => {
   });
 });
 
-describe("deterministic English templates and visibly unapproved Arabic drafts", () => {
+describe("deterministic English templates and D-97 approved Arabic", () => {
   const base: StatusReason = {
     kind: "failure", criterionId: "fixture", label: "Debt", ratio: 40, threshold: 33,
     thresholdUnit: "percent_of_total_assets", reasonCode: "max_exceeded", field: null,
@@ -67,7 +67,7 @@ describe("deterministic English templates and visibly unapproved Arabic drafts",
       ...base, kind, field: "total assets", borderlineCount: 2, unknownCount: 3,
     });
     expect(renderEnglish(reason)).toBeTruthy();
-    expect(renderArabicDraft(reason)).toMatch(/^⟦AR-REVIEW⟧/);
+    expect(renderArabicDraft(reason)).not.toMatch(/⟦AR-REVIEW⟧|رمز السبب/);
     expect(reason.kind).toBe(kind);
   });
   it("absolute/boolean/null units do not claim percentages or invent a threshold", () => {
@@ -86,4 +86,44 @@ describe("deterministic English templates and visibly unapproved Arabic drafts",
     ];
     for (const reasonCode of codes) expect(renderEnglish({ ...base, reasonCode })).not.toMatch(/\. undefined$/);
   });
+  it.each([
+    ["failure", "معيار Debt: لم يجتز الفحص — النسبة 40.00% مقابل حد 33%. تتجاوز النسبة الحد."],
+    ["borderline", "معيار Debt: نتيجة حدية — النسبة 40.00% مقابل حد 33%. تتجاوز النسبة الحد."],
+    ["criterion_unknown", "معيار Debt: النتيجة غير معروفة — تتجاوز النسبة الحد."],
+    ["blocking_unknown", "total assets: تتجاوز النسبة الحد."],
+    ["review_unknown", "total assets: تتجاوز النسبة الحد."],
+    ["counts", "عدد المعايير الحدية: 0؛ عدد المعايير غير المعروفة: 1."],
+  ] as const)("renders the exact approved %s template", (kind, expected) => {
+    const reason = Object.freeze({
+      ...base, kind, field: "total assets", borderlineCount: 0, unknownCount: 1,
+    });
+    expect(renderArabicDraft(reason)).toBe(expected);
+    expect(reason).toEqual({ ...base, kind, field: "total assets", borderlineCount: 0, unknownCount: 1 });
+  });
+  it.each([
+    ["percent_of_total_assets", "%"],
+    ["percent_of_market_cap", "%"],
+    ["percent_of_total_revenue", "%"],
+    ["absolute", ""],
+    ["boolean", ""],
+    [null, ""],
+  ] as const)("matches English number formatting for unit %s", (thresholdUnit, suffix) => {
+    const reason = { ...base, ratio: 36.009, threshold: 33, thresholdUnit };
+    expect(renderArabicDraft(reason)).toContain(`النسبة 36.01${suffix} مقابل حد 33${suffix}.`);
+    expect(renderEnglish(reason)).toContain(`36.01${suffix} against a 33${suffix} limit.`);
+    const fraction = { ...reason, ratio: 0, threshold: 33.125 };
+    expect(renderArabicDraft(fraction)).toContain(`النسبة 0.00${suffix} مقابل حد 33.125${suffix}.`);
+    expect(renderArabicDraft({ ...reason, ratio: null })).toContain(`غير معروف مقابل حد 33${suffix}`);
+    expect(renderArabicDraft({ ...reason, threshold: null })).toContain(`36.01${suffix} مقابل حد غير محدد`);
+    expect(renderArabicDraft({ ...reason, ratio: null, threshold: null })).toContain("غير معروف مقابل حد غير محدد");
+    expect(renderArabicDraft(reason)).not.toMatch(/[٠-٩۰-۹]|رمز السبب|max_exceeded/);
+  });
+  it.each(["blocking_unknown", "review_unknown"] as const)(
+    "does not repeat unavailable-input explanations for %s",
+    (kind) => {
+      const text = renderArabicDraft({ ...base, kind, field: "الأصول", reasonCode: "denominator_nonpositive" });
+      expect(text).toBe("الأصول: المقام صفر أو سالب؛ النسبة غير معرّفة؛ لم تُفترض أي قيمة.");
+      expect(text.match(/لم تُفترض أي قيمة/g)).toHaveLength(1);
+    },
+  );
 });

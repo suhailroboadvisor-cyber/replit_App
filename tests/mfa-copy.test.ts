@@ -17,8 +17,10 @@ describe("Founder-approved authenticator helper text", () => {
     expect(reviewText("en", english)).toBe(english);
   });
 
-  it("keeps unapproved enrollment errors marked for review", () => {
+  it("uses the D-97 approved enrollment error but keeps unknown copy marked", () => {
     expect(reviewText("ar", "Could not prepare authenticator enrollment. Try again."))
-      .toBe("⟦AR-REVIEW⟧ Could not prepare authenticator enrollment. Try again.");
+      .toBe("تعذّر تجهيز إعداد تطبيق المصادقة. حاول مجددًا.");
+    expect(reviewText("ar", "Unapproved enrollment error"))
+      .toBe("⟦AR-REVIEW⟧ Unapproved enrollment error");
   });
 });

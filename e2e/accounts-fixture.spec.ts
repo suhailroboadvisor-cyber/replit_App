@@ -36,7 +36,7 @@ for (const locale of ["ar", "en"] as const) {
       ]);
       await page.evaluate(() => window.accountFixture.release?.());
       await expect(page.getByRole("status")).toContainText(
-        screen === "users" ? "Role could not be updated" : "Settings could not be saved",
+        text(screen === "users" ? "Role could not be updated. Try again." : "Settings could not be saved. Try again."),
       );
       await expect(submit).toBeFocused();
       await expect(submit).toHaveAttribute("aria-disabled", "false");
@@ -45,7 +45,7 @@ for (const locale of ["ar", "en"] as const) {
         window.accountFixture.hold = false;
       });
       await page.keyboard.press("Enter");
-      await expect(page.getByRole("status")).toContainText(screen === "users" ? "Role updated." : "Settings saved.");
+      await expect(page.getByRole("status")).toContainText(text(screen === "users" ? "Role updated." : "Settings saved."));
       expect(await page.evaluate(() => window.accountFixture.calls.length)).toBe(2);
       if (screen === "users") {
         await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -88,7 +88,7 @@ for (const prefix of ["", "/en"]) {
     const frame = page.frameLocator("iframe");
     await frame.getByRole("button", { name: prefix ? "Continue with Google" : approvedArabicCopy["Continue with Google"], exact: true }).click();
     await expect(frame.getByRole("alert")).toContainText(
-      "separate browser tab",
+      prefix ? "separate browser tab" : approvedArabicCopy["Google sign-in needs a separate browser tab. Open sign-in in a new tab, then continue with Google."],
     );
     await expect(
       frame.getByRole("link", { name: prefix ? "Open sign-in in a new tab" : approvedArabicCopy["Open sign-in in a new tab"], exact: true }),

@@ -42,6 +42,17 @@ for (const locale of ["ar", "en"] as const) {
   const text = (english: string) => locale === "ar" ? approvedArabicCopy[english] : english;
   const screen = (mode: string, extra = "") => `${prefix}/?screen=${mode}${extra}`;
 
+  test(`${locale} forbidden screen preserves the route language and 403`, async ({ page }) => {
+    await page.goto(screen("forbidden"));
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("403");
+    await expect(page.locator("main p")).toHaveText(text("Access is restricted to authorized roles."));
+    await expect(page.locator("main")).not.toContainText("⟦AR-REVIEW⟧");
+    await expect(page.locator("main p")).not.toContainText(locale === "ar"
+      ? "Access is restricted to authorized roles."
+      : approvedArabicCopy["Access is restricted to authorized roles."]);
+  });
+
   test(`${locale} account headings, associated labels and keyboard actions`, async ({ page }) => {
     await page.goto(screen("account", locale === "ar" ? "&pref=en" : ""));
     await expect(page.locator("html")).toHaveAttribute("lang", locale);
@@ -61,8 +72,8 @@ for (const locale of ["ar", "en"] as const) {
     await page.keyboard.press(locale === "ar" ? "ArrowUp" : "ArrowDown");
     await tab(page, save);
     await page.keyboard.press("Enter");
-    await expect(page.getByRole("status")).toContainText("Language saved");
-    if (locale === "ar") await expect(page.getByRole("status")).toContainText("⟦AR-REVIEW⟧");
+    await expect(page.getByRole("status")).toContainText(text("Language saved"));
+    await expect(page.getByRole("status")).not.toContainText("⟦AR-REVIEW⟧");
     expect(await page.evaluate(() => window.accountFixture.calls)).toEqual([
       { action: "updateLocale", args: [locale] },
     ]);
@@ -82,14 +93,14 @@ for (const locale of ["ar", "en"] as const) {
     await tab(page, remove);
     await page.evaluate(() => { window.accountFixture.fail = true; });
     await page.keyboard.press("Enter");
-    await expect(page.getByRole("alert")).toContainText("Account deletion could not be completed");
-    if (locale === "ar") await expect(page.getByRole("alert")).toContainText("⟦AR-REVIEW⟧");
+    await expect(page.getByRole("alert")).toContainText(text("Account deletion could not be completed. Try again."));
+    await expect(page.getByRole("alert")).not.toContainText("⟦AR-REVIEW⟧");
     expect(await page.evaluate(() => window.accountFixture.calls.at(-1))).toEqual({
       action: "deleteAccount", args: ["DELETE"],
     });
     for (const role of ["admin", "editor"]) {
       await page.goto(screen("account", `&role=${role}`));
-      await expect(page.getByText(/Ask another admin/)).toBeVisible();
+      await expect(page.getByText(text("An admin or editor account cannot be deleted. Ask another admin to remove your role first."), { exact: true })).toBeVisible();
       await expect(page.getByRole("textbox")).toHaveCount(0);
       await expect(remove).toHaveCount(0);
     }
@@ -103,7 +114,7 @@ for (const locale of ["ar", "en"] as const) {
       await expect(page).toHaveURL(/\/en\/account$/);
       await expect(page.getByRole("heading", { level: 1 })).toHaveText("Your account");
     } else {
-      await expect(page.getByRole("status")).toContainText("Language saved");
+      await expect(page.getByRole("status")).toContainText(text("Language saved"));
     }
   });
 
@@ -171,8 +182,8 @@ for (const locale of ["ar", "en"] as const) {
     await expect(confirm).toHaveText(text("Saving"));
     await pendingSubmit(page, confirm, 1);
     await page.evaluate(() => window.accountFixture.release?.());
-    await expect(page.getByRole("status")).toContainText("Role could not be updated");
-    if (locale === "ar") await expect(page.getByRole("status")).toContainText("⟦AR-REVIEW⟧");
+    await expect(page.getByRole("status")).toContainText(text("Role could not be updated. Try again."));
+    await expect(page.getByRole("status")).not.toContainText("⟦AR-REVIEW⟧");
     await expect(dialog).toBeVisible();
     await expect(confirm).toBeFocused();
     await expect(confirm).toHaveAttribute("aria-disabled", "false");
@@ -182,7 +193,7 @@ for (const locale of ["ar", "en"] as const) {
     await page.evaluate(() => window.accountFixture.release?.());
     await expect(dialog).toHaveCount(0);
     await expect(opener).toBeFocused();
-    await expect(page.getByRole("status")).toContainText("Role updated.");
+    await expect(page.getByRole("status")).toContainText(text("Role updated."));
     expect(await page.evaluate(() => window.accountFixture.calls)).toEqual([
       { action: "changeRole", args: ["fixture-user", "admin", "Keyboard fixture reason"] },
       { action: "changeRole", args: ["fixture-user", "admin", "Keyboard fixture reason"] },
@@ -244,12 +255,8 @@ for (const locale of ["ar", "en"] as const) {
     const allow = page.getByRole("checkbox", { name: text("Allow editor picks for ineligible securities"), exact: true });
     await associated(version, text("Default methodology version"));
     await associated(allow, text("Allow editor picks for ineligible securities"));
-    await expect(version).toHaveAccessibleDescription(/Only public, eligible versions are listed/);
-    await expect(allow).toHaveAccessibleDescription(/selected screening configuration/);
-    if (locale === "ar") {
-      await expect(version).toHaveAccessibleDescription(/⟦AR-REVIEW⟧/);
-      await expect(allow).toHaveAccessibleDescription(/⟦AR-REVIEW⟧/);
-    }
+    await expect(version).toHaveAccessibleDescription(text("Only public, eligible versions are listed."));
+    await expect(allow).toHaveAccessibleDescription(text("Editors may publish an explicitly marked pick even when it is not eligible under the selected screening configuration."));
     await expect(version.locator("option").first()).toHaveText(text("No default"));
     await version.focus();
     await page.keyboard.press("ArrowDown");
@@ -265,7 +272,7 @@ for (const locale of ["ar", "en"] as const) {
     await expect(save).toHaveText(text("Saving"));
     await pendingSubmit(page, save, 1);
     await page.evaluate(() => window.accountFixture.release?.());
-    await expect(page.getByRole("status")).toContainText("Settings saved.");
+    await expect(page.getByRole("status")).toContainText(text("Settings saved."));
     await expect(save).toBeFocused();
     await expect(save).toHaveAttribute("aria-disabled", "false");
     expect(await page.evaluate(() => window.accountFixture.calls)).toEqual([
@@ -275,14 +282,14 @@ for (const locale of ["ar", "en"] as const) {
     await page.keyboard.press("Enter");
     await pendingSubmit(page, save, 2);
     await page.evaluate(() => window.accountFixture.release?.());
-    await expect(page.getByRole("status")).toContainText("Settings could not be saved");
+    await expect(page.getByRole("status")).toContainText(text("Settings could not be saved. Try again."));
     await expect(save).toBeFocused();
     await expect(save).toHaveAttribute("aria-disabled", "false");
     expect(await page.evaluate(() => window.accountFixture.calls)).toEqual([
       { action: "saveSettings", args: ["fixture-version", true] },
       { action: "saveSettings", args: ["fixture-version", true] },
     ]);
-    if (locale === "ar") await expect(page.getByRole("status")).toContainText("⟦AR-REVIEW⟧");
+    await expect(page.getByRole("status")).not.toContainText("⟦AR-REVIEW⟧");
     await page.goto(screen("deferred", "&role=editor"));
     await headings(page, [text("Methodologies"), text("This section is not available yet")]);
     const nav = page.getByRole("navigation", { name: text("Admin navigation") });
@@ -326,8 +333,10 @@ for (const locale of ["ar", "en"] as const) {
       await page.keyboard.type("0");
       await tab(page, verify);
       await page.keyboard.press("Enter");
-      await expect(page.getByRole("alert")).toContainText("That code could not be verified");
-      if (locale === "ar") await expect(page.getByRole("alert")).toContainText("⟦AR-REVIEW⟧");
+      await expect(page.getByRole("alert")).toContainText(text(mode === "enroll"
+        ? "That code could not be verified. Check the time on your device and try again."
+        : "That code could not be verified. Try again."));
+      await expect(page.getByRole("alert")).not.toContainText("⟦AR-REVIEW⟧");
       await code.focus();
       await code.fill("123456");
       await tab(page, verify);
