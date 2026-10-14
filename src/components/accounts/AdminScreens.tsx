@@ -157,6 +157,7 @@ export function UsersAdminScreen({
   const [nextRole, setNextRole] = useState<Role>("editor");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const [message, setMessage] = useState("");
   const roleDialog = useRef<HTMLDialogElement>(null);
 
@@ -182,7 +183,8 @@ export function UsersAdminScreen({
   };
   const saveRole = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!selected) return;
+    if (savingRef.current || !selected || note.trim().length < 4) return;
+    savingRef.current = true;
     setSaving(true);
     setMessage("");
     try {
@@ -198,6 +200,7 @@ export function UsersAdminScreen({
     } catch {
       setMessage(reviewText(locale, "Role could not be updated. Try again."));
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   };
@@ -326,7 +329,7 @@ export function UsersAdminScreen({
               <p className="text-xs leading-6 text-muted-foreground">{reviewText(locale, "Role changes are audited. A promoted user must enroll an authenticator before entering admin.")}</p>
               <div className="flex justify-end gap-3 pt-2">
                 <button type="button" onClick={() => setSelected(null)} className="min-h-10 px-4 text-sm">{reviewText(locale, "Cancel")}</button>
-                <button disabled={saving || note.trim().length < 4} className="min-h-10 bg-primary px-4 text-sm text-primary-foreground disabled:opacity-50">
+                <button disabled={note.trim().length < 4} aria-disabled={saving} className="min-h-10 bg-primary px-4 text-sm text-primary-foreground disabled:opacity-50 aria-disabled:opacity-50">
                   {saving ? reviewText(locale, "Saving") : reviewText(locale, "Confirm role change")}
                 </button>
               </div>
@@ -433,9 +436,12 @@ export function SettingsAdminScreen({
   const [defaultId, setDefaultId] = useState(settings?.default_shariah_methodology_version_id ?? "");
   const [allow, setAllow] = useState(settings?.allow_ineligible_editor_pick ?? false);
   const [pending, setPending] = useState(false);
+  const pendingRef = useRef(false);
   const [feedback, setFeedback] = useState("");
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (pendingRef.current) return;
+    pendingRef.current = true;
     setPending(true);
     setFeedback("");
     try {
@@ -448,6 +454,7 @@ export function SettingsAdminScreen({
     } catch {
       setFeedback(reviewText(locale, "Settings could not be saved. Try again."));
     } finally {
+      pendingRef.current = false;
       setPending(false);
     }
   };
@@ -474,7 +481,7 @@ export function SettingsAdminScreen({
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-7">
           <p role="status" className="text-sm text-muted-foreground">{feedback}</p>
-          <button disabled={pending} className="min-h-11 bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50">{pending ? reviewText(locale, "Saving") : reviewText(locale, "Save settings")}</button>
+          <button aria-disabled={pending} className="min-h-11 bg-primary px-5 text-sm font-medium text-primary-foreground aria-disabled:opacity-50">{pending ? reviewText(locale, "Saving") : reviewText(locale, "Save settings")}</button>
         </div>
       </form>
     </section>

@@ -12,7 +12,7 @@ await mkdir(out,{recursive:true});
 await build({
   entryPoints:["tests/browser-fixture/app.tsx"],outfile:path.join(out,"app.js"),bundle:true,platform:"browser",format:"iife",
   define:{"process.env.NODE_ENV":'"production"',"process.env.NEXT_PUBLIC_SUPABASE_URL":'"https://auth.fixture.test"'},
-  alias:{"@/lib/auth/browser":path.resolve("tests/browser-fixture/auth.ts"),"@/i18n/navigation":path.resolve("tests/browser-fixture/navigation.tsx"),"next/image":path.resolve("tests/browser-fixture/image.tsx")},
+  alias:{"@":path.resolve("src"),"@/lib/auth/browser":path.resolve("tests/browser-fixture/auth.ts"),"@/i18n/navigation":path.resolve("tests/browser-fixture/navigation.tsx"),"next/image":path.resolve("tests/browser-fixture/image.tsx"),"next/navigation":path.resolve("tests/browser-fixture/router.ts")},
 });
 const server=createServer(async(req,res)=>{
   const url=new URL(req.url??"/","http://127.0.0.1:3300");

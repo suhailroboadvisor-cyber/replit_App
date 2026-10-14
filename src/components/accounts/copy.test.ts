@@ -26,7 +26,7 @@ describe("account UI copy locale parity", () => {
     );
     expect(
       reviewText("ar", "That code could not be verified. Try again."),
-    ).toBe("⟦AR-REVIEW⟧ That code could not be verified. Try again.");
+    ).toBe("تعذّر التحقق من هذا الرمز. حاول مجددًا.");
   });
 
   it("routes every literal reviewText phrase through the paired dictionary", () => {

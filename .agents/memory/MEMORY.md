@@ -15,3 +15,4 @@
 - [Native dialog keyboard checks](native-dialog-keyboard-checks.md) — browser-native background inertness does not guarantee immediate cyclic Tab wrapping.
 - [Structural merge conflicts](structural-merge-conflicts.md) — compare whole staged versions; unmarked code can also be damaged during structural reconciliation.
 - [WebKit browser verification](webkit-browser-verification.md) — isolate engine-specific overrides and distinguish automated WebKit results from physical iPhone Safari checks.
+- [Provider test typing](provider-test-typing.md) — required children props and positional React children can disagree; validate provider fixtures with both types and lint.

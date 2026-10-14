@@ -165,7 +165,9 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
         !(key.startsWith("status.") && labels.includes(key.slice(7)))
       )
         expect(value, key).toBe(
-          (key.startsWith("controls.") || key.startsWith("styleguide.")
+          (["controls.", "styleguide.", "disclaimer.", "banner.", "methodology."].some(
+            (namespace) => key.startsWith(namespace),
+          )
             ? approvedArabicCopy[english[key]!]
             : undefined) ?? `⟦AR-REVIEW⟧ ${english[key]}`,
         );
@@ -252,7 +254,7 @@ describe("bilingual status and coverage", () => {
   });
   it("keeps the review marker visible and isolates English placeholder text", () => {
     const html = renderToStaticMarkup(
-      createElement(LocalizedText, null, ar.disclaimer.short),
+      createElement(LocalizedText, null, ar.nav.screen),
     );
     expect(html).toContain('lang="en" dir="ltr"');
     expect(html).toContain("⟦AR-REVIEW⟧ ");

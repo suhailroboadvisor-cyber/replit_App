@@ -4,6 +4,9 @@ import { DeferredAdminSection, type Locale } from "@/components/accounts";
 import { privatePageMetadata } from "@/components/accounts/private-page-metadata";
 import { requirePageRole } from "@/lib/auth/guards";
 import { localePath } from "@/lib/auth/paths";
+import { readMethodologies } from "@/lib/methodology/admin-data";
+import { AdminMethodologies } from "@/components/methodology/AdminMethodologies";
+import { methodologyAction } from "../methodology-actions";
 
 const sections = {
   methodologies: "Methodologies",
@@ -29,6 +32,16 @@ export default async function DeferredSectionPage({ params }: PageProps) {
   const slug = section;
   const locale: Locale = routeLocale === "en" ? "en" : "ar";
   const t = await getTranslations({ locale });
+  if (slug === "methodologies") {
+    const context = await requirePageRole(locale, localePath(locale, "/admin/methodologies"), ["admin", "editor"]);
+    const data = await readMethodologies();
+    const role = context.user.role as "admin" | "editor";
+    return (
+      <section aria-label={t("nav.admin")}>
+        <AdminMethodologies data={data} locale={locale} role={role} action={methodologyAction} />
+      </section>
+    );
+  }
   await requirePageRole(locale, localePath(locale, `/admin/${slug}`), ["admin", "editor"]);
   return (
     <section aria-label={t("nav.admin")}>

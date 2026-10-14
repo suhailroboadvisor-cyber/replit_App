@@ -8,3 +8,15 @@ Phone compatibility checks must run the actual browser engine, not just a mobile
 **Why:** A global Chromium override can accidentally launch the wrong executable for an iPhone project. Chromium touch emulation is not evidence of Safari compatibility.
 
 **How to apply:** Assert and record the running browser engine in touch tests. Prefer the standard versioned Playwright installation on supported CI hosts. Report physical-device Safari checks separately from automated WebKit results.
+
+Workspace Chromium checks can require the managed executable override even when
+Chromium is already installed.
+
+**Why:** The workspace can have a working managed Chromium but lack the exact
+headless-shell revision requested by the current Playwright package. A missing
+Playwright download is not evidence that the application is broken.
+
+**How to apply:** Discover the installed executable with `command -v chromium`
+and pass it to the existing Chromium-only test override for that invocation.
+Do not change the WebKit executable or weaken application assertions, and do
+not assume the workspace override should replace versioned browsers in CI.
