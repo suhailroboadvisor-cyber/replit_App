@@ -6,9 +6,8 @@ import { MethodologyDirectory } from "../../../../components/methodology/Methodo
 // independent of request cookies and headers.
 export const revalidate = 900;
 export const dynamic = "force-static";
-// D-19/D-20/D-102: the parent layout supplies locales, so directory pages
-// prerender at build time. The build requires the read-only public database;
-// a failed read must fail the build rather than cache an unavailable page.
+// D-19/D-20/D-102: the parent layout returns no build-time locale params.
+// Generate on the first request, never cache a failed database read.
 
 export default async function Methodology({
   params,

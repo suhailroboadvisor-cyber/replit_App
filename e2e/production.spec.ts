@@ -11,6 +11,7 @@ for (const locale of ["ar", "en"] as const) {
   test(`${locale} public Methodologies link opens a truthful cookie-free destination`, async ({
     page, request,
   }) => {
+    test.skip(Boolean(process.env.CI), "D-78: database-available checks run in a configured runtime; database-free CI runs the cold ISR suite.");
     let profiles = 0;
     page.on("request", (req) => {
       if (new URL(req.url()).pathname === "/api/account/profile") profiles++;
@@ -37,6 +38,7 @@ for (const locale of ["ar", "en"] as const) {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(locale === "ar" ? enMessages.methodologies.title : arMessages.methodologies.title);
   });
   test(`${locale} example-a public documentation renders literal criteria and no-margin evidence`,async({page,request})=>{
+    test.skip(Boolean(process.env.CI), "D-78: database-available checks run in a configured runtime; database-free CI runs the cold ISR suite.");
     const response=await page.goto(`${prefix}/methodology/example-a`);
     expect(response?.status()).toBe(200);
     await expect(page.getByText(messages.banner.exampleMethodology,{exact:true})).toBeVisible();
@@ -51,6 +53,19 @@ for (const locale of ["ar", "en"] as const) {
     const body=await html.text();
     expect(body).not.toContain("analyst_test_cases");
     expect(body).not.toContain("workflow_history");
+  });
+  test(`@security ${locale} public methodology HTML and ISR headers are independent of cookies`,async({request})=>{
+    test.skip(Boolean(process.env.CI), "D-78: cached data checks run in a configured runtime; database-free CI runs the cold ISR suite.");
+    for(const path of [`${prefix}/methodology`,`${prefix}/methodology/example-a`]) {
+      const anonymous=await request.get(path);
+      const cookieRequest=await request.get(path,{headers:{Cookie:"public-cache-probe=synthetic; theme=light"}});
+      expect(anonymous.status()).toBe(200);
+      expect(cookieRequest.status()).toBe(200);
+      expect(cookieRequest.headers()["cache-control"]).toContain("s-maxage=900");
+      expect(cookieRequest.headers()["set-cookie"]).toBeUndefined();
+      expect(cookieRequest.headers()["vary"]?.toLowerCase()??"").not.toContain("cookie");
+      expect(await cookieRequest.text()).toBe(await anonymous.text());
+    }
   });
 }
 
@@ -278,7 +293,7 @@ test.describe("@phone public production touch controls", () => {
       await expect(paragraph).toBeVisible();
       // Check the entire current disclaimer, including the Arabic review
       // placeholder, rather than accepting only its first sentence.
-      await expect(paragraph).toContainText(enMessages.disclaimer.full);
+      await expect(paragraph).toHaveText((locale==="ar"?arMessages:enMessages).disclaimer.full);
       await expectNoHorizontalOverflow(page);
       const textLines = () => paragraph.evaluate((element) => {
         function textRects() {
@@ -388,7 +403,7 @@ for (const locale of ["ar", "en"] as const) {
     await expect(page).toHaveURL(/#full-disclaimer$/);
     await expect(details).toHaveAttribute("open", "");
     await expect(details.locator("p")).toBeVisible();
-    await expect(details.locator("p")).toContainText("Investing involves risk");
+    await expect(details.locator("p")).toHaveText((locale==="ar"?arMessages:enMessages).disclaimer.full);
     await summary.click();
     await expect(details).not.toHaveAttribute("open");
     await expect(details.locator("p")).toBeHidden();

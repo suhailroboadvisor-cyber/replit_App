@@ -53,14 +53,23 @@ No dependencies were added.
 
 - D-101 identifies the separate Arabic copy approval; D-97 remains production
   enablement.
-- Under D-19/D-20, both public methodology routes retain `force-static` and
-  900-second classic ISR. The public parent layout generates the locale params,
-  so the directory prerenders at build time and **the build requires a reachable
-  read-only public database** (DATABASE_URL_PUBLIC and its verified CA). An empty
-  page-level `generateStaticParams()` does not suppress those inherited locale
-  paths in Next 16. Unknown detail slugs use empty `generateStaticParams()` and
-  generate on demand. Database failures throw: failed builds cannot publish
-  unavailable placeholders, and failed revalidation retains the last good page.
+- D-102 follows D-19/D-20/D-78/D-94: **builds need no database credentials or
+  database access**. The public parent layout returns `[]` from
+  `generateStaticParams()`, retains `setRequestLocale`, and uses `force-static`
+  with 900-second classic ISR. All public locale pages generate on first request,
+  not in CI or image builds. Do not restore parent-level locale enumeration.
+  Successful runtime renders cache with `s-maxage=900`. Database failures throw:
+  first-request errors remain uncached, and failed revalidation preserves the
+  last good page. Public server pages read no request cookies/headers.
+- Production ISR verification runs in order: database-free build, cold outage
+  suite (`playwright.methodology-isr.config.ts`), database-available production
+  suite, then `ISR_VERIFY_WARMED_CACHE=1` with the ISR config to age runtime caches
+  and verify failed revalidation. Both outage servers have all database variables
+  removed. Cache assertions include Next 16's namespaced on-demand route cache.
+  Database-free CI runs the build/cold suite and the non-database production
+  checks; positive database-backed production cases are explicitly runtime-only
+  under D-78, never backed by Supabase in CI. UI/database fixture suites still
+  exercise the real components and service gates locally.
 - Migration `0007_methodology_visibility` requires public production versions,
   refuses unpublishing production-enabled/default versions, and serializes
   editorial-default pointer changes with the existing prerequisite lock.
@@ -124,12 +133,13 @@ disposable databases on PostgreSQL 17 and the original auth stub remains intact.
 | Check | Result |
 | --- | --- |
 | TypeScript, ESLint, logical CSS lint | Passed |
-| Unit suite | 586 tests passed across 26 files |
-| Existing engine regressions and coverage | 201 tests passed; 100% statements, branches, functions and lines |
-| Disposable PostgreSQL 17 integration | 154 tests passed across 3 files, including 20 new methodology integration tests |
-| Admin component browser checks | 6 passed, covering both locales, editor restrictions, finalized read-only content and stale-save refusal |
-| Production Next browser/HTTP checks | 6 passed, covering both locale directories and example-a criteria/no-margin documentation, cookie-free 900-second ISR and existing private-path/CSP security assertions |
-| Production build | Passed; detail documentation is classified static on demand, not dynamic |
+| Unit suite | 616 tests passed across 29 files |
+| Existing engine regressions and coverage | 215 tests passed; 100% statements, branches, functions and lines |
+| Disposable PostgreSQL 17 integration | 159 tests passed across 3 files; local disposable database only |
+| Accounts/methodology component browser checks | 51 passed, including both locales, editor restrictions, finalized read-only content and stale-save refusal |
+| Production Next browser/HTTP checks | 23 passed; 6 WebKit UI cases blocked before navigation by page-fixture creation timeouts in the bundled native browser; the default managed WebKit executable is absent. Chromium desktop/phone, public data, cookie independence and ISR headers passed |
+| Production outage ISR checks | 5 cold-build/uncached-failure checks and 4 last-good-page revalidation checks passed, covering both locale directories and example-a detail pages |
+| Production build | Passed with all database URLs, generic DATABASE_URL, PG* connection variables and SUPABASE_DB_CA_CERT removed; no public locale pages prerendered |
 
 Tests include missing pass/fail/borderline coverage (including zero margin),
 empty/goldens-only suites, collective coverage, mismatched expectations,

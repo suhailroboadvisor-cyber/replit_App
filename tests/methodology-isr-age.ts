@@ -1,8 +1,11 @@
 import { utimesSync } from "node:fs";
+import { methodologyCacheFile } from "./methodology-isr-cache";
 
 // Test-only cache artifact preparation, never a database or source mutation.
-// Age both locale HTML files beyond the real 900-second ISR interval.
+// Age runtime-generated directory/detail caches beyond the real ISR interval.
 const stale = new Date(Date.now() - 901_000);
 for (const locale of ["ar", "en"]) {
-  utimesSync(`.next/server/app/${locale}/methodology.html`, stale, stale);
+  for (const page of ["methodology", "methodology/example-a"]) {
+    utimesSync(methodologyCacheFile(locale, page), stale, stale);
+  }
 }
