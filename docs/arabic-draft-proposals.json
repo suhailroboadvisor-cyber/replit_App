@@ -242,5 +242,9 @@
   "operation_failed": "تعذّر تنفيذ العملية.",
   "role_required": "يتطلب الوصول دورًا مخوّلًا.",
   "No default baseline version": "لا يوجد إصدار مرجعي افتراضي.",
-  "Engine execution failed; no result produced": "تعذّر تشغيل المحرك؛ لم تُنتج نتيجة."
+  "Engine execution failed; no result produced": "تعذّر تشغيل المحرك؛ لم تُنتج نتيجة.",
+  "Version sections": "أقسام الإصدار",
+  "Back to Suhail": "العودة إلى سهيل",
+  "Retry": "إعادة المحاولة",
+  "This page could not be loaded.": "تعذّر تحميل هذه الصفحة."
 }

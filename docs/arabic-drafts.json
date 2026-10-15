@@ -1109,6 +1109,11 @@
     "draft": "ملاحظة الاعتماد للاستخدام الفعلي غير صالحة.",
     "category": "help/error"
   },
+  "U-e0d0c0da334f965ade287a5aff434048b2bc1200c4c4c30b0faddce3129a4b17": {
+    "source": "Version sections",
+    "draft": "أقسام الإصدار",
+    "category": "UI label"
+  },
   "U-ede105e7bc4acfe1f4ef72bd4fcd015008c507edfc15e1c58e376e4432b9b3b9": {
     "source": "Complete HTTPS source title/URL, verifier and verification date",
     "draft": "أكمل عنوان المصدر ورابط HTTPS وجهة التحقق وتاريخ التحقق.",
@@ -1358,5 +1363,25 @@
     "source": "Workflow status",
     "draft": "حالة سير العمل",
     "category": "UI label"
+  },
+  "U-2bd873d6c734e63ea80e163a6a643f75bf87a3d24e3164987d176a2e3e5c567e": {
+    "source": "Breadcrumb",
+    "draft": "مسار الصفحة",
+    "category": "UI label"
+  },
+  "U-418123f6db72a99bd6c49d8a1e96b5b7d85144e7b134a0904de80810b7f9d7ca": {
+    "source": "Back to Suhail",
+    "draft": "العودة إلى سهيل",
+    "category": "UI label"
+  },
+  "U-942087cc2d41e01304b7195558d093d10c72af8e838c7556d6a02d471ee71852": {
+    "source": "Retry",
+    "draft": "إعادة المحاولة",
+    "category": "UI label"
+  },
+  "U-f6368e7f5afae57c89fc88c05045f4dbbef1c962ca1b22bf26990f3f641f5670": {
+    "source": "This page could not be loaded.",
+    "draft": "تعذّر تحميل هذه الصفحة.",
+    "category": "help/error"
   }
 }

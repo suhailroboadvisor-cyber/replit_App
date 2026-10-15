@@ -84,3 +84,17 @@ mtime_ms = 1791930409916
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/bd0b27df-ae25-48df-973d-975f8281bd04/7e19eebb-cfc0-4e1d-aa23-90d2899d961e"
 storage_version_token = "1791930411547662"
 content_type = "text/html"
+
+[[outputs]]
+id = "ynL-LKcykD99Gv0e-8UE3"
+uri = "file://docs/ARABIC_REVIEW.md"
+type = "text"
+title = "Arabic wording review — ready for your review"
+description = "Updated sheet with 277 pending entries. Proposed wording only: no new translations applied or approvals recorded. Legal placeholders remain awaiting O-7 text."
+logical_id = "27dd0938-0344-4442-85d2-e352a24d39d4"
+content_hash = "sha256:572d3b093ba3bf849685eea394e5f071a3730a95bc5a47a0f891d6b35292e358"
+size = 79544
+mtime_ms = 1792107120295
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/27dd0938-0344-4442-85d2-e352a24d39d4/1ace87f7-d314-474f-af72-372ac4cd140f"
+storage_version_token = "1792107294610997"
+content_type = "text/markdown"

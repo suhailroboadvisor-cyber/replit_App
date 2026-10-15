@@ -59,6 +59,23 @@ describe("live-only Arabic inventories without copy application", () => {
       else expect(draftFor(entry, drafts), entry.id).toMatch(/[\u0600-\u06ff]/);
     }
   });
+  it("includes merged navigation and recovery wording as documentation-only drafts", () => {
+    const expected = {
+      "Version sections": "أقسام الإصدار",
+      "Breadcrumb": "مسار الصفحة",
+      "Back to Suhail": "العودة إلى سهيل",
+      "Retry": "إعادة المحاولة",
+      "This page could not be loaded.": "تعذّر تحميل هذه الصفحة.",
+    };
+    for (const [source, draft] of Object.entries(expected)) {
+      const entry = audit.entries.find((row) => row.source === source);
+      expect(entry, source).toBeDefined();
+      expect(draftFor(entry!, drafts)).toBe(draft);
+    }
+    const sheet = readFileSync("docs/ARABIC_REVIEW.md", "utf8");
+    expect(sheet).toContain("Step 6 and locale-aware navigation restoration are merged");
+    expect(sheet).not.toContain("inventory is BLOCKED");
+  });
   it("uses the founder's terminology only in drafts, retaining runtime markers", () => {
     const expected = {
       "Edge cases": "الحالات الخاصة", "Verified by": "جهة التحقق",
@@ -93,7 +110,7 @@ describe("live-only Arabic inventories without copy application", () => {
     const sheet = readFileSync("docs/ARABIC_REVIEW.md", "utf8");
     expect(sheet).not.toContain("Not yet rendered");
     expect(sheet).not.toContain("Historical Phase 1");
-    expect(sheet).toContain("final combined post-navigation inventory is BLOCKED");
+    expect(sheet).toContain("Step 6 and locale-aware navigation restoration are merged");
     const inventory = readFileSync("docs/AR_REVIEW_KEYS.md", "utf8");
     for (const line of inventory.split("\n").filter((line) =>
       line.startsWith("| ") && !line.startsWith("| Key/") && !line.startsWith("| ---"))) {

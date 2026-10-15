@@ -1,15 +1,15 @@
 # Live Arabic review audit
 
-## Baseline and unresolved integration dependency
+## Merged baseline and documentation-only refresh
 
 The inspected checkout contains Step 6's governed methodology management,
-public methodology documents and runtime marker adapters. Navigation restoration
-is marked implemented separately but is not merged into this checkout.
-**The final combined post-navigation inventory is blocked.** Its new callers,
-keys and fallback phrases have not been claimed as covered or invented here.
-After the actual navigation changes are merged, rerun `pnpm ar-review:list`,
-inspect any unresolved coverage/draft warnings, and run the relevant checks.
-Do not implement navigation or apply translations as part of this reconciliation.
+public methodology documents, runtime marker adapters and merged locale-aware
+navigation. The combined inventory now includes version-section navigation,
+breadcrumbs and recovery-screen home/retry controls. Four missing documentation
+drafts were prepared for “Version sections”, “Back to Suhail”, “Retry” and
+“This page could not be loaded.” The existing “Breadcrumb” proposal was retained.
+All five newly inventoried rows remain unapproved. No runtime translations,
+approval records or legal content were changed by this refresh.
 
 ## Removed copy and parity
 
@@ -34,10 +34,11 @@ was supplied. Every surviving pre-existing Arabic and English value is unchanged
 
 ## Current pending inventory
 
-- 272 rows: 212 keyed, 58 finite runtime phrases and 2 legal placeholders.
-- Public methodology directory/detail/version selector: 47.
+- 277 rows: 212 keyed, 63 finite runtime phrases and 2 legal placeholders.
+- Public methodology directory/detail/version selector and breadcrumb: 48.
 - Admin methodology forms, confirmations, success/error feedback, workflow,
-  reports and concrete review-error sources: 223.
+  reports and concrete review-error sources: 224.
+- Shared recovery screen home/retry controls and load-failure message: 3.
 - Terms and Privacy legal bodies: 2, under their surviving L IDs with
   `Do not translate; needs O-7 text`.
 - No approved account/audit/engine rows are reintroduced. All currently approved
@@ -67,7 +68,7 @@ D-96/D-101 checks still protect exact approved JSON/account/audit copy, all
 disclaimer limitations, literal `DELETE` and unchanged Arabic legal versions.
 Existing engine tests retain exact English and Arabic template/formatting checks.
 
-Verified:
+Previous verification (before this post-navigation documentation refresh):
 
 - `pnpm ar-review:list` and byte-identical regeneration checks.
 - `pnpm typecheck`, `pnpm lint`, `pnpm lint:logical`.
@@ -84,3 +85,14 @@ authenticated component behavior was checked through the existing isolated
 browser fixtures. No migration, connected-service mutation, deployment,
 translation application, new row approval or follow-on feature implementation
 was performed. No dependencies were added.
+
+## Post-navigation refresh verification
+
+- `pnpm ar-review:list`: 277 pending rows, zero unresolved caller surfaces and
+  zero unused message leaves; no missing documentation drafts.
+- `pnpm typecheck` and `pnpm lint`: passed.
+- `pnpm test`: 646 passed across 32 files, including byte-identical regeneration,
+  merged navigation/recovery coverage and existing Arabic approval protections.
+- Only review documents, documentation draft mappings, their generator and its
+  tests changed. Runtime dictionaries, components and approval records are
+  unchanged. Legal bodies remain held for O-7 text.

@@ -1,6 +1,6 @@
 # Live Arabic review keys
 
-Generated deterministically by `pnpm ar-review:list`. Live pending rows: **272**.
+Generated deterministically by `pnpm ar-review:list`. Live pending rows: **277**.
 
 ## Boundaries and coverage
 
@@ -50,185 +50,186 @@ new approvals or changing D-101. Legal bodies require O-7 text, not translation.
 
 ## Integration boundary
 
-Step 6 is present. Navigation restoration is not merged into this checkout.
-The final combined post-navigation inventory is BLOCKED until those actual
-callers/keys are merged and this command is rerun. No future navigation copy is invented.
+Step 6 and locale-aware navigation restoration are merged in this checkout.
+This inventory includes their actual callers, including breadcrumbs, version
+sections and recovery-screen home/retry controls. These remain unapproved
+documentation-only drafts; no future navigation copy is invented.
 
 ## Admin methodology — /admin/methodologies
 
 | Key/source | Page/component rendering context | Current English source | Arabic (approved) |
 | --- | --- | --- | --- |
 | governed.activityCategories | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:400 | Activity category rules |  |
-| governed.actual | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:97 | Actual |  |
-| governed.actualHash | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:134 | Actual hash |  |
-| governed.actualStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:135 | Actual status |  |
+| governed.actual | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:99 | Actual |  |
+| governed.actualHash | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:136 | Actual hash |  |
+| governed.actualStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:137 | Actual status |  |
 | governed.addCriteriaFirst | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:496 | Add and save criteria before authoring cases. |  |
-| governed.addCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:363; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:372 | Add criterion |  |
-| governed.adminIntro | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:131 | Maintain documented rules, test evidence, workflow decisions, and public visibility. Finalized version content remains fixed. |  |
-| governed.advanceWorkflow | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:499 | Advance workflow |  |
-| governed.aggregateStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:83 | Aggregate status · expected → actual |  |
-| governed.analystCaseResults | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:72 | Analyst case comparisons |  |
-| governed.analystCases | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:427 | Analyst test cases |  |
-| governed.analystCasesHint | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:428 | Author version-specific evidence and expected outcomes before the test gate. |  |
+| governed.addCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:397; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:406 | Add criterion |  |
+| governed.adminIntro | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:156 | Maintain documented rules, test evidence, workflow decisions, and public visibility. Finalized version content remains fixed. |  |
+| governed.advanceWorkflow | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:533 | Advance workflow |  |
+| governed.aggregateStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:85 | Aggregate status · expected → actual |  |
+| governed.analystCaseResults | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:74 | Analyst case comparisons |  |
+| governed.analystCases | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:461 | Analyst test cases |  |
+| governed.analystCasesHint | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:462 | Author version-specific evidence and expected outcomes before the test gate. |  |
 | governed.analystCasesJson | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:506 | Analyst cases JSON |  |
 | governed.associateSource | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:561 | Associate source |  |
-| governed.baseline | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:181 | Baseline |  |
+| governed.baseline | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:183 | Baseline |  |
 | governed.blankDraft | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:254 | Start with an empty draft |  |
-| governed.borderlineCases | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:205 | Candidate borderline results |  |
+| governed.borderlineCases | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:207 | Candidate borderline results |  |
 | governed.borderlineMargin | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:375 | Borderline margin |  |
-| governed.calculationVersion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:334 | Calculation version |  |
+| governed.calculationVersion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:341 | Calculation version |  |
 | governed.cancel | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:119 | Cancel |  |
-| governed.candidateCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:281 | Candidate version criteria |  |
+| governed.candidateCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:283 | Candidate version criteria |  |
 | governed.caseCriteriaHint | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:495 | Expected criterion outcomes must use the exact criterion IDs listed here. A cloned version has new IDs and requires new expected-results keys. |  |
 | governed.caseInstructions | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:494 | Use the contract shape below with real security, period, source, fact, and segment identities. The inserted sample has no financial evidence and does not represent a passing case. |  |
-| governed.casesFinalized | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:435 | Analyst cases are finalized with this version and are shown read-only. |  |
-| governed.casesSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:431 | Analyst cases saved. |  |
-| governed.changedCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:247 | Changed candidate criteria |  |
+| governed.casesFinalized | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:469 | Analyst cases are finalized with this version and are shown read-only. |  |
+| governed.casesSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:465 | Analyst cases saved. |  |
+| governed.changedCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:249 | Changed candidate criteria |  |
 | governed.changelog | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:261 | Changelog |  |
 | governed.cloneFrom | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:230 | Start from an existing version |  |
 | governed.cloneNote | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:257 | Version fields are prefilled from the selected source. Criteria are copied with new identities; analyst cases must be authored again against those new IDs. |  |
-| governed.closeEdit | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:223; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:319 | Close editor |  |
-| governed.confirmDeleteCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:391 | Delete this draft criterion? This cannot be undone. |  |
-| governed.confirmProduction | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:512 | Enable this methodology version for production? This is a separate audited operation. |  |
-| governed.confirmPublish | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:343 | Make this version visible on the public methodology pages? |  |
-| governed.confirmUnpublish | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:343 | Remove this version from the public methodology pages? |  |
-| governed.coverageGaps | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:31 | Named criterion coverage gaps |  |
-| governed.created | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:313 | Created |  |
-| governed.createMethodology | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:141; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:172 | Create methodology |  |
-| governed.criteria | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:357 | Version criteria |  |
-| governed.criteriaRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:157 | CRITERIA |  |
-| governed.criterion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:95 | Criterion |  |
-| governed.criterionChanges | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:236 | criterion differences |  |
-| governed.criterionDeleted | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:393 | Criterion deleted. |  |
+| governed.closeEdit | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:249; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:351 | Close editor |  |
+| governed.confirmDeleteCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:425 | Delete this draft criterion? This cannot be undone. |  |
+| governed.confirmProduction | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:546 | Enable this methodology version for production? This is a separate audited operation. |  |
+| governed.confirmPublish | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:375 | Make this version visible on the public methodology pages? |  |
+| governed.confirmUnpublish | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:375 | Remove this version from the public methodology pages? |  |
+| governed.coverageGaps | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:33 | Named criterion coverage gaps |  |
+| governed.created | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:345 | Created |  |
+| governed.createMethodology | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:166; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:197 | Create methodology |  |
+| governed.criteria | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:330; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:387; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:391 | Version criteria |  |
+| governed.criteriaRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:182 | CRITERIA |  |
+| governed.criterion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:97 | Criterion |  |
+| governed.criterionChanges | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:238 | criterion differences |  |
+| governed.criterionDeleted | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:427 | Criterion deleted. |  |
 | governed.criterionIdentity | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:361 | Stable criterion identity |  |
-| governed.criterionIdentityHelp | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:358 | Identities are fixed by the system and are required when analyst cases refer to expected criterion outcomes. |  |
-| governed.criterionSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:374; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:388 | Criterion saved. |  |
+| governed.criterionIdentityHelp | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:392 | Identities are fixed by the system and are required when analyst cases refer to expected criterion outcomes. |  |
+| governed.criterionSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:408; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:422 | Criterion saved. |  |
 | governed.criterionType | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:366 | Criterion type |  |
 | governed.definition | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:383 | Definition |  |
 | governed.deleteCriterion | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:440 | Delete draft criterion |  |
 | governed.denominatorDefinition | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:386 | Denominator definition |  |
 | governed.denominatorLineItems | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:393; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:420 | Denominator line items |  |
-| governed.different | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:108 | DIFFERENT |  |
-| governed.draftSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:289; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:327 | Draft version saved. |  |
-| governed.drivingCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:187 | Driving criteria |  |
+| governed.different | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:110 | DIFFERENT |  |
+| governed.draftSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:316; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:359 | Draft version saved. |  |
+| governed.drivingCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:189 | Driving criteria |  |
 | governed.edgeCases | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:426 | Edge cases |  |
-| governed.editCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:415 | Edit criterion |  |
-| governed.editDraft | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:319 | Edit draft content |  |
-| governed.editMetadata | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:223 | Edit metadata |  |
+| governed.editCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:449 | Edit criterion |  |
+| governed.editDraft | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:351 | Edit draft content |  |
+| governed.editMetadata | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:249 | Edit metadata |  |
 | governed.editorReadOnly | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:548 | Editors can review this record but cannot change governance data. |  |
-| governed.effectiveDate | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:312; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:227; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:379 | Effective date |  |
-| governed.enableProduction | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:515 | Enable production |  |
-| governed.engineVersion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:333 | Engine version |  |
-| governed.expected | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:96 | Expected |  |
-| governed.expectedHash | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:133 | Expected hash |  |
-| governed.failed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:130; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:88 | FAIL |  |
-| governed.finalizedContentReadOnly | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:368; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:548 | Finalized content is read-only. Create a new draft to change methodology content. |  |
+| governed.effectiveDate | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:344; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:227; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:379 | Effective date |  |
+| governed.enableProduction | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:549 | Enable production |  |
+| governed.engineVersion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:340 | Engine version |  |
+| governed.expected | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:98 | Expected |  |
+| governed.expectedHash | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:135 | Expected hash |  |
+| governed.failed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:132; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:90 | FAIL |  |
+| governed.finalizedContentReadOnly | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:402; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:548 | Finalized content is read-only. Create a new draft to change methodology content. |  |
 | governed.formula | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:384 | Formula text |  |
-| governed.fullReportEvidence | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:339 | Full retained report payload |  |
+| governed.fullReportEvidence | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:346 | Full retained report payload |  |
 | governed.genuineMethodologySource | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:552 | Matching verified methodology document |  |
-| governed.governanceReports | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:307 | GOVERNANCE EVIDENCE |  |
-| governed.impactReport | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:325 | Impact report |  |
+| governed.governanceReports | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:313 | GOVERNANCE EVIDENCE |  |
+| governed.impactReport | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:331 | Impact report |  |
 | governed.insertExample | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:504 | Insert contract example |  |
 | governed.invalidCasesJson | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:488 | Enter a valid JSON array of analyst cases. |  |
 | governed.invalidJsonObject | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:219 | Enter a valid JSON object or leave the field blank. |  |
 | governed.label | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:368 | Label |  |
-| governed.licensing | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:241; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:166 | Licensing status |  |
-| governed.match | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:98 | Comparison |  |
-| governed.matched | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:108 | MATCH |  |
-| governed.metadataSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:175; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:230 | Methodology metadata saved. |  |
-| governed.methodologyIndex | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:191 | METHODOLOGY REGISTER |  |
-| governed.methodologyManagement | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:130 | Methodology management |  |
-| governed.methodologyMetadata | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:217 | METHODOLOGY METADATA |  |
-| governed.methodologyRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:149 | METHODOLOGIES |  |
-| governed.methodologyVersions | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:255 | Versions |  |
+| governed.licensing | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:267; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:166 | Licensing status |  |
+| governed.match | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:100 | Comparison |  |
+| governed.matched | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:110 | MATCH |  |
+| governed.metadataSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:200; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:256 | Methodology metadata saved. |  |
+| governed.methodologyIndex | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:216 | METHODOLOGY REGISTER |  |
+| governed.methodologyManagement | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:155; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:89 | Methodology management |  |
+| governed.methodologyMetadata | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:243 | METHODOLOGY METADATA |  |
+| governed.methodologyRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:174 | METHODOLOGIES |  |
+| governed.methodologyVersions | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:281 | Versions |  |
 | governed.name | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:156 | Name |  |
-| governed.newDraft | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:260; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:286 | New draft |  |
-| governed.newRecord | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:171 | NEW RECORD |  |
-| governed.nextWorkflowTarget | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:484 | Next sequential stage |  |
-| governed.noComparableUniverse | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:164 | No comparable securities were recorded. |  |
-| governed.noCoverageGaps | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:37 | No missing required outcome coverage was recorded. |  |
-| governed.noCriteria | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:379 | No criteria are recorded for this version. |  |
+| governed.newDraft | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:286; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:313 | New draft |  |
+| governed.newRecord | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:196 | NEW RECORD |  |
+| governed.nextWorkflowTarget | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:518 | Next sequential stage |  |
+| governed.noComparableUniverse | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:166 | No comparable securities were recorded. |  |
+| governed.noCoverageGaps | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:39 | No missing required outcome coverage was recorded. |  |
+| governed.noCriteria | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:413 | No criteria are recorded for this version. |  |
 | governed.noEligibleSources | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:555 | No matching eligible source documents |  |
-| governed.noMethodologies | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:183 | No methodology records |  |
-| governed.noMethodologiesBody | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:184 | Create a methodology record to begin documenting a governed rule set. |  |
-| governed.noneConfigured | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:181 | No baseline configured |  |
+| governed.noMethodologies | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:208 | No methodology records |  |
+| governed.noMethodologiesBody | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:209 | Create a methodology record to begin documenting a governed rule set. |  |
+| governed.noneConfigured | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:183 | No baseline configured |  |
 | governed.nonPermissibleCategories | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:407 | Non-permissible revenue categories |  |
-| governed.noReports | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:313 | No reports have been recorded for this version yet. |  |
-| governed.notes | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:245; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:172; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:262; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:428 | Notes |  |
-| governed.notPublic | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:308 | NOT PUBLIC |  |
-| governed.noVersions | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:265 | No versions have been recorded for this methodology. |  |
+| governed.noReports | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:319 | No reports have been recorded for this version yet. |  |
+| governed.notes | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:271; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:172; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:262; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:428 | Notes |  |
+| governed.notPublic | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:340 | NOT PUBLIC |  |
+| governed.noVersions | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:291 | No versions have been recorded for this methodology. |  |
 | governed.numeratorDefinition | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:385 | Numerator definition |  |
 | governed.numeratorLineItems | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:390; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:416 | Numerator line items |  |
-| governed.observedCoverage | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:54 | Observed |  |
-| governed.officialOrAdapted | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:240; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:164 | Official or adapted |  |
-| governed.passed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:130; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:329; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:88 | PASS |  |
-| governed.previousCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:281 | Prior version criteria |  |
-| governed.priorStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:154 | Prior status |  |
-| governed.productionEnabled | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:513; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:306 | Production enabled. |  |
-| governed.productionOperationNote | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:507 | Separate production operation note |  |
+| governed.observedCoverage | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:56 | Observed |  |
+| governed.officialOrAdapted | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:266; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:164 | Official or adapted |  |
+| governed.passed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:132; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:335; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:90 | PASS |  |
+| governed.previousCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:283 | Prior version criteria |  |
+| governed.priorStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:156 | Prior status |  |
+| governed.productionEnabled | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:547; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:338 | Production enabled. |  |
+| governed.productionOperationNote | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:541 | Separate production operation note |  |
 | governed.prohibitedCategories | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:402 | Prohibited primary activity categories |  |
-| governed.publicVisible | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:308 | PUBLIC |  |
-| governed.publisher | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:236; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:161 | Publisher |  |
-| governed.publishVersion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:348 | Make version public |  |
+| governed.publicVisible | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:340 | PUBLIC |  |
+| governed.publisher | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:262; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:161 | Publisher |  |
+| governed.publishVersion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:380 | Make version public |  |
 | governed.purificationHelp | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:265 | Leave blank for null. Enter a JSON object only when this methodology version defines stored treatment data. No generic formula is applied. |  |
 | governed.purificationJson | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:263 | Methodology-specific purification data (JSON object) |  |
-| governed.ratio | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:213; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:254 | Ratio |  |
-| governed.reportArchive | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:308 | Test and impact reports |  |
-| governed.reportIdentity | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:335 | Report identity |  |
+| governed.ratio | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:215; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:256 | Ratio |  |
+| governed.reportArchive | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:331; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:309; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:314 | Test and impact reports |  |
+| governed.reportIdentity | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:342 | Report identity |  |
 | governed.requiredActivityItems | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:411 | Evaluator requirements are enforced by the contract. These category lists are stored as criterion rule data. |  |
-| governed.requiredCoverage | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:53 | Required |  |
-| governed.requiredInputsDerived | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:410; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:431 | Required inputs · derived |  |
-| governed.result | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:253 | Result |  |
-| governed.retainedEvidence | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:263 | Retained unknowns and evidence inputs |  |
-| governed.reviewFailed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:329 | REVIEW / FAIL |  |
+| governed.requiredCoverage | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:55 | Required |  |
+| governed.requiredInputsDerived | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:444; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:431 | Required inputs · derived |  |
+| governed.result | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:255 | Result |  |
+| governed.retainedEvidence | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:265 | Retained unknowns and evidence inputs |  |
+| governed.reviewFailed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:335 | REVIEW / FAIL |  |
 | governed.save | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:122 | Save |  |
 | governed.saveCases | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:512 | Save analyst cases |  |
-| governed.saved | Conditionally rendered: run() default success feedback: src/components/methodology/AdminMethodologies.tsx:92 | Change saved. |  |
+| governed.saved | Conditionally rendered: run() default success feedback: src/components/methodology/AdminMethodologies.tsx:116 | Change saved. |  |
 | governed.saving | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:122; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:512 | Saving… |  |
-| governed.scope | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:244; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:171 | Scope |  |
-| governed.securityDiffs | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:221 | Per-security comparison |  |
-| governed.sharedGoldenRegressions | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:124 | Shared golden regressions |  |
-| governed.shortLabel | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:237; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:157 | Short label |  |
+| governed.scope | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:270; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:171 | Scope |  |
+| governed.securityDiffs | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:223 | Per-security comparison |  |
+| governed.sharedGoldenRegressions | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:126 | Shared golden regressions |  |
+| governed.shortLabel | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:263; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:157 | Short label |  |
 | governed.slug | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:158 | Slug |  |
 | governed.sortOrder | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:377 | Sort order |  |
-| governed.sourceAssociated | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:336 | Source association saved. |  |
-| governed.sourceAssociation | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:334 | Version source associations |  |
+| governed.sourceAssociated | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:368 | Source association saved. |  |
+| governed.sourceAssociation | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:366 | Version source associations |  |
 | governed.sourceReference | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:427 | Source reference |  |
-| governed.sourceTitle | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:238; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:162 | Source document title |  |
-| governed.sourceUrl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:239; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:163 | Source document URL |  |
-| governed.testReport | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:325 | Test report |  |
-| governed.threshold | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:369; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:213; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:255 | Threshold |  |
+| governed.sourceTitle | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:264; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:162 | Source document title |  |
+| governed.sourceUrl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:265; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:163 | Source document URL |  |
+| governed.testReport | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:331 | Test report |  |
+| governed.threshold | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:369; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:215; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:257 | Threshold |  |
 | governed.thresholdDirection | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:373 | Threshold direction |  |
 | governed.thresholdUnit | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:371 | Threshold unit |  |
-| governed.transitionMatrix | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:180 | Status transition matrix |  |
+| governed.transitionMatrix | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:182 | Status transition matrix |  |
 | governed.treatmentRules | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:425 | Treatment rules |  |
-| governed.type | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:246; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:159 | Methodology type |  |
-| governed.unidentifiedSecurity | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:231 | Security identity unavailable |  |
-| governed.unnamedCase | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:81 | Unnamed case |  |
-| governed.unnamedCriterion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:103; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:192; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:43 | Unlabelled criterion |  |
-| governed.unpublishVersion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:348 | Remove public visibility |  |
-| governed.verificationDate | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:243; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:169 | Verification date |  |
-| governed.verifiedBy | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:242; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:168 | Verified by |  |
-| governed.versionControl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:254 | VERSION CONTROL |  |
+| governed.type | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:272; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:159 | Methodology type |  |
+| governed.unidentifiedSecurity | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:233 | Security identity unavailable |  |
+| governed.unnamedCase | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:83 | Unnamed case |  |
+| governed.unnamedCriterion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:105; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:194; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:45 | Unlabelled criterion |  |
+| governed.unpublishVersion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:380 | Remove public visibility |  |
+| governed.verificationDate | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:269; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:169 | Verification date |  |
+| governed.verifiedBy | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:268; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:168 | Verified by |  |
+| governed.versionControl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:280 | VERSION CONTROL |  |
 | governed.versionLabel | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:226 | Version label |  |
 | governed.versionNumber | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:225 | Version |  |
-| governed.versionRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:153 | VERSIONS |  |
-| governed.visibilityControl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:340 | Public visibility |  |
-| governed.visibilityHelp | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:341 | This changes anonymous visibility for this version only. Only versions marked public appear in public methodology pages. |  |
-| governed.visibilitySaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:345 | Public visibility updated. |  |
+| governed.versionRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:178 | VERSIONS |  |
+| governed.visibilityControl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:372 | Public visibility |  |
+| governed.visibilityHelp | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:373 | This changes anonymous visibility for this version only. Only versions marked public appear in public methodology pages. |  |
+| governed.visibilitySaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:377 | Public visibility updated. |  |
 | governed.visibilitySeparate | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:267 | Public visibility is controlled separately after the draft is created. |  |
-| governed.workflow | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:443 | Governance workflow |  |
-| governed.workflowAdvanced | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:493 | Workflow advanced. |  |
-| governed.workflowHistory | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:462 | Recorded workflow history |  |
-| governed.workflowReviewNote | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:487 | Review / transition note |  |
-| governed.workflowSequential | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:444 | Advance one stage at a time. Source verification, rules, tests, universe comparison, human review, and approval are checked by the server. |  |
-| governed.workspaceLabel | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:129 | ADMIN / METHODOLOGY GOVERNANCE |  |
+| governed.workflow | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:477 | Governance workflow |  |
+| governed.workflowAdvanced | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:527 | Workflow advanced. |  |
+| governed.workflowHistory | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:496 | Recorded workflow history |  |
+| governed.workflowReviewNote | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:521 | Review / transition note |  |
+| governed.workflowSequential | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:478 | Advance one stage at a time. Source verification, rules, tests, universe comparison, human review, and approval are checked by the server. |  |
+| governed.workspaceLabel | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:154 | ADMIN / METHODOLOGY GOVERNANCE |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/gates.ts:17 | The editorial default methodology version cannot be unpublished; select another default first |  |
-| runtime phrase | Conditionally rendered: admin action failure: src/components/methodology/AdminMethodologies.tsx:114 | The change was not accepted. |  |
+| runtime phrase | Conditionally rendered: admin action failure: src/components/methodology/AdminMethodologies.tsx:138 | The change was not accepted. |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:46 | The evaluator requires a criterion effective date |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:205 | Demo, internal example or permanently blocked provenance cannot be enabled |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:45 | No registered evaluator |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:193 | Methodology records |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:218 | Methodology records |  |
 | runtime phrase | Conditionally rendered: governance refusal: src/app/[locale]/(private)/admin/(protected)/methodology-actions.ts:24 | Unknown methodology operation |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:56 | Non-permissible categories are required |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:204 | Production is already enabled |  |
@@ -268,7 +269,7 @@ callers/keys are merged and this command is rerun. No future navigation copy is 
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:54 | Ratios require financial line items |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:52 | A boolean unit requires boolean direction |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:23 | Version not found |  |
-| runtime phrase | Conditionally rendered: admin action failure: src/components/methodology/AdminMethodologies.tsx:118 | The request failed. Reload the record and try again. |  |
+| runtime phrase | Conditionally rendered: admin action failure: src/components/methodology/AdminMethodologies.tsx:142 | The request failed. Reload the record and try again. |  |
 | runtime phrase | Conditionally rendered: report/action error fallback: src/lib/methodology/service.ts:184 | Impact comparison is incomplete; see the persisted report |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:104 | Finalized criteria are immutable |  |
 | runtime phrase | Conditionally rendered: admin action recheck/failure: src/lib/auth/actions.ts:15 | role_required |  |
@@ -280,6 +281,7 @@ callers/keys are merged and this command is rerun. No future navigation copy is 
 | runtime phrase | Conditionally rendered: report execution failure: src/lib/methodology/reports.ts:6 | Engine execution failed; no result produced |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:124 | Source associations are immutable after draft |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:212 | Invalid production note |  |
+| runtime phrase | Conditionally rendered: admin action failure: src/components/methodology/AdminMethodologies.tsx:329 | Version sections |  |
 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:131 | Complete HTTPS source title/URL, verifier and verification date |  |
 
 ## Legal pages — /terms and /privacy
@@ -340,3 +342,12 @@ callers/keys are merged and this command is rerun. No future navigation copy is 
 | publicMethodology.treatmentRuleData | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:313 | Treatment rule data |  |
 | publicMethodology.versionSelector | Rendered/conditionally rendered: src/components/methodology/PublicMethodologyVersions.tsx:49 | Select a published methodology version |  |
 | publicMethodology.workflowStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:173 | Workflow status |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/methodology/AdminBreadcrumbs.tsx:7 | Breadcrumb |  |
+
+## Shared public shell and foundation samples
+
+| Key/source | Page/component rendering context | Current English source | Arabic (approved) |
+| --- | --- | --- | --- |
+| runtime phrase | Rendered/conditionally rendered: src/components/foundation/RecoveryScreen.tsx:13 | Back to Suhail |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/foundation/RecoveryScreen.tsx:14 | Retry |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/foundation/RecoveryScreen.tsx:11 | This page could not be loaded. |  |

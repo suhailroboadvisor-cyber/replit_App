@@ -352,9 +352,10 @@ new approvals or changing D-101. Legal bodies require O-7 text, not translation.
 
 ## Integration boundary
 
-Step 6 is present. Navigation restoration is not merged into this checkout.
-The final combined post-navigation inventory is BLOCKED until those actual
-callers/keys are merged and this command is rerun. No future navigation copy is invented.
+Step 6 and locale-aware navigation restoration are merged in this checkout.
+This inventory includes their actual callers, including breadcrumbs, version
+sections and recovery-screen home/retry controls. These remain unapproved
+documentation-only drafts; no future navigation copy is invented.
 `;
 export function generate(check = false) {
   const audit = discover();
