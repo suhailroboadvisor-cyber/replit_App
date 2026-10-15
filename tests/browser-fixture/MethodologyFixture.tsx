@@ -31,7 +31,11 @@ export function MethodologyFixture({locale}:{locale:"ar"|"en"}) {
         sharedEngineGoldens:[],analystCases:[]}}],
     sources:[],
   } as unknown as MethodologyAdminData;
+  // A second parent catches cross-methodology version leakage in deep links.
+  data.methodologies.push({...data.methodologies[0],id:"55555555-5555-4555-8555-555555555555",name:"Second UI methodology",slug:"second-ui"});
+  data.versions.push({...data.versions[0],id:"66666666-6666-4666-8666-666666666666",methodology_id:"55555555-5555-4555-8555-555555555555",version_label:"Second v2"});
   return <AdminMethodologies data={data} locale={locale} role={params.get("role")==="editor"?"editor":"admin"}
+    selection={{methodology:params.get("methodology")??undefined,version:params.get("version")??undefined}}
     action={async(command)=>{
       methodologyFixture.calls.push(command);
       return methodologyFixture.fail?{ok:false,error:"Finalized criteria are immutable; create a new draft"}:{ok:true};

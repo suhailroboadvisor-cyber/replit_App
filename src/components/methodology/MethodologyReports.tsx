@@ -2,6 +2,8 @@
 
 import type { MethodologyAdminData } from "@/lib/methodology/admin-data";
 import { GovernedCopy } from "./GovernedCopy";
+import { AdminBreadcrumbs } from "./AdminBreadcrumbs";
+import { BackLink } from "@/components/accounts/BackLink";
 
 type Report = MethodologyAdminData["reports"][number];
 type JsonRecord = Record<string, unknown>;
@@ -295,13 +297,17 @@ function CriterionSnapshot({ titleKey, values }: { titleKey: "previousCriteria" 
 }
 
 export function MethodologyReports({
-  reports, locale, focusId,
+  reports, locale, focusId, parentHref, breadcrumbs,
 }: {
   reports: Report[]; locale: "ar" | "en"; focusId?: string;
+  parentHref?: string;
+  breadcrumbs?: { label: React.ReactNode; href?: string }[];
 }) {
   const ordered = [...reports].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   return (
     <section aria-labelledby="reports-title" className="mt-8 border-t border-border pt-6">
+      {breadcrumbs && <AdminBreadcrumbs locale={locale} items={[...breadcrumbs, { label: <GovernedCopy id="reportArchive" /> }]} />}
+      {parentHref && <BackLink locale={locale} next={parentHref} label="Back to version" />}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground"><GovernedCopy id="governanceReports" /></p>
@@ -329,6 +335,7 @@ export function MethodologyReports({
                   <span className={`font-mono text-xs ${passed ? "text-[var(--byline)]" : "text-muted-foreground"}`}><GovernedCopy id={passed ? "passed" : "reviewFailed"} /></span>
                 </summary>
                 <div className="border-t border-border p-4 sm:p-5">
+                  {parentHref && <BackLink locale={locale} next={parentHref} label="Back to version" />}
                   <dl className="mb-5 grid gap-3 border-b border-border pb-4 text-xs sm:grid-cols-3">
                     <div><dt className="text-muted-foreground"><GovernedCopy id="engineVersion" /></dt><dd className="mt-1 font-mono" dir="ltr">{string(payload.engineVersion) || "—"}</dd></div>
                     <div><dt className="text-muted-foreground"><GovernedCopy id="calculationVersion" /></dt><dd className="mt-1 font-mono" dir="ltr">{string(payload.calculationVersion) || "—"}</dd></div>

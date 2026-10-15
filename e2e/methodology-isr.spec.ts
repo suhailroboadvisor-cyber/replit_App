@@ -57,3 +57,17 @@ for (const path of ["/methodology", "/en/methodology", "/methodology/example-a",
     }
   });
 }
+
+for (const locale of ["ar", "en"] as const) {
+  test(`failed first read renders ${locale} home recovery in the real error boundary`, async ({page}) => {
+    const prefix = locale==="en"?"/en":"";
+    await page.goto(`${prefix}/methodology`);
+    const home=page.locator(`main a[href="${prefix||"/"}"]`);
+    await expect(home).toBeVisible();
+    await home.focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(prefix||"/");
+    await expect(page.locator("html")).toHaveAttribute("lang",locale);
+    await expect(page.getByRole("main")).toHaveAttribute("id","content");
+  });
+}

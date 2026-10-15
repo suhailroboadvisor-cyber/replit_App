@@ -2,7 +2,7 @@
 
 import { LockKeyhole, ArrowUpRight } from "lucide-react";
 import { useState, type FormEvent } from "react";
-import { Lockup } from "@/components/foundation/Lockup";
+import { BackLink } from "./BackLink";
 import { localePath, safeNext } from "@/lib/auth/paths";
 import { googleOAuthUrl } from "@/lib/auth/oauth-url";
 import type { Locale } from "./types";
@@ -64,7 +64,7 @@ export function SignInScreen({ locale, next, valueStatement, providerError }: Si
     <main className="min-h-[100dvh] bg-background px-5 py-10 text-foreground sm:px-8">
       <div className="mx-auto flex min-h-[calc(100dvh-5rem)] max-w-6xl flex-col">
         <header className="flex items-center justify-between">
-          <Lockup />
+          <BackLink locale={locale} next={next} />
           <span className="font-mono text-[11px] tracking-[0.16em] text-muted-foreground">{reviewText(locale, "ACCOUNT ACCESS")}</span>
         </header>
         <section className="my-auto grid items-center gap-12 py-16 lg:grid-cols-[1fr_0.84fr] lg:gap-24">
@@ -145,14 +145,16 @@ export function SignInScreen({ locale, next, valueStatement, providerError }: Si
 export function ConsentScreen({
   locale,
   next,
+  backTo = next,
 }: {
   locale: Locale;
   next?: string | null;
+  backTo?: string | null;
 }) {
   return (
     <main className="min-h-[100dvh] bg-background px-5 py-12 text-foreground sm:px-8">
       <div className="mx-auto max-w-2xl">
-        <Lockup />
+        <BackLink locale={locale} next={backTo} />
         <section className="mt-20 border border-border bg-card p-7 sm:p-10">
           <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">{reviewText(locale, "ACCOUNT / CONSENT")}</p>
           <h1 className="mt-4 text-3xl font-semibold">{reviewText(locale, "Review your agreement")}</h1>

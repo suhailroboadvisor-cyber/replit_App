@@ -11,11 +11,15 @@ import type { MethodologyActionResult, MethodologyCommand } from "@/lib/methodol
 import { governedText, GovernedCopy, type GovernedKey } from "./GovernedCopy";
 import { AnalystCasesEditor, CriterionForm, MetadataForm, SourceAssociation, VersionForm } from "./MethodologyForms";
 import { MethodologyReports } from "./MethodologyReports";
+import { methodologyHref, type MethodologySelection } from "@/lib/methodology/navigation";
+import { AdminBreadcrumbs } from "./AdminBreadcrumbs";
+import { BackLink } from "@/components/accounts/BackLink";
 
 type Props = {
   data: MethodologyAdminData;
   locale: Locale;
   role: "admin" | "editor";
+  selection?: MethodologySelection;
   action: (command: MethodologyCommand) => Promise<MethodologyActionResult>;
 };
 type MethodologyRow = MethodologyAdminData["methodologies"][number];
@@ -44,13 +48,15 @@ function Metric({ label, value }: { label: ReactNode; value: ReactNode }) {
   );
 }
 
-export function AdminMethodologies({ data, locale, role, action }: Props) {
+export function AdminMethodologies({ data, locale, role, action, selection = {} }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const isAdmin = role === "admin";
-  const [methodologyId, setMethodologyId] = useState(data.methodologies[0]?.id ?? "");
-  const initialVersion = data.versions.find((item) => item.methodology_id === methodologyId);
-  const [versionId, setVersionId] = useState(initialVersion?.id ?? "");
+  const [methodologyId, setMethodologyId] = useState(
+    data.methodologies.find((method) => method.id === selection.methodology)?.id ?? data.methodologies[0]?.id ?? "");
+  const initialVersions = data.versions.filter((item) => item.methodology_id === methodologyId);
+  const [versionId, setVersionId] = useState(
+    initialVersions.find((item) => item.id === selection.version)?.id ?? initialVersions[0]?.id ?? "");
   const [editingMetadata, setEditingMetadata] = useState(false);
   const [showNewMetadata, setShowNewMetadata] = useState(false);
   const [editingVersion, setEditingVersion] = useState(false);
@@ -75,11 +81,29 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
     : [];
   const destination = currentVersion ? nextStage(currentVersion.workflow_status) : null;
   const canEditDraft = isAdmin && currentVersion?.workflow_status === "draft";
+  const methodSelection = { methodology: currentMethod?.id };
+  const versionSelection = { ...methodSelection, version: currentVersion?.id };
+  const methodHref = methodologyHref(locale, methodSelection, "methodology-record");
+  const versionHref = methodologyHref(locale, versionSelection, "version-record");
+  const crumbs = [
+    { label: <GovernedCopy id="methodologyManagement" />, href: methodologyHref(locale) },
+    ...(currentMethod ? [{ label: currentMethod.name, href: methodHref }] : []),
+    ...(currentVersion ? [{ label: labelForVersion(currentVersion), href: versionHref }] : []),
+  ];
+  // Keep selections reloadable without adding routes or changing authorization.
+  const rememberSelection = (methodology: string, version?: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("methodology", methodology);
+    if (version) url.searchParams.set("version", version);
+    else url.searchParams.delete("version");
+    window.history.replaceState(null, "", url);
+  };
 
   const chooseMethodology = (method: MethodologyRow) => {
     setMethodologyId(method.id);
     const next = data.versions.find((version) => version.methodology_id === method.id);
     setVersionId(next?.id ?? "");
+    rememberSelection(method.id, next?.id);
     setEditingMetadata(false);
     setEditingVersion(false);
     setEditingCriterion(null);
@@ -122,6 +146,7 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
 
   return (
     <section className="mx-auto max-w-[1280px]">
+      <AdminBreadcrumbs locale={locale} items={crumbs.map((item, index) => index === crumbs.length - 1 ? { label: item.label } : item)} />
       <div className="relative overflow-hidden border border-border bg-card">
         <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 end-0 w-1/3 opacity-30" style={{ background: "linear-gradient(140deg, transparent, var(--brass), transparent)" }} />
         <div className="relative flex flex-col gap-7 p-5 sm:p-8 lg:flex-row lg:items-end lg:justify-between">
@@ -211,7 +236,8 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
 
           {currentMethod && (
             <div className="min-w-0 space-y-5">
-              <section className="border border-border bg-card">
+              <section id="methodology-record" className="border border-border bg-card">
+                <div className="px-5 pt-3"><BackLink locale={locale} next={methodologyHref(locale)} label="Back to methodologies" /></div>
                 <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border p-5 sm:p-6">
                   <div className="min-w-0">
                     <p className="font-mono text-[10px] tracking-[0.14em] text-[var(--byline)]"><GovernedCopy id="methodologyMetadata" /></p>
@@ -271,6 +297,7 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                         <button key={version.id} type="button" onClick={() => {
                           setVersionId(version.id); setEditingVersion(false); setEditingCriterion(null); setShowNewCriterion(false);
                           setShowNewVersion(false); setFeedback(""); setFocusedReportId("");
+                          rememberSelection(currentMethod.id, version.id);
                         }}
                           className={`min-h-12 min-w-36 border px-3 py-2 text-start ${active ? "border-[var(--brass)] bg-secondary" : "border-border hover:bg-secondary/60"}`}>
                           <span className="block font-mono text-xs" dir="ltr">{labelForVersion(version)}</span>
@@ -297,7 +324,12 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                 )}
 
                 {currentVersion && (
-                  <div className="p-5 sm:p-6">
+                  <div id="version-record" className="p-5 sm:p-6">
+                    <BackLink locale={locale} next={methodHref} label="Back to methodology" />
+                    <nav aria-label={reviewError(locale, "Version sections")} className="mb-5 flex flex-wrap gap-4 text-sm">
+                      <a href={methodologyHref(locale, versionSelection, "criteria-record")} className="underline underline-offset-4"><GovernedCopy id="criteria" /></a>
+                      <a href={methodologyHref(locale, versionSelection, "reports-title")} className="underline underline-offset-4"><GovernedCopy id="reportArchive" /></a>
+                    </nav>
                     <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto]">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
@@ -351,7 +383,9 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                       )}
                     </div>
 
-                    <section className="mt-7 border-t border-border pt-5">
+                    <section id="criteria-record" className="mt-7 border-t border-border pt-5">
+                      <AdminBreadcrumbs locale={locale} items={[...crumbs, { label: <GovernedCopy id="criteria" /> }]} />
+                      <BackLink locale={locale} next={versionHref} label="Back to version" />
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
                           <h4 className="font-medium"><GovernedCopy id="criteria" /></h4>
@@ -518,7 +552,8 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                       )}
                     </section>
 
-                    <MethodologyReports reports={currentReports} locale={locale} focusId={focusedReportId} />
+                    <MethodologyReports reports={currentReports} locale={locale} focusId={focusedReportId}
+                      parentHref={versionHref} breadcrumbs={crumbs} />
                   </div>
                 )}
               </section>

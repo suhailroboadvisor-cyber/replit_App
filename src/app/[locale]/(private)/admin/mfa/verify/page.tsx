@@ -26,6 +26,7 @@ export default async function MfaVerifyPage({ params, searchParams }: PageProps)
         locale={locale}
         mode="verify"
         next={requestedNext ?? localePath(locale, "/admin")}
+        backTo={requestedNext ?? localePath(locale, "/")}
       />
     </div>
   );

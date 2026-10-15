@@ -23,5 +23,5 @@ export default async function ConsentPage({ params, searchParams }: PageProps) {
   const context = await requireConsentUser(locale, next ?? localePath(locale, "/account"));
   if (currentConsent(context.user)) redirect(next ?? localePath(locale, "/account"));
 
-  return <ConsentScreen locale={locale} next={next ?? localePath(locale, "/account")} />;
+  return <ConsentScreen locale={locale} next={next ?? localePath(locale, "/account")} backTo={next ?? localePath(locale, "/")} />;
 }

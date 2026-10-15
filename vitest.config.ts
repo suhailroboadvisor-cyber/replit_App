@@ -8,7 +8,7 @@ export default defineConfig({
     // Completion checks run alongside lint/typecheck/coverage. Bound workers
     // instead of weakening assertion timeouts under concurrent cold startup.
     maxWorkers: 2,
-    include: ["src/**/*.test.ts", "tests/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "tests/**/*.test.{ts,tsx}"],
     exclude: ["tests/**/*.integration.test.ts"],
     coverage: {
       provider: "v8",

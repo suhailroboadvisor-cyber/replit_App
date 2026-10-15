@@ -1,12 +1,9 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "../../../i18n/navigation";
 import {
   Disclaimer,
   LocalizedText,
-  LocaleSwitcher,
-  Lockup,
-  ThemeToggle,
 } from "../../../components/foundation";
+import { SiteHeader } from "../../../components/foundation/SiteHeader";
 import { FullDisclaimerLink } from "../../../components/foundation/FullDisclaimerLink";
 import { LocaleDocument, documentMetadata } from "../../../components/foundation/LocaleDocument";
 import { AccountControl } from "../../../components/accounts/AccountControl";
@@ -37,28 +34,16 @@ export default async function PublicLayout({
       >
         <LocalizedText>{t("controls.skip")}</LocalizedText>
       </a>
-      <header className="surface-dark border-b border-[var(--divider)]">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-6 py-5">
-          <Link href="/" aria-label={t("app.name")}>
-            <Lockup surface="dark" />
-          </Link>
-          <div className="flex flex-wrap items-center gap-6">
-            <nav aria-label={t("nav.menu")} className="flex gap-6 text-sm">
-              <Link href="/" className="hover:underline">
-                {t("nav.picks")}
-              </Link>
-              <Link href="/methodology" className="hover:underline">
-                {t("nav.methodologies")}
-              </Link>
-            </nav>
-              <AccountControl locale={locale === "en" ? "en" : "ar"} />
-            <div className="flex items-center gap-3 border-s border-[var(--divider)] ps-5">
-              <LocaleSwitcher className="text-sm hover:underline" />
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-      </header>
+      <SiteHeader
+        locale={locale === "en" ? "en" : "ar"}
+        labels={{
+          appName: t("app.name"),
+          menu: t("nav.menu"),
+          picks: t("nav.picks"),
+          methodologies: t("nav.methodologies"),
+        }}
+        accountControl={<AccountControl locale={locale === "en" ? "en" : "ar"} />}
+      />
       {children}
       <footer className="mx-auto max-w-6xl border-t border-[var(--divider)] px-6 py-8 text-sm text-muted-foreground">
         <Disclaimer />

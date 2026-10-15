@@ -18,6 +18,9 @@ import {
 import type { ActionResult, Locale, Role } from "./types";
 import { reviewText } from "./types";
 import { localePath } from "@/lib/auth/paths";
+import { Lockup } from "@/components/foundation/Lockup";
+import { BackLink } from "./BackLink";
+import { activeAdminSection } from "@/lib/auth/admin-navigation";
 
 type UserRow = {
   id: string;
@@ -68,11 +71,11 @@ export function AdminShell({
   const visible = navItems.filter((item) => item.mode !== "admin" || role === "admin");
   return (
     <div className="min-h-[100dvh] bg-background text-foreground">
-      <header className="flex min-h-16 items-center justify-between border-b border-border px-5 sm:px-8">
-        <a href={localePath(locale, "/")} className="flex items-center gap-3 text-sm font-semibold">
-          <span className="flex size-8 items-center justify-center border border-primary text-primary">س</span>
-          Suhail <span className="font-mono text-[10px] tracking-[0.12em] text-muted-foreground">{reviewText(locale, "EDITORIAL")}</span>
+      <header className="flex min-h-16 flex-wrap items-center justify-between gap-4 border-b border-border px-5 py-4 sm:px-8">
+        <a href={localePath(locale, "/")} aria-label={reviewText(locale, "Suhail · Public research")} className="focus-visible:outline-2 focus-visible:outline-offset-4">
+          <Lockup />
         </a>
+        <BackLink locale={locale} label="Back to Suhail" />
         <form action={localePath(locale, "/auth/sign-out")} method="post">
           <div className="flex items-center gap-4">
             <div className="hidden text-end sm:block">
@@ -92,7 +95,7 @@ export function AdminShell({
           </p>
           <nav aria-label={reviewText(locale, "Admin navigation")} className="flex gap-1 overflow-x-auto md:flex-col">
             {visible.map(({ href, label, icon: Icon }) => {
-              const active = currentPath === href;
+              const active = activeAdminSection(currentPath) === href;
               return (
                 <a
                   key={href}

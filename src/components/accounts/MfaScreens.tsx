@@ -2,8 +2,7 @@
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Check, Copy, KeyRound, LoaderCircle, ShieldCheck } from "lucide-react";
-import { Link } from "@/i18n/navigation";
-import { Lockup } from "@/components/foundation";
+import { BackLink } from "./BackLink";
 import { createBrowserAuth } from "@/lib/auth/browser";
 import { localePath } from "@/lib/auth/paths";
 import { abandonedTotpFactors, normalizeTotpQr, type MfaFactor } from "@/lib/auth/mfa-enrollment";
@@ -42,10 +41,12 @@ export function MfaClientPanel({
   locale,
   mode,
   next,
+  backTo = next,
 }: {
   locale: Locale;
   mode: "enroll" | "verify";
   next?: string;
+  backTo?: string;
 }) {
   const [client, setClient] = useState<MfaClient | null>(null);
   const [unavailable, setUnavailable] = useState(false);
@@ -70,11 +71,11 @@ export function MfaClientPanel({
   }, []);
   if (client) {
     return mode === "enroll"
-      ? <MfaEnrollScreen locale={locale} client={client} next={next} />
-      : <MfaVerifyScreen locale={locale} client={client} next={next} />;
+      ? <MfaEnrollScreen locale={locale} client={client} next={next} backTo={backTo} />
+      : <MfaVerifyScreen locale={locale} client={client} next={next} backTo={backTo} />;
   }
   return (
-    <MfaFrame locale={locale} marker={reviewText(locale, "ADMIN ACCESS")}>
+    <MfaFrame locale={locale} next={backTo} marker={reviewText(locale, "ADMIN ACCESS")}>
       {unavailable ? (
         <>
           <h1 className="text-2xl font-semibold">{reviewText(locale, "Authenticator setup is unavailable")}</h1>
@@ -97,10 +98,12 @@ export function MfaEnrollScreen({
   locale,
   client,
   next,
+  backTo = next,
 }: {
   locale: Locale;
   client: MfaClient;
   next?: string;
+  backTo?: string;
 }) {
   const [factorId, setFactorId] = useState("");
   const [qrCode, setQrCode] = useState("");
@@ -178,7 +181,7 @@ export function MfaEnrollScreen({
   };
 
   return (
-    <MfaFrame locale={locale} marker={reviewText(locale, "ADMIN ACCESS / ENROLL")}>
+    <MfaFrame locale={locale} next={backTo} marker={reviewText(locale, "ADMIN ACCESS / ENROLL")}>
       <div className="flex size-12 items-center justify-center border border-border bg-secondary">
         <KeyRound aria-hidden="true" size={21} strokeWidth={1.6} />
       </div>
@@ -251,10 +254,12 @@ export function MfaVerifyScreen({
   locale,
   client,
   next,
+  backTo = next,
 }: {
   locale: Locale;
   client: MfaClient;
   next?: string;
+  backTo?: string;
 }) {
   const [code, setCode] = useState("");
   const [pending, setPending] = useState(false);
@@ -290,7 +295,7 @@ export function MfaVerifyScreen({
   };
 
   return (
-    <MfaFrame locale={locale} marker={reviewText(locale, "ADMIN ACCESS / VERIFY")}>
+    <MfaFrame locale={locale} next={backTo} marker={reviewText(locale, "ADMIN ACCESS / VERIFY")}>
       <div className="flex size-12 items-center justify-center border border-border bg-secondary">
         <ShieldCheck aria-hidden="true" size={21} strokeWidth={1.6} />
       </div>
@@ -327,22 +332,25 @@ function MfaFrame({
   locale,
   marker,
   children,
+  next,
 }: {
   locale: Locale;
   marker: string;
   children: ReactNode;
+  next?: string;
 }) {
   return (
     <main dir={locale === "ar" ? "rtl" : "ltr"} className="min-h-[100dvh] bg-background px-5 py-10 text-foreground sm:px-8">
       <div className="mx-auto max-w-5xl">
         <header className="flex items-center justify-between border-b border-border pb-5">
-          <Link href="/" aria-label={reviewText(locale, "Suhail · Public research")} className="inline-flex items-center">
-            <Lockup />
-          </Link>
+          <BackLink locale={locale} next={next} />
           <span className="font-mono text-[10px] tracking-[0.14em] text-muted-foreground">{marker}</span>
         </header>
         <section className="mx-auto mt-12 max-w-2xl border border-border bg-card p-6 text-card-foreground sm:mt-20 sm:p-10">
           {children}
+          <form action={localePath(locale, "/auth/sign-out")} method="post" className="mt-6">
+            <button type="submit" className="min-h-11 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4">{reviewText(locale, "Sign out")}</button>
+          </form>
         </section>
       </div>
     </main>
