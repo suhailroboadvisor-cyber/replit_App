@@ -9,9 +9,9 @@ for (const locale of ["ar", "en"] as const) {
   const messages=locale==="ar"?arMessages:enMessages;
   test(`@security ${locale} actual public/auth/404 home links and guarded Back destination`, async ({page}) => {
     for (const path of [prefix||"/", `${prefix}/auth/sign-in?error=cancelled`, `${prefix}/auth/sign-in?error=provider`, `${prefix}/missing-navigation-page`]) {
-    const response = await request.get(url);
+      const response = await page.goto(path);
       if (path.endsWith("missing-navigation-page")) expect(response?.status()).toBe(404);
-  const home = publicHomes[locale];
+      const home=page.locator(`a[href="${prefix||"/"}"]`).first();
       await expect(home).toBeVisible();
       await home.focus();
       await page.keyboard.press("Enter");
@@ -29,7 +29,7 @@ for (const locale of ["ar", "en"] as const) {
     page, request,
   }) => {
     test.skip(Boolean(process.env.CI), "D-78: database-available checks run in a configured runtime; database-free CI runs the cold ISR suite.");
-  let profiles = 0;
+    let profiles = 0;
     page.on("request", (req) => {
       if (new URL(req.url()).pathname === "/api/account/profile") profiles++;
     });
@@ -45,7 +45,7 @@ for (const locale of ["ar", "en"] as const) {
     await expect(page.getByRole("main").getByText(locale === "ar" ? "هذا القسم غير متاح بعد" : "This section is not available yet", { exact: true })).toHaveCount(0);
     await expect(page.locator("#content")).toHaveCount(1);
     expect(profiles).toBe(0);
-    const response = await request.get(url);
+    const response = await request.get(`${prefix}/methodology`);
     expect(response.status()).toBe(200);
     expect(response.headers()["set-cookie"]).toBeUndefined();
     expect(response.headers()["cache-control"]).toContain("s-maxage=900");
@@ -56,7 +56,7 @@ for (const locale of ["ar", "en"] as const) {
   });
   test(`${locale} example-a public documentation renders literal criteria and no-margin evidence`,async({page,request})=>{
     test.skip(Boolean(process.env.CI), "D-78: database-available checks run in a configured runtime; database-free CI runs the cold ISR suite.");
-    const response = await request.get(url);
+    const response = await page.goto(`${prefix}/methodology/example-a`);
     expect(response?.status()).toBe(200);
     await expect(page.getByText(messages.banner.exampleMethodology,{exact:true})).toBeVisible();
     await expect(page.getByRole("table")).toBeVisible();
@@ -98,7 +98,7 @@ test("@security encoded private roots including dotted descendants stay private 
     "/en/%61uth/sign-in",
     "/en/%61dmin/hidden.json",
   ]) {
-    const response = await request.get(url);
+    const response = await request.get(path, { maxRedirects: 0 });
     const headers = response.headers();
     expect(headers["cache-control"]).toContain("private");
     expect(headers["cache-control"]).toContain("no-store");
@@ -136,7 +136,7 @@ test("@security private production scripts use nonce CSP and restore theme; lega
   await page.goto("/");
   await expect(page.getByRole("link", { name: "تسجيل الدخول" })).toBeVisible();
   expect(profiles).toBe(0);
-    const response = await request.get(url);
+  const response = await page.goto("/en/auth/sign-in?next=%2Fen%2Faccount");
   await expect(page.locator("html")).not.toHaveClass(/dark/);
   await expect(
     page.getByRole("button", { name: "Continue with Google" }),
@@ -270,9 +270,9 @@ test.describe("@phone public production touch controls", () => {
         }),
         contentType: "application/json",
       });
-  const home = publicHomes[locale];
-  const otherLocale = locale === "ar" ? "en" : "ar";
-  const otherHome = publicHomes[otherLocale];
+      const home = publicHomes[locale];
+      const otherLocale = locale === "ar" ? "en" : "ar";
+      const otherHome = publicHomes[otherLocale];
       await page.goto(home.path);
       expect(await page.evaluate(() => localStorage.getItem("suhail-theme"))).toBeNull();
       await expectHomeTheme(page, locale, "dark");
@@ -302,9 +302,9 @@ test.describe("@phone public production touch controls", () => {
       await expectHomeTheme(restored, locale, "dark");
       await restored.close();
 
-    const details = page.locator("#full-disclaimer");
+      const details = page.locator("#full-disclaimer");
       const paragraph = details.locator("p");
-    const summary = details.locator("summary");
+      const summary = details.locator("summary");
       await expect(details).not.toHaveAttribute("open");
       await expect(paragraph).toBeHidden();
       await page.getByRole("link", { name: home.disclaimer, exact: true }).tap();
