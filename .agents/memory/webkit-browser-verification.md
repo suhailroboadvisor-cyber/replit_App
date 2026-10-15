@@ -20,3 +20,13 @@ Playwright download is not evidence that the application is broken.
 and pass it to the existing Chromium-only test override for that invocation.
 Do not change the WebKit executable or weaken application assertions, and do
 not assume the workspace override should replace versioned browsers in CI.
+
+A native browser's successful launch/version response is not proof that its
+page-rendering runtime works.
+
+**Why:** a bundled WebKit answered launch/version probes but hung creating a page
+before any application navigation, making all UI cases time out.
+
+**How to apply:** verify basic page creation before running a full native-browser
+UI suite. Distinguish page-fixture/runtime failures from application failures and
+use a supported, matching browser installation for the final engine verification.

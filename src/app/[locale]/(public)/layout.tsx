@@ -10,10 +10,13 @@ import {
 import { FullDisclaimerLink } from "../../../components/foundation/FullDisclaimerLink";
 import { LocaleDocument, documentMetadata } from "../../../components/foundation/LocaleDocument";
 import { AccountControl } from "../../../components/accounts/AccountControl";
-import { routing } from "../../../i18n/routing";
 export const metadata = documentMetadata;
+export const revalidate = 900;
+export const dynamic = "force-static";
 export function generateStaticParams() {
-  return routing.locales.map(locale => ({locale}));
+  // D-102: no database access or public-page rendering during CI/image builds.
+  // Each locale/page is generated and cached on its first runtime request.
+  return [];
 }
 
 export default async function PublicLayout({
