@@ -7,6 +7,7 @@
   },
   "packageManager": "pnpm@10.26.1",
   "scripts": {
+    "ar-review:list": "tsx scripts/ar-review.ts",
     "admin:grant": "tsx scripts/admin/grant.ts",
     "admin:reset-mfa": "tsx scripts/admin/reset-mfa.ts",
     "brand:icons": "tsx scripts/brand-icons.ts",

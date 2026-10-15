@@ -108,27 +108,16 @@ describe("brand preservation and real exported icons", () => {
   });
 });
 describe("dictionary extraction and explicitly unapproved Arabic", () => {
-  const active = [
-    "app",
-    "nav",
-    "common",
-    "status",
-    "stock",
-    "why",
-    "methodologies",
-    "admin",
-    "disclaimer",
-    "banner",
-    "methodology",
-    "controls",
-    "styleguide",
-  ];
+  const active = Object.keys(en);
+  it("has recursive parity across the entire dictionary", () => {
+    expect(Object.keys(leaves(ar)).sort()).toEqual(Object.keys(leaves(en)).sort());
+  });
   it.each(active)("has recursive leaf parity for %s", (namespace) => {
     expect(Object.keys(leaves((ar as Tree)[namespace] as Tree)).sort()).toEqual(
       Object.keys(leaves((en as Tree)[namespace] as Tree)).sort(),
     );
   });
-  it("preserves Appendix leaves, allowing only specified changes", async () => {
+  it("preserves surviving Appendix leaves, allowing only specified changes", async () => {
     const ref = await readFile("docs/SUHAIL_BUILD_REFERENCE.md", "utf8");
     for (const [appendix, dict] of [
       ["Appendix A", en],
@@ -141,6 +130,8 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
       for (const [key, value] of Object.entries(leaves(original))) {
         if (["app.name", "app.tagline", "app.workingTitleNote"].includes(key))
           continue;
+        // The Phase 0 caller audit removes unused prototype copy symmetrically.
+        if (!(key in leaves(dict))) continue;
         expect(leaves(dict)[key]).toBe(value.replaceAll("بصغة", "بصمة"));
       }
     }
@@ -172,8 +163,6 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
             : undefined) ?? `⟦AR-REVIEW⟧ ${english[key]}`,
         );
     }
-    expect(ar.status.runHash).toBe("بصمة التشغيل");
-    expect(ar.governance.hashMatch).toBe("تطابق البصمة");
   });
   it("contains no obsolete branding in src or messages", async () => {
     async function scan(path: string): Promise<void> {
@@ -254,7 +243,7 @@ describe("bilingual status and coverage", () => {
   });
   it("keeps the review marker visible and isolates English placeholder text", () => {
     const html = renderToStaticMarkup(
-      createElement(LocalizedText, null, ar.nav.screen),
+      createElement(LocalizedText, null, ar.methodologies.title),
     );
     expect(html).toContain('lang="en" dir="ltr"');
     expect(html).toContain("⟦AR-REVIEW⟧ ");

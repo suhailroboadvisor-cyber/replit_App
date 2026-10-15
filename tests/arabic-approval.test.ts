@@ -10,12 +10,10 @@ import { renderArabicDraft, type ReasonCode } from "../src/engine";
 import Forbidden from "../src/app/[locale]/(private)/forbidden";
 import ar from "../src/i18n/messages/ar.json";
 import en from "../src/i18n/messages/en.json";
+import baseline from "./fixtures/arabic-approval-baseline.json";
 
-// Historical Phase 1 rows are the review baseline; D-101's explicit edits override it.
-const sheet = readFileSync("docs/ARABIC_REVIEW.md", "utf8");
-const rows = sheet.split("\n")
-  .filter((line) => /^\| (J-|A-|F-|E-|I-|L-)/.test(line))
-  .map((line) => line.split("|").slice(1, -1).map((value) => value.trim()));
+// Immutable historical evidence, independent of the regenerated pending sheet.
+const rows = baseline.rows;
 const edits: Record<string, string> = {
   "J-disclaimer-short": "نتائج الفحص لأغراض المعلومات فقط — وليست فتوى. تختلف المنهجيات واجتهادات العلماء. التحليل المالي ليس نصيحة استثمارية شخصية.",
   "J-banner-demo": "بيانات افتراضية / عرض تجريبي. كل الأرقام والإفصاحات والأسعار والمنهجيات في هذه الشاشة افتراضية أُعدّت لأغراض العرض فقط، ولا تصف أي مُصدِر أو سوق أو حكم حقيقي.",
@@ -39,12 +37,16 @@ const english = en as Record<string, Record<string, string>>;
 const deferred = (id: string) => /^J-(methodologies-|admin-|nav-screen$)/.test(id);
 
 describe("D-101 row-level Arabic approval boundary", () => {
-  it("applies exactly the 11 approved JSON rows and leaves all 82 deferred rows marked", () => {
+  it("preserves exactly the 11 approved JSON rows; surviving deferred keys remain marked", () => {
     const jsonRows = rows.filter(([id]) => id.startsWith("J-"));
     expect(jsonRows).toHaveLength(93);
     expect(jsonRows.filter(([id]) => deferred(id))).toHaveLength(82);
     for (const [id, location, , source, draft] of jsonRows) {
       const [namespace, key] = location.replaceAll("`", "").split(".");
+      if (deferred(id) && english[namespace]?.[key] === undefined) {
+        expect(json[namespace]?.[key], id).toBeUndefined();
+        continue;
+      }
       expect(english[namespace][key], id).toBe(source);
       expect(json[namespace][key], id).toBe(
         deferred(id) ? `⟦AR-REVIEW⟧ ${source}` : approvedDraft(id, draft),
@@ -116,9 +118,9 @@ describe("D-101 row-level Arabic approval boundary", () => {
     }
   });
   it("uses all 19 approved explanation substitutions, with edited staleness and primary ties", () => {
-    const substitutions = [...sheet.matchAll(/^- `(\w+)`: .* → `(.*)`/gm)];
+    const substitutions = baseline.substitutions;
     expect(substitutions).toHaveLength(19);
-    for (const [, code, draft] of substitutions) {
+    for (const [code, draft] of substitutions) {
       const expected = code === "stale_data" ? "الفترة المالية أقدم من الحد المسموح به لعمر البيانات."
         : code === "primary_tied" ? "تساوت أكبر حصص القطاعات، فتعذّر تحديد النشاط الرئيسي."
         : code === "criterion_counts" ? "" : draft;

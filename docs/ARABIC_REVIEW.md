@@ -1,348 +1,342 @@
-# Arabic copy review — inventory and approval record
+# Live Arabic review — unapproved documentation-only drafts
 
-## 0. Current approval state — D-101
+Generated deterministically by `pnpm ar-review:list`. Live pending rows: **272**.
 
-The founder explicitly authorized Phase 2 for **87 rows** and their edits. Applied: all 11 marked disclaimer/banner/methodology-note/styleguide JSON rows; A-001–A-042; all 27 F-* audit codes; all six E-* templates and their explanation substitutions; I-forbidden.
+## Boundaries and coverage
 
-The founder's edits supersede the historical drafts below:
+This is a live-only pending inventory, not an approval record. D-96/D-101
+approval evidence is pinned independently in tests/fixtures/arabic-approval-baseline.json.
+No translations are applied by this command. Existing IDs survive; keyed IDs
+are J-namespace-key; new unkeyed phrases use a full SHA-256 source ID (U-...).
+Drafts are retained only while their exact English source matches. A source
+change requires a new draft; missing drafts are visibly flagged.
+Edit docs/arabic-drafts.json to retain a row-specific documentation draft;
+docs/arabic-draft-proposals.json supplies documentation-only defaults for new sources.
+Neither file is imported by the application.
 
-- J-disclaimer-short: `نتائج الفحص لأغراض المعلومات فقط — وليست فتوى. تختلف المنهجيات واجتهادات العلماء. التحليل المالي ليس نصيحة استثمارية شخصية.`
-- J-disclaimer-full: change `مخصّصة لك` to `شخصية` and `متاحة للجميع` to `متاحة للعموم`; otherwise retain the draft.
-- J-banner-demo: `بيانات افتراضية / عرض تجريبي. كل الأرقام والإفصاحات والأسعار والمنهجيات في هذه الشاشة افتراضية أُعدّت لأغراض العرض فقط، ولا تصف أي مُصدِر أو سوق أو حكم حقيقي.`
-- J-banner-exampleMethodology: `مثال — غير مُتحقَّق منه — غير مُعتمد للاستخدام الفعلي. هذه المنهجية تعريف تجريبي، وليست معيارًا منشورًا، ولا تحظى بأي تأييد.`
-- A-042: `تبقى الأبحاث العامة متاحة للجميع.`
-- F-user_mfa_reset: `إعادة تعيين تطبيق المصادقة لمستخدم`.
-- J-styleguide-intro: `للتطوير فقط. هذه نماذج للمكوّنات وليست نتائج فحص. الألوان الدلالية المشتقة مقترحات لم يعتمدها المؤسس بعد.`
-- E-*: no displayed reason code. Blocking/review unknown templates are exactly `{field}: {explanation}` without extra repeated phrases. Ratio uses 2 decimals; threshold stays as configured, without forced decimals; `%` only for percent units; Western digits; null ratio `غير معروف`, null threshold `غير محدد`. This follows the founder's subsequent clarification; the English renderer is unchanged.
-- `stale_data`: `الفترة المالية أقدم من الحد المسموح به لعمر البيانات.`
-- `primary_tied`: `تساوت أكبر حصص القطاعات، فتعذّر تحديد النشاط الرئيسي.`
-- Terminology: Editions = `الأعداد`, weekly edition = `العدد الأسبوعي`; F-edition_draft_created = `إنشاء مسودة عدد`, F-edition_published = `نشر عدد`, F-edition_revision = `مراجعة عدد`, F-edition_status_change = `تغيير حالة عدد`. Methodology/software versions remain `إصدارات`, not `أعداد`.
+Contexts identify rendered/conditionally rendered call sites, including
+accessible labels, confirmation prompts, metadata, error states and feedback.
+“Rendered/conditionally rendered” does not assert that every branch is visible
+on initial load. Foundation samples include development-only styleguide usages.
+Methodology forms/reports are live, authenticated admin/editor UI, not future-only.
+Stored source metadata, criterion labels, rules, report JSON, workflow notes,
+engine evidence and audit summaries are arbitrary data, not finite translation keys.
+reviewText/reviewError preserve markers on arbitrary unapproved auth/audit/action
+fallbacks; Zod paths/issues and EngineInputError details are unbounded.
+Concrete custom validation and governance-error sources are listed; generated
+Zod built-in messages are described here, not fabricated as an infinite list.
+Stored report errors render verbatim in report evidence (without a review marker);
+their concrete sources are included as unapproved documentation, not silently
+treated as approved translations. Arbitrary exception/report text remains unbounded.
+Approved account/audit entries and all currently approved engine templates are absent.
+No engine reason template currently carries a review marker.
 
-**Still deferred: 84 rows.** All J-methodologies-* (30), J-admin-* (51), J-nav-screen (1) retain Arabic review markers, even when an identical English phrase is approved elsewhere. L-terms-body and L-privacy-body (2) retain both legal and Arabic review markers pending O-7. Arbitrary unapproved audit summaries and future unknown fallback phrases remain marked. No legal bodies, policy versions, fixed status labels, engine decisions or founder reference were changed.
+Caller audit uses translator bindings, finite dynamic type unions (status/theme/
+disclaimer), wrapper id/label props, governedText success/error feedback, direct
+dictionary adapters, and runtime markers. LocaleDocument/getMessages supplies
+the provider; passing the whole dictionary is not evidence that every leaf renders.
+Whole-namespace dynamic consumers are retained and reported if unresolved.
+Tests, dictionaries and documentation alone never establish a live caller.
 
-The original Phase 1 inventory follows as a **historical review baseline**. Its “UNAPPROVED” draft column headings and Phase 1-only instructions describe the state when the sheet was first prepared; the explicit D-101 approval record above governs the approved subset now. They do not revoke the founder's Phase 2 authorization or approve the remaining rows.
+## Draft terminology — D-103–D-106
 
-Phase 2 verification after syncing the concurrent methodology work: typecheck, lint, logical-direction lint and 608 unit tests passed; 215 engine tests passed with 100% coverage; all 51 Arabic/English account/methodology browser-fixture tests passed, including the actual forbidden component under each locale's provider. Both methodology and forbidden fixture modes are preserved. The forbidden screen preserves the English denial message on `/en` and uses approved Arabic on Arabic routes. The public home screenshot shows the approved Arabic disclaimer without a marker. Real signed-in UI was not visually verified; authenticated component behavior was exercised only through isolated auth-boundary fixtures. English reason rendering, all legal files, current policy versions and the founder reference have no diff.
+- Edge cases = الحالات الخاصة; حدية is reserved for borderline.
+- User-facing production = مُعتمد للاستخدام الفعلي / غير مُعتمد للاستخدام الفعلي.
+- Admin “Enable for production” = اعتماد للاستخدام الفعلي.
+- Verified by = جهة التحقق.
 
-## Historical Phase 1 scope
+These founder-specified draft constraints do not authorize copy application,
+new approvals or changing D-101. Legal bodies require O-7 text, not translation.
 
-**Every Arabic draft below is UNAPPROVED.** This sheet is a proposal for the founder's row-level review, not professional legal or religious approval. Implementation awaits the founder's explicit row approvals and separate Phase 2 authorization. Acceptance of this documentation task does not approve any translation.
+## Integration boundary
 
-Only this document is added. Application copy, `approved-arabic.ts`, `ar.json`, tests, legal files, both review markers, the founder-owned reference and the decision log remain untouched. No D-101 is recorded.
+Step 6 is present. Navigation restoration is not merged into this checkout.
+The final combined post-navigation inventory is BLOCKED until those actual
+callers/keys are merged and this command is rerun. No future navigation copy is invented.
 
-## 1. Baseline and review rules
+## Admin methodology — /admin/methodologies
 
-- Inventory snapshot: 2026-10-14, checkout `7518881`, scanned at approximately 22:00 UTC; clean working tree before this document. Counts are from this checkout, not historical handoff counts. Concurrent methodology work is not assumed to be present or edited.
-- Sources consulted: `replit.md`; `docs/SUHAIL_BUILD_REFERENCE.md` Appendix B and §§4.3, 4.6, 7.1, 7.3, 11; `docs/DECISIONS.md` (especially D-42/D-59, D-63/D-66, D-70, D-79/D-80, D-96); foundation, accounts and engine handoffs; current approved dictionary and runtime callers.
-- Modern Standard Arabic, short sentences, Western digits `0-9`. Keep identifiers, named services, interpolation fields, URLs and machine keys intact. The literal deletion token remains `DELETE`; its existing approved instruction `اكتب "DELETE" للتأكيد` is outside this inventory.
-- D-96 wording is reused exactly where a marked source matches an approved phrase: for example `Admin` → `الإدارة`, `Name` → `الاسم`, `Audit trail` → `سجل التدقيق`. This does not authorize changing a marked JSON key merely because its phrase has approval elsewhere.
-- Appendix B terminology is retained: `المنهجية`, `إصدار المنهجية`, `المعيار`, `النسبة`, `الحد`, `البسط`, `المقام`, `هامش الحد`, `الحالات الحدية`, `سجل التغييرات`. Existing approved page titles `شروط الاستخدام` and `سياسة الخصوصية` are not unapproved legal bodies.
-- Fixed §7.1 labels are not proposed for replacement: `passes_selected_methodology` = `متوافق على الأرجح`; `fails_selected_methodology` = `غير متوافق على الأرجح`; `requires_review` = `يحتاج إلى مراجعة`; `insufficient_data` = `بيانات غير كافية`. The reference's pre-launch reviewer confirmation remains separate.
-- §11 limitations are preserved: informational screening, no fatwa, no individual religious ruling, no claim of Shariah authority, no endorsement, no personalized investment advice. Both disclaimer drafts explicitly use `ليست فتوى`.
-- Drafts translate the current English source, not a redesigned product. Some unused sources describe outdated behavior (notably production prerequisites, immutable-on-creation wording and demo mutation). Their inventory inclusion does not validate that behavior; any later source revision requires a new copy review.
-
-### Approval or edits
-
-Reply with individual IDs, for example `Approve J-nav-screen` or `Edit A-001: <exact replacement Arabic>`. IDs stay tied to their source key, phrase or reason kind; do not renumber existing rows when new copy is added. An approval of one JSON key does not approve another identical-valued key. Reused account phrases have one row with all screen usages. Legal rows cannot be approved as translations: supply separately reviewed O-7 text. Unmentioned rows remain unapproved. Even after row approval, do not apply wording or remove markers without explicit Phase 2 authorization.
-
-## 2. Reconciled totals
-
-| Source group | UI label | help/error | status reason template | disclaimer/banner (religious-legal) | legal document (do not translate; needs O-7 text) | Total |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Marked `ar.json` leaves | 70 | 18 | 0 | 5 | 0 | 93 |
-| Unapproved account dictionary entries | 2 | 40 | 0 | 0 | 0 | 42 |
-| Concrete audit-code fallback values (schema vocabulary) | 27 | 0 | 0 | 0 | 0 | 27 |
-| Arabic engine templates | 0 | 0 | 6 | 0 | 0 | 6 |
-| Inline forbidden message | 0 | 1 | 0 | 0 | 0 | 1 |
-| Arabic legal bodies | 0 | 0 | 0 | 0 | 2 | 2 |
-| **Total review rows** | **99** | **59** | **6** | **5** | **2** | **171** |
-
-JSON namespace totals: `nav` 1, `methodologies` 30, `admin` 51, `disclaimer` 2, `methodology` 1, `banner` 2, `styleguide` 6 = 93. Account dictionary: 164 entries = 122 with D-96 approved wording + 42 marked computed values; all 42 have concrete callers in this checkout. No unapproved account entry was found without a caller.
-
-Of the 27 audit codes, 6 have current non-test writers and 21 are schema-supported values with no current writer found. All can be rendered if stored records are supplied to the audit screen; they are listed separately from the unbounded summary context, not asserted to exist in the database.
-
-### Context notation
-
-- **Not yet rendered** means no current caller of that dictionary key was found. It is still inventoried for future screens. In this snapshot all 30 `methodologies.*`, all 51 `admin.*` and `nav.screen` keys are not yet rendered; existing admin screens use account phrases instead, and `/methodology` is a deferred placeholder using approved `nav.methodologies`.
-- **Styleguide** = `/styleguide` in development only; production returns 404. All six marked styleguide keys have callers. `methodology.pageNote` and both banners are currently sampled there, not evidence of implemented stock/methodology detail pages.
-- **Public shell** = public layout, including home and legal pages. The short disclaimer and expandable full disclaimer render through `Disclaimer`; the styleguide also samples them.
-- Account component locations are under `src/components/accounts/`; routes are Arabic default with equivalent `/en` routes. Errors and success messages appear only under the stated condition, not necessarily on initial page load.
-
-## 3. Marked JSON leaves
-
-All locations in this section are exact keys in `src/i18n/messages/ar.json`; English sources match the same keys in `en.json` after removing the Arabic review prefix. Separate keys remain individually addressable.
-
-| ID | Key/location | Screen/context | English source | Proposed Arabic draft — UNAPPROVED | Category |
+| ID | Key/source | Page/component rendering context | Current English source | Arabic draft — UNAPPROVED, documentation only | Category |
 | --- | --- | --- | --- | --- | --- |
-| J-nav-screen | `nav.screen` | Not yet rendered; future navigation | Screen | الفحص | UI label |
-| J-methodologies-title | `methodologies.title` | Not yet rendered; future methodology directory | Methodology Center | مركز المنهجيات | UI label |
-| J-methodologies-subtitle | `methodologies.subtitle` | Not yet rendered; future directory introduction | Every rule this application applies, with its source reference, version and verification status. | كل قاعدة يطبّقها هذا التطبيق، مع مرجع مصدرها وإصدارها وحالة التحقق منها. | help/error |
-| J-methodologies-publisher | `methodologies.publisher` | Not yet rendered; future methodology metadata | Publisher | الجهة الناشرة | UI label |
-| J-methodologies-officialOrAdapted | `methodologies.officialOrAdapted` | Not yet rendered; future metadata | Official or adapted | رسمي أو مقتبس | UI label |
-| J-methodologies-sourceDocument | `methodologies.sourceDocument` | Not yet rendered; future source link | Source document | وثيقة المصدر | UI label |
-| J-methodologies-version | `methodologies.version` | Not yet rendered; future version metadata | Version | الإصدار | UI label |
-| J-methodologies-effectiveDate | `methodologies.effectiveDate` | Not yet rendered; future metadata | Effective date | تاريخ السريان | UI label |
-| J-methodologies-ruleGroups | `methodologies.ruleGroups` | Not yet rendered; future criteria groups | Rule groups | مجموعات القواعد | UI label |
-| J-methodologies-changeHistory | `methodologies.changeHistory` | Not yet rendered; future history | Change history | سجل التغييرات | UI label |
-| J-methodologies-verification | `methodologies.verification` | Not yet rendered; future metadata | Verification | التحقق | UI label |
-| J-methodologies-verifiedBy | `methodologies.verifiedBy` | Not yet rendered; future metadata | Verified by | تحقّق منه | UI label |
-| J-methodologies-verificationDate | `methodologies.verificationDate` | Not yet rendered; future metadata | Verification date | تاريخ التحقق | UI label |
-| J-methodologies-productionStatus | `methodologies.productionStatus` | Not yet rendered; future metadata | Production status | حالة الإنتاج | UI label |
-| J-methodologies-inProduction | `methodologies.inProduction` | Not yet rendered; future enabled state | Available in production | متاح في الإنتاج | UI label |
-| J-methodologies-notInProduction | `methodologies.notInProduction` | Not yet rendered; future disabled state | Not enabled for production | غير مفعّل للإنتاج | UI label |
-| J-methodologies-licensing | `methodologies.licensing` | Not yet rendered; future metadata | Licensing | الترخيص | UI label |
-| J-methodologies-scope | `methodologies.scope` | Not yet rendered; future metadata | Scope | النطاق | UI label |
-| J-methodologies-official | `methodologies.official` | Not yet rendered; future provenance | Official | رسمي | UI label |
-| J-methodologies-adapted | `methodologies.adapted` | Not yet rendered; future provenance | Adapted | مقتبس | UI label |
-| J-methodologies-internalExample | `methodologies.internalExample` | Not yet rendered; future provenance | Internal example | مثال داخلي | UI label |
-| J-methodologies-sourceRef | `methodologies.sourceRef` | Not yet rendered; future criterion source | Source reference | مرجع المصدر | UI label |
-| J-methodologies-definition | `methodologies.definition` | Not yet rendered; future criterion | Definition | التعريف | UI label |
-| J-methodologies-formula | `methodologies.formula` | Not yet rendered; future criterion | Formula | الصيغة | UI label |
-| J-methodologies-treatment | `methodologies.treatment` | Not yet rendered; future criterion | Treatment rules | قواعد المعالجة | UI label |
-| J-methodologies-edgeCases | `methodologies.edgeCases` | Not yet rendered; future criterion | Edge cases | الحالات الحدية | UI label |
-| J-methodologies-requiredInputs | `methodologies.requiredInputs` | Not yet rendered; future criterion | Required inputs | المدخلات المطلوبة | UI label |
-| J-methodologies-borderline | `methodologies.borderline` | Not yet rendered; future criterion | Borderline margin | هامش الحد | UI label |
-| J-methodologies-none | `methodologies.none` | Not yet rendered; future missing definition | Not defined in this version | غير محدد في هذا الإصدار | help/error |
-| J-methodologies-noChangeHistory | `methodologies.noChangeHistory` | Not yet rendered; future empty history | No recorded changes since this version became effective. | لا توجد تغييرات مسجلة منذ سريان هذا الإصدار. | help/error |
-| J-methodologies-rules | `methodologies.rules` | Not yet rendered; future criterion count label | criteria | معايير | UI label |
-| J-admin-title | `admin.title` | Not yet rendered; future JSON-based admin | Admin | الإدارة | UI label |
-| J-admin-subtitle | `admin.subtitle` | Not yet rendered; future admin introduction | Methodology definitions, data and the audit trail. | تعريفات المنهجيات والبيانات وسجل التدقيق. | help/error |
-| J-admin-createMethodology | `admin.createMethodology` | Not yet rendered; future methodology action | Create methodology | إنشاء منهجية | UI label |
-| J-admin-methodologyName | `admin.methodologyName` | Not yet rendered; future form | Name | الاسم | UI label |
-| J-admin-shortLabel | `admin.shortLabel` | Not yet rendered; future form | Short label | تسمية مختصرة | UI label |
-| J-admin-publisher | `admin.publisher` | Not yet rendered; future form | Publisher | الجهة الناشرة | UI label |
-| J-admin-sourceTitle | `admin.sourceTitle` | Not yet rendered; future form | Source document title | عنوان وثيقة المصدر | UI label |
-| J-admin-sourceUrl | `admin.sourceUrl` | Not yet rendered; future form | Source document URL | رابط وثيقة المصدر | UI label |
-| J-admin-officialOrInspired | `admin.officialOrInspired` | Not yet rendered; future form | Official or adapted | رسمي أو مقتبس | UI label |
-| J-admin-licensingStatus | `admin.licensingStatus` | Not yet rendered; future form | Licensing status | حالة الترخيص | UI label |
-| J-admin-scope | `admin.scope` | Not yet rendered; future form | Scope | النطاق | UI label |
-| J-admin-notes | `admin.notes` | Not yet rendered; future form | Notes | ملاحظات | UI label |
-| J-admin-createVersion | `admin.createVersion` | Not yet rendered; future action | Create version | إنشاء إصدار | UI label |
-| J-admin-versionLabel | `admin.versionLabel` | Not yet rendered; future form | Version label | تسمية الإصدار | UI label |
-| J-admin-versionNumber | `admin.versionNumber` | Not yet rendered; future form | Version | الإصدار | UI label |
-| J-admin-changelog | `admin.changelog` | Not yet rendered; future form | Changelog | سجل التغييرات | UI label |
-| J-admin-enableProduction | `admin.enableProduction` | Not yet rendered; future action | Enable for production | تفعيل للإنتاج | UI label |
-| J-admin-productionBlocked | `admin.productionBlocked` | Not yet rendered; future gate help; source predates D-93 | Production cannot be enabled until the source URL, the verifier and the verification date are all filled in. | لا يمكن تفعيل الإنتاج حتى يُستكمل رابط المصدر واسم من تحقّق منه وتاريخ التحقق. | help/error |
-| J-admin-productionBlockedShort | `admin.productionBlockedShort` | Not yet rendered; future gate help; source predates D-93 | Missing source URL, verifier or verification date | رابط المصدر أو اسم من تحقّق منه أو تاريخ التحقق غير متوفر | help/error |
-| J-admin-productionEnabled | `admin.productionEnabled` | Not yet rendered; future state | Available in production | متاح في الإنتاج | UI label |
-| J-admin-addCriterion | `admin.addCriterion` | Not yet rendered; future action | Add criterion | إضافة معيار | UI label |
-| J-admin-criterionType | `admin.criterionType` | Not yet rendered; future form | Criterion type | نوع المعيار | UI label |
-| J-admin-label | `admin.label` | Not yet rendered; future form | Label | التسمية | UI label |
-| J-admin-definitionField | `admin.definitionField` | Not yet rendered; future form | Definition | التعريف | UI label |
-| J-admin-formulaField | `admin.formulaField` | Not yet rendered; future form | Formula | الصيغة | UI label |
-| J-admin-numeratorField | `admin.numeratorField` | Not yet rendered; future form | Numerator definition | تعريف البسط | UI label |
-| J-admin-denominatorField | `admin.denominatorField` | Not yet rendered; future form | Denominator definition | تعريف المقام | UI label |
-| J-admin-numeratorItems | `admin.numeratorItems` | Not yet rendered; future form | Numerator line items | بنود البسط | UI label |
-| J-admin-denominatorItems | `admin.denominatorItems` | Not yet rendered; future form | Denominator line items | بنود المقام | UI label |
-| J-admin-numeratorItemsHint | `admin.numeratorItemsHint` | Not yet rendered; future form help; machine keys unchanged | Comma separated line item keys, for example: cash_and_equivalents, interest_bearing_investments | مفاتيح البنود مفصولة بفواصل، مثل: cash_and_equivalents, interest_bearing_investments | help/error |
-| J-admin-denominatorItemsHint | `admin.denominatorItemsHint` | Not yet rendered; future form help; machine key unchanged | Comma separated line item keys, for example: total_assets | مفاتيح البنود مفصولة بفواصل، مثل: total_assets | help/error |
-| J-admin-threshold | `admin.threshold` | Not yet rendered; future form | Threshold | الحد | UI label |
-| J-admin-thresholdUnit | `admin.thresholdUnit` | Not yet rendered; future form | Threshold unit | وحدة الحد | UI label |
-| J-admin-thresholdDirection | `admin.thresholdDirection` | Not yet rendered; future form | Threshold direction | اتجاه الحد | UI label |
-| J-admin-borderlineMargin | `admin.borderlineMargin` | Not yet rendered; future form | Borderline margin | هامش الحد | UI label |
-| J-admin-borderlineMarginHint | `admin.borderlineMarginHint` | Not yet rendered; future form help | Leave empty when the methodology defines no borderline margin. An empty margin is never replaced with an assumed default. | اتركه فارغًا إذا لم تحدد المنهجية هامش حد. لا يُستبدل الهامش الفارغ بقيمة افتراضية مفترضة. | help/error |
-| J-admin-treatmentRules | `admin.treatmentRules` | Not yet rendered; future form | Treatment rules | قواعد المعالجة | UI label |
-| J-admin-treatmentCategories | `admin.treatmentCategories` | Not yet rendered; future form | Non-permissible activity categories | فئات الأنشطة غير المباحة | UI label |
-| J-admin-prohibitedCategories | `admin.prohibitedCategories` | Not yet rendered; future form | Prohibited primary activity categories | فئات الأنشطة الرئيسية المحظورة | UI label |
-| J-admin-treatmentCategoriesHint | `admin.treatmentCategoriesHint` | Not yet rendered; future form help | Comma separated category keys. | مفاتيح الفئات مفصولة بفواصل. | help/error |
-| J-admin-edgeCases | `admin.edgeCases` | Not yet rendered; future form | Edge cases | الحالات الحدية | UI label |
-| J-admin-sourceReference | `admin.sourceReference` | Not yet rendered; future form | Source reference | مرجع المصدر | UI label |
-| J-admin-sortOrder | `admin.sortOrder` | Not yet rendered; future form | Order | الترتيب | UI label |
-| J-admin-immutableNotice | `admin.immutableNotice` | Not yet rendered; future help; exact source, not an override of D-11 | A methodology version is immutable once created. Changing a rule means creating a new version, so past runs keep pointing at the rules they were produced under. | لا يقبل إصدار المنهجية التعديل بعد إنشائه. تغيير قاعدة يعني إنشاء إصدار جديد، لتظل عمليات الفحص السابقة مرتبطة بالقواعد التي أُنتجت وفقًا لها. | help/error |
-| J-admin-auditTrail | `admin.auditTrail` | Not yet rendered; future JSON-based audit heading | Audit trail | سجل التدقيق | UI label |
-| J-admin-auditEmpty | `admin.auditEmpty` | Not yet rendered; future empty state | No audit events recorded yet. | لا توجد أحداث تدقيق مسجلة بعد. | help/error |
-| J-admin-demoData | `admin.demoData` | Not yet rendered; future demo heading | Demonstration data | بيانات تجريبية | UI label |
-| J-admin-reloadDemo | `admin.reloadDemo` | Not yet rendered; future demo action | Load the demonstration dataset | تحميل مجموعة البيانات التجريبية | UI label |
-| J-admin-reloadingDemo | `admin.reloadingDemo` | Not yet rendered; future pending state | Loading demonstration data | جارٍ تحميل البيانات التجريبية | UI label |
-| J-admin-demoNote | `admin.demoNote` | Not yet rendered; future demo help; no mutation authorized | Writes the fabricated dataset through the provider adapters: exchanges, companies, securities, periods, facts, segments, sources, methodologies, versions and criteria. Existing demonstration records are updated in place rather than duplicated. | يكتب مجموعة البيانات الافتراضية عبر محوّلات مزوّدي البيانات: البورصات والشركات والأوراق المالية والفترات والحقائق والقطاعات والمصادر والمنهجيات والإصدارات والمعايير. تُحدَّث السجلات التجريبية الموجودة بدلًا من إنشاء نسخ مكررة منها. | help/error |
-| J-admin-dataSnapshot | `admin.dataSnapshot` | Not yet rendered; future metadata | Data snapshot | لقطة البيانات | UI label |
-| J-disclaimer-short | `disclaimer.short` | Public shell and styleguide; short context | Informational screening only — not a fatwa. Methodologies and scholarly interpretations differ. Financial analysis is not personalized investment advice. | نتائج الفحص للمعلومات فقط — ليست فتوى. تختلف المنهجيات والاجتهادات الشرعية. التحليل المالي ليس نصيحة استثمارية مخصّصة لك. | disclaimer/banner (religious-legal) |
-| J-disclaimer-full | `disclaimer.full` | Public shell expandable disclaimer and styleguide | This application provides informational stock analysis and Shariah screening based on selected, documented methodologies and publicly available information. It is not a fatwa, does not constitute an individualized religious ruling, and does not represent itself as a Shariah authority. Different scholars, institutions, and methodologies may reach different conclusions. Financial data and screening results can change as new disclosures and methodology updates become available. Users seeking religious guidance for their personal circumstances should consult a qualified Shariah scholar or advisory body. Investment-related analysis is informational and is not personalized investment advice. Investing involves risk, including loss of capital. | يقدّم هذا التطبيق تحليلًا للأسهم وفحصًا شرعيًا لأغراض المعلومات، استنادًا إلى منهجيات مختارة وموثّقة ومعلومات متاحة للجميع. نتائج هذا التطبيق ليست فتوى، ولا تمثّل حكمًا شرعيًا خاصًا بحالة فردية، ولا يقدّم التطبيق نفسه بوصفه مرجعًا شرعيًا. قد يصل علماء وجهات ومنهجيات مختلفة إلى نتائج مختلفة. قد تتغيّر البيانات المالية ونتائج الفحص مع توفر إفصاحات جديدة وتحديثات للمنهجيات. على من يطلب إرشادًا شرعيًا يناسب ظروفه الشخصية الرجوع إلى عالم شرعي مؤهل أو جهة استشارية شرعية مؤهلة. التحليل المتعلق بالاستثمار للمعلومات فقط، وليس نصيحة استثمارية مخصّصة لك. ينطوي الاستثمار على مخاطر، منها خسارة رأس المال. | disclaimer/banner (religious-legal) |
-| J-methodology-pageNote | `methodology.pageNote` | Styleguide sample; future methodology detail note | This page documents how the application implements this methodology. It does not constitute endorsement or a religious ruling. | توثّق هذه الصفحة كيفية تطبيق هذه المنهجية في التطبيق. ولا تمثّل تأييدًا لها أو حكمًا شرعيًا. | disclaimer/banner (religious-legal) |
-| J-banner-exampleMethodology | `banner.exampleMethodology` | Styleguide sample; ExampleMethodologyBanner component | EXAMPLE — not verified — not production. This methodology is a demonstration definition. It is not a published standard and carries no endorsement. | مثال — لم يُتحقق منه — ليس للإنتاج. هذه المنهجية تعريف تجريبي، وليست معيارًا منشورًا، ولا تحظى بأي تأييد. | disclaimer/banner (religious-legal) |
-| J-banner-demo | `banner.demo` | Styleguide sample; DemoBanner component | SYNTHETIC / DEMO. Every figure, filing, price and methodology on this screen is fabricated for demonstration. No real issuer, market or ruling is described. | بيانات افتراضية / تجريبية. كل رقم وإفصاح وسعر ومنهجية في هذه الشاشة مُختلق لأغراض العرض التجريبي. ولا يصف أيٌّ منها مُصدرًا أو سوقًا أو حكمًا حقيقيًا. | disclaimer/banner (religious-legal) |
-| J-styleguide-intro | `styleguide.intro` | Styleguide introduction | Development only. Component samples, not screening results. Derived semantic colors are PROPOSALS, not founder-approved. | للتطوير فقط. هذه نماذج مكوّنات، وليست نتائج فحص. الألوان المشتقة لربط الألوان بدلالاتها مقترحات لم يعتمدها المؤسس. | help/error |
-| J-styleguide-review | `styleguide.review` | Styleguide review notice | Arabic placeholders require human review. | تتطلب النصوص العربية المؤقتة مراجعة بشرية. | help/error |
-| J-styleguide-decorative | `styleguide.decorative` | Styleguide contrast section | Decorative dividers do not convey boundaries or state. | الفواصل الزخرفية لا تدل على حدود العناصر أو حالتها. | help/error |
-| J-styleguide-emphasis | `styleguide.emphasis` | Styleguide typography | Emphasis uses color, not bold body text. | يُستخدم اللون للتأكيد، لا الخط العريض في متن النص. | help/error |
-| J-styleguide-seal | `styleguide.seal` | Styleguide seal eligibility sample | Coverage eligibility sample: covered and passing only. | نموذج لأهلية إظهار ختم التغطية: للأوراق المالية المشمولة بالتغطية والتي اجتازت الفحص فقط. | help/error |
-| J-styleguide-fonts | `styleguide.fonts` | Styleguide font caption | Self-hosted IBM Plex Sans Arabic / Sans / Mono | خطوط IBM Plex Sans Arabic / Sans / Mono مستضافة محليًا | UI label |
+| J-governed-activityCategories | governed.activityCategories | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:400 | Activity category rules | قواعد فئات الأنشطة | UI label |
+| J-governed-actual | governed.actual | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:97 | Actual | الفعلي | UI label |
+| J-governed-actualHash | governed.actualHash | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:134 | Actual hash | البصمة الفعلية | UI label |
+| J-governed-actualStatus | governed.actualStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:135 | Actual status | الحالة الفعلية | UI label |
+| J-governed-addCriteriaFirst | governed.addCriteriaFirst | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:496 | Add and save criteria before authoring cases. | أضف المعايير واحفظها قبل إعداد الحالات. | help/error |
+| J-governed-addCriterion | governed.addCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:363; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:372 | Add criterion | إضافة معيار | UI label |
+| J-governed-adminIntro | governed.adminIntro | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:131 | Maintain documented rules, test evidence, workflow decisions, and public visibility. Finalized version content remains fixed. | إدارة القواعد الموثّقة وأدلة الاختبار وقرارات سير العمل والإتاحة العامة. يظل محتوى الإصدار ثابتًا بعد إتمام مرحلة المسودة. | help/error |
+| J-governed-advanceWorkflow | governed.advanceWorkflow | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:499 | Advance workflow | الانتقال إلى المرحلة التالية | UI label |
+| J-governed-aggregateStatus | governed.aggregateStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:83 | Aggregate status · expected → actual | الحالة الإجمالية · المتوقعة → الفعلية | UI label |
+| J-governed-analystCaseResults | governed.analystCaseResults | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:72 | Analyst case comparisons | مقارنات حالات المحلّل | UI label |
+| J-governed-analystCases | governed.analystCases | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:427 | Analyst test cases | حالات اختبار المحلّل | UI label |
+| J-governed-analystCasesHint | governed.analystCasesHint | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:428 | Author version-specific evidence and expected outcomes before the test gate. | أعدّ أدلة ونتائج متوقعة خاصة بهذا الإصدار قبل مرحلة الاختبار. | help/error |
+| J-governed-analystCasesJson | governed.analystCasesJson | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:506 | Analyst cases JSON | حالات المحلّل بصيغة JSON | UI label |
+| J-governed-associateSource | governed.associateSource | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:561 | Associate source | ربط المصدر | UI label |
+| J-governed-baseline | governed.baseline | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:181 | Baseline | الإصدار المرجعي | UI label |
+| J-governed-blankDraft | governed.blankDraft | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:254 | Start with an empty draft | البدء بمسودة فارغة | UI label |
+| J-governed-borderlineCases | governed.borderlineCases | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:205 | Candidate borderline results | النتائج الحدية للإصدار المرشّح | UI label |
+| J-governed-borderlineMargin | governed.borderlineMargin | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:375 | Borderline margin | الهامش الحدي | UI label |
+| J-governed-calculationVersion | governed.calculationVersion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:334 | Calculation version | إصدار الحساب | UI label |
+| J-governed-cancel | governed.cancel | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:119 | Cancel | إلغاء | UI label |
+| J-governed-candidateCriteria | governed.candidateCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:281 | Candidate version criteria | معايير الإصدار المرشّح | UI label |
+| J-governed-caseCriteriaHint | governed.caseCriteriaHint | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:495 | Expected criterion outcomes must use the exact criterion IDs listed here. A cloned version has new IDs and requires new expected-results keys. | يجب أن تستخدم النتائج المتوقعة معرّفات المعايير المدرجة هنا كما هي. للإصدار المنسوخ معرّفات جديدة تتطلب مفاتيح جديدة للنتائج المتوقعة. | help/error |
+| J-governed-caseInstructions | governed.caseInstructions | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:494 | Use the contract shape below with real security, period, source, fact, and segment identities. The inserted sample has no financial evidence and does not represent a passing case. | استخدم البنية المحددة أدناه مع معرّفات فعلية للورقة المالية والفترة والمصدر والبيانات والقطاعات. لا يتضمن النموذج المُدرج أدلة مالية ولا يمثّل حالة اجتياز. | help/error |
+| J-governed-casesFinalized | governed.casesFinalized | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:435 | Analyst cases are finalized with this version and are shown read-only. | تُثبّت حالات المحلّل مع هذا الإصدار وتُعرض للقراءة فقط. | help/error |
+| J-governed-casesSaved | governed.casesSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:431 | Analyst cases saved. | حُفظت حالات المحلّل. | help/error |
+| J-governed-changedCriteria | governed.changedCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:247 | Changed candidate criteria | معايير الإصدار المرشّح التي تغيّرت | UI label |
+| J-governed-changelog | governed.changelog | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:261 | Changelog | سجل التغييرات | UI label |
+| J-governed-cloneFrom | governed.cloneFrom | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:230 | Start from an existing version | البدء من إصدار موجود | UI label |
+| J-governed-cloneNote | governed.cloneNote | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:257 | Version fields are prefilled from the selected source. Criteria are copied with new identities; analyst cases must be authored again against those new IDs. | تُملأ حقول الإصدار من الإصدار المختار. تُنسخ المعايير بمعرّفات جديدة؛ ويجب إعداد حالات المحلّل مجددًا باستخدامها. | help/error |
+| J-governed-closeEdit | governed.closeEdit | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:223; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:319 | Close editor | إغلاق المحرّر | UI label |
+| J-governed-confirmDeleteCriterion | governed.confirmDeleteCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:391 | Delete this draft criterion? This cannot be undone. | هل تريد حذف هذا المعيار من المسودة؟ لا يمكن التراجع عن الحذف. | help/error |
+| J-governed-confirmProduction | governed.confirmProduction | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:512 | Enable this methodology version for production? This is a separate audited operation. | هل تريد اعتماد إصدار المنهجية هذا للاستخدام الفعلي؟ هذه عملية مستقلة تُسجّل في سجل التدقيق. | help/error |
+| J-governed-confirmPublish | governed.confirmPublish | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:343 | Make this version visible on the public methodology pages? | هل تريد إتاحة هذا الإصدار في صفحات المنهجيات العامة؟ | help/error |
+| J-governed-confirmUnpublish | governed.confirmUnpublish | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:343 | Remove this version from the public methodology pages? | هل تريد إزالة هذا الإصدار من صفحات المنهجيات العامة؟ | help/error |
+| J-governed-coverageGaps | governed.coverageGaps | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:31 | Named criterion coverage gaps | نواقص تغطية المعايير بأسمائها | UI label |
+| J-governed-created | governed.created | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:313 | Created | تاريخ الإنشاء | UI label |
+| J-governed-createMethodology | governed.createMethodology | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:141; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:172 | Create methodology | إنشاء منهجية | UI label |
+| J-governed-criteria | governed.criteria | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:357 | Version criteria | معايير الإصدار | UI label |
+| J-governed-criteriaRecords | governed.criteriaRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:157 | CRITERIA | المعايير | UI label |
+| J-governed-criterion | governed.criterion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:95 | Criterion | المعيار | UI label |
+| J-governed-criterionChanges | governed.criterionChanges | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:236 | criterion differences | اختلافات المعايير | UI label |
+| J-governed-criterionDeleted | governed.criterionDeleted | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:393 | Criterion deleted. | حُذف المعيار. | help/error |
+| J-governed-criterionIdentity | governed.criterionIdentity | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:361 | Stable criterion identity | معرّف المعيار الثابت | UI label |
+| J-governed-criterionIdentityHelp | governed.criterionIdentityHelp | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:358 | Identities are fixed by the system and are required when analyst cases refer to expected criterion outcomes. | يثبّت النظام المعرّفات، وتُستخدم عند ربط حالات المحلّل بالنتائج المتوقعة للمعايير. | help/error |
+| J-governed-criterionSaved | governed.criterionSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:374; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:388 | Criterion saved. | حُفظ المعيار. | help/error |
+| J-governed-criterionType | governed.criterionType | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:366 | Criterion type | نوع المعيار | UI label |
+| J-governed-definition | governed.definition | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:383 | Definition | التعريف | UI label |
+| J-governed-deleteCriterion | governed.deleteCriterion | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:440 | Delete draft criterion | حذف معيار المسودة | UI label |
+| J-governed-denominatorDefinition | governed.denominatorDefinition | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:386 | Denominator definition | تعريف المقام | help/error |
+| J-governed-denominatorLineItems | governed.denominatorLineItems | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:393; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:420 | Denominator line items | بنود المقام | help/error |
+| J-governed-different | governed.different | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:108 | DIFFERENT | مختلف | UI label |
+| J-governed-draftSaved | governed.draftSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:289; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:327 | Draft version saved. | حُفظت مسودة الإصدار. | help/error |
+| J-governed-drivingCriteria | governed.drivingCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:187 | Driving criteria | المعايير المؤثرة | UI label |
+| J-governed-edgeCases | governed.edgeCases | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:426 | Edge cases | الحالات الخاصة | UI label |
+| J-governed-editCriterion | governed.editCriterion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:415 | Edit criterion | تعديل المعيار | UI label |
+| J-governed-editDraft | governed.editDraft | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:319 | Edit draft content | تعديل محتوى المسودة | UI label |
+| J-governed-editMetadata | governed.editMetadata | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:223 | Edit metadata | تعديل البيانات الوصفية | UI label |
+| J-governed-editorReadOnly | governed.editorReadOnly | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:548 | Editors can review this record but cannot change governance data. | يمكن للمحرّرين مراجعة هذا السجل، ولا يمكنهم تغيير بيانات الحوكمة. | help/error |
+| J-governed-effectiveDate | governed.effectiveDate | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:312; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:227; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:379 | Effective date | تاريخ السريان | UI label |
+| J-governed-enableProduction | governed.enableProduction | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:515 | Enable production | اعتماد للاستخدام الفعلي | UI label |
+| J-governed-engineVersion | governed.engineVersion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:333 | Engine version | إصدار المحرك | UI label |
+| J-governed-expected | governed.expected | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:96 | Expected | المتوقع | UI label |
+| J-governed-expectedHash | governed.expectedHash | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:133 | Expected hash | البصمة المتوقعة | UI label |
+| J-governed-failed | governed.failed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:130; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:88 | FAIL | لم يجتز | UI label |
+| J-governed-finalizedContentReadOnly | governed.finalizedContentReadOnly | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:368; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:548 | Finalized content is read-only. Create a new draft to change methodology content. | المحتوى المثبّت متاح للقراءة فقط. أنشئ مسودة جديدة لتغيير محتوى المنهجية. | help/error |
+| J-governed-formula | governed.formula | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:384 | Formula text | نص الصيغة | UI label |
+| J-governed-fullReportEvidence | governed.fullReportEvidence | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:339 | Full retained report payload | محتوى التقرير المحفوظ كاملًا | UI label |
+| J-governed-genuineMethodologySource | governed.genuineMethodologySource | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:552 | Matching verified methodology document | وثيقة منهجية متحقّق منها ومطابقة | UI label |
+| J-governed-governanceReports | governed.governanceReports | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:307 | GOVERNANCE EVIDENCE | أدلة الحوكمة | UI label |
+| J-governed-impactReport | governed.impactReport | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:325 | Impact report | تقرير الأثر | UI label |
+| J-governed-insertExample | governed.insertExample | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:504 | Insert contract example | إدراج نموذج للبنية المطلوبة | UI label |
+| J-governed-invalidCasesJson | governed.invalidCasesJson | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:488 | Enter a valid JSON array of analyst cases. | أدخل مصفوفة JSON صحيحة لحالات المحلّل. | help/error |
+| J-governed-invalidJsonObject | governed.invalidJsonObject | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:219 | Enter a valid JSON object or leave the field blank. | أدخل كائن JSON صحيحًا أو اترك الحقل فارغًا. | help/error |
+| J-governed-label | governed.label | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:368 | Label | التسمية | UI label |
+| J-governed-licensing | governed.licensing | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:241; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:166 | Licensing status | حالة الترخيص | UI label |
+| J-governed-match | governed.match | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:98 | Comparison | المقارنة | UI label |
+| J-governed-matched | governed.matched | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:108 | MATCH | مطابق | UI label |
+| J-governed-metadataSaved | governed.metadataSaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:175; Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:230 | Methodology metadata saved. | حُفظت البيانات الوصفية للمنهجية. | help/error |
+| J-governed-methodologyIndex | governed.methodologyIndex | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:191 | METHODOLOGY REGISTER | سجل المنهجيات | UI label |
+| J-governed-methodologyManagement | governed.methodologyManagement | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:130 | Methodology management | إدارة المنهجيات | UI label |
+| J-governed-methodologyMetadata | governed.methodologyMetadata | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:217 | METHODOLOGY METADATA | البيانات الوصفية للمنهجية | UI label |
+| J-governed-methodologyRecords | governed.methodologyRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:149 | METHODOLOGIES | المنهجيات | UI label |
+| J-governed-methodologyVersions | governed.methodologyVersions | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:255 | Versions | الإصدارات | UI label |
+| J-governed-name | governed.name | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:156 | Name | الاسم | UI label |
+| J-governed-newDraft | governed.newDraft | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:260; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:286 | New draft | مسودة جديدة | UI label |
+| J-governed-newRecord | governed.newRecord | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:171 | NEW RECORD | سجل جديد | UI label |
+| J-governed-nextWorkflowTarget | governed.nextWorkflowTarget | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:484 | Next sequential stage | المرحلة التالية بالترتيب | UI label |
+| J-governed-noComparableUniverse | governed.noComparableUniverse | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:164 | No comparable securities were recorded. | لم تُسجّل أوراق مالية قابلة للمقارنة. | help/error |
+| J-governed-noCoverageGaps | governed.noCoverageGaps | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:37 | No missing required outcome coverage was recorded. | لم تُسجّل نواقص في تغطية النتائج المطلوبة. | help/error |
+| J-governed-noCriteria | governed.noCriteria | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:379 | No criteria are recorded for this version. | لا توجد معايير مسجّلة لهذا الإصدار. | help/error |
+| J-governed-noEligibleSources | governed.noEligibleSources | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:555 | No matching eligible source documents | لا توجد وثائق مصدر مطابقة ومستوفية للشروط | help/error |
+| J-governed-noMethodologies | governed.noMethodologies | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:183 | No methodology records | لا توجد سجلات منهجيات | help/error |
+| J-governed-noMethodologiesBody | governed.noMethodologiesBody | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:184 | Create a methodology record to begin documenting a governed rule set. | أنشئ سجل منهجية للبدء في توثيق مجموعة قواعد خاضعة للحوكمة. | help/error |
+| J-governed-noneConfigured | governed.noneConfigured | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:181 | No baseline configured | لم يُحدد إصدار مرجعي | help/error |
+| J-governed-nonPermissibleCategories | governed.nonPermissibleCategories | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:407 | Non-permissible revenue categories | فئات الإيرادات غير المباحة | help/error |
+| J-governed-noReports | governed.noReports | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:313 | No reports have been recorded for this version yet. | لم تُسجّل تقارير لهذا الإصدار بعد. | help/error |
+| J-governed-notes | governed.notes | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:245; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:172; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:262; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:428 | Notes | ملاحظات | help/error |
+| J-governed-notPublic | governed.notPublic | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:308 | NOT PUBLIC | غير متاح للعموم | help/error |
+| J-governed-noVersions | governed.noVersions | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:265 | No versions have been recorded for this methodology. | لم تُسجّل إصدارات لهذه المنهجية. | help/error |
+| J-governed-numeratorDefinition | governed.numeratorDefinition | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:385 | Numerator definition | تعريف البسط | UI label |
+| J-governed-numeratorLineItems | governed.numeratorLineItems | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:390; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:416 | Numerator line items | بنود البسط | UI label |
+| J-governed-observedCoverage | governed.observedCoverage | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:54 | Observed | المرصود | UI label |
+| J-governed-officialOrAdapted | governed.officialOrAdapted | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:240; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:164 | Official or adapted | رسمي أو مقتبس | UI label |
+| J-governed-passed | governed.passed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:130; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:329; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:88 | PASS | اجتاز | UI label |
+| J-governed-previousCriteria | governed.previousCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:281 | Prior version criteria | معايير الإصدار السابق | UI label |
+| J-governed-priorStatus | governed.priorStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:154 | Prior status | الحالة السابقة | UI label |
+| J-governed-productionEnabled | governed.productionEnabled | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:513; Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:306 | Production enabled. | مُعتمد للاستخدام الفعلي. | help/error |
+| J-governed-productionOperationNote | governed.productionOperationNote | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:507 | Separate production operation note | ملاحظة عملية الاعتماد المستقلة للاستخدام الفعلي | help/error |
+| J-governed-prohibitedCategories | governed.prohibitedCategories | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:402 | Prohibited primary activity categories | فئات الأنشطة الرئيسية المحظورة | UI label |
+| J-governed-publicVisible | governed.publicVisible | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:308 | PUBLIC | متاح للعموم | UI label |
+| J-governed-publisher | governed.publisher | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:236; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:161 | Publisher | الجهة الناشرة | UI label |
+| J-governed-publishVersion | governed.publishVersion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:348 | Make version public | إتاحة الإصدار للعموم | UI label |
+| J-governed-purificationHelp | governed.purificationHelp | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:265 | Leave blank for null. Enter a JSON object only when this methodology version defines stored treatment data. No generic formula is applied. | اترك الحقل فارغًا للقيمة null. أدخل كائن JSON فقط إذا كان هذا الإصدار يحدد بيانات معالجة محفوظة. لا تُطبّق صيغة عامة. | help/error |
+| J-governed-purificationJson | governed.purificationJson | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:263 | Methodology-specific purification data (JSON object) | بيانات التطهير الخاصة بالمنهجية (كائن JSON) | UI label |
+| J-governed-ratio | governed.ratio | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:213; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:254 | Ratio | النسبة | UI label |
+| J-governed-reportArchive | governed.reportArchive | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:308 | Test and impact reports | تقارير الاختبار والأثر | UI label |
+| J-governed-reportIdentity | governed.reportIdentity | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:335 | Report identity | معرّف التقرير | UI label |
+| J-governed-requiredActivityItems | governed.requiredActivityItems | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:411 | Evaluator requirements are enforced by the contract. These category lists are stored as criterion rule data. | تفرض البنية المحددة متطلبات المُقيّم. تُحفظ قوائم الفئات هذه ضمن بيانات قواعد المعيار. | help/error |
+| J-governed-requiredCoverage | governed.requiredCoverage | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:53 | Required | المطلوب | UI label |
+| J-governed-requiredInputsDerived | governed.requiredInputsDerived | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:410; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:431 | Required inputs · derived | المدخلات المطلوبة · مشتقة | UI label |
+| J-governed-result | governed.result | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:253 | Result | النتيجة | UI label |
+| J-governed-retainedEvidence | governed.retainedEvidence | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:263 | Retained unknowns and evidence inputs | المجهولات ومدخلات الأدلة المحفوظة | UI label |
+| J-governed-reviewFailed | governed.reviewFailed | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:329 | REVIEW / FAIL | مراجعة / لم يجتز | UI label |
+| J-governed-save | governed.save | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:122 | Save | حفظ | UI label |
+| J-governed-saveCases | governed.saveCases | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:512 | Save analyst cases | حفظ حالات المحلّل | UI label |
+| J-governed-saved | governed.saved | Conditionally rendered: run() default success feedback: src/components/methodology/AdminMethodologies.tsx:92 | Change saved. | حُفظ التغيير. | help/error |
+| J-governed-saving | governed.saving | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:122; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:512 | Saving… | جارٍ الحفظ… | UI label |
+| J-governed-scope | governed.scope | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:244; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:171 | Scope | النطاق | UI label |
+| J-governed-securityDiffs | governed.securityDiffs | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:221 | Per-security comparison | مقارنة لكل ورقة مالية | UI label |
+| J-governed-sharedGoldenRegressions | governed.sharedGoldenRegressions | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:124 | Shared golden regressions | اختبارات الانحدار المرجعية المشتركة | UI label |
+| J-governed-shortLabel | governed.shortLabel | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:237; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:157 | Short label | تسمية مختصرة | UI label |
+| J-governed-slug | governed.slug | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:158 | Slug | معرّف الرابط | UI label |
+| J-governed-sortOrder | governed.sortOrder | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:377 | Sort order | ترتيب العرض | UI label |
+| J-governed-sourceAssociated | governed.sourceAssociated | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:336 | Source association saved. | حُفظ ربط المصدر. | help/error |
+| J-governed-sourceAssociation | governed.sourceAssociation | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:334 | Version source associations | روابط مصادر الإصدار | UI label |
+| J-governed-sourceReference | governed.sourceReference | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:427 | Source reference | مرجع المصدر | UI label |
+| J-governed-sourceTitle | governed.sourceTitle | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:238; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:162 | Source document title | عنوان وثيقة المصدر | UI label |
+| J-governed-sourceUrl | governed.sourceUrl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:239; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:163 | Source document URL | رابط وثيقة المصدر | UI label |
+| J-governed-testReport | governed.testReport | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:325 | Test report | تقرير الاختبار | UI label |
+| J-governed-threshold | governed.threshold | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:369; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:213; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:255 | Threshold | الحد | UI label |
+| J-governed-thresholdDirection | governed.thresholdDirection | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:373 | Threshold direction | اتجاه الحد | UI label |
+| J-governed-thresholdUnit | governed.thresholdUnit | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:371 | Threshold unit | وحدة الحد | UI label |
+| J-governed-transitionMatrix | governed.transitionMatrix | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:180 | Status transition matrix | مصفوفة انتقال الحالات | UI label |
+| J-governed-treatmentRules | governed.treatmentRules | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:425 | Treatment rules | قواعد المعالجة | UI label |
+| J-governed-type | governed.type | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:246; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:159 | Methodology type | نوع المنهجية | UI label |
+| J-governed-unidentifiedSecurity | governed.unidentifiedSecurity | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:231 | Security identity unavailable | معرّف الورقة المالية غير متاح | UI label |
+| J-governed-unnamedCase | governed.unnamedCase | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:81 | Unnamed case | حالة بلا اسم | UI label |
+| J-governed-unnamedCriterion | governed.unnamedCriterion | Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:103; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:192; Rendered/conditionally rendered: src/components/methodology/MethodologyReports.tsx:43 | Unlabelled criterion | معيار بلا تسمية | UI label |
+| J-governed-unpublishVersion | governed.unpublishVersion | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:348 | Remove public visibility | إلغاء الإتاحة العامة | UI label |
+| J-governed-verificationDate | governed.verificationDate | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:243; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:169 | Verification date | تاريخ التحقق | UI label |
+| J-governed-verifiedBy | governed.verifiedBy | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:242; Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:168 | Verified by | جهة التحقق | UI label |
+| J-governed-versionControl | governed.versionControl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:254 | VERSION CONTROL | إدارة الإصدارات | UI label |
+| J-governed-versionLabel | governed.versionLabel | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:226 | Version label | تسمية الإصدار | UI label |
+| J-governed-versionNumber | governed.versionNumber | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:225 | Version | الإصدار | UI label |
+| J-governed-versionRecords | governed.versionRecords | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:153 | VERSIONS | الإصدارات | UI label |
+| J-governed-visibilityControl | governed.visibilityControl | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:340 | Public visibility | الإتاحة العامة | UI label |
+| J-governed-visibilityHelp | governed.visibilityHelp | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:341 | This changes anonymous visibility for this version only. Only versions marked public appear in public methodology pages. | يغيّر هذا إتاحة هذا الإصدار فقط للزائر غير المسجّل. تظهر الإصدارات المتاحة للعموم فقط في صفحات المنهجيات العامة. | help/error |
+| J-governed-visibilitySaved | governed.visibilitySaved | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:345 | Public visibility updated. | حُدّثت الإتاحة العامة. | help/error |
+| J-governed-visibilitySeparate | governed.visibilitySeparate | Rendered/conditionally rendered: src/components/methodology/MethodologyForms.tsx:267 | Public visibility is controlled separately after the draft is created. | تُدار الإتاحة العامة بصورة مستقلة بعد إنشاء المسودة. | help/error |
+| J-governed-workflow | governed.workflow | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:443 | Governance workflow | سير عمل الحوكمة | UI label |
+| J-governed-workflowAdvanced | governed.workflowAdvanced | Conditionally rendered: successful admin action feedback: src/components/methodology/AdminMethodologies.tsx:493 | Workflow advanced. | انتقل سير العمل إلى المرحلة التالية. | help/error |
+| J-governed-workflowHistory | governed.workflowHistory | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:462 | Recorded workflow history | سجل سير العمل المحفوظ | UI label |
+| J-governed-workflowReviewNote | governed.workflowReviewNote | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:487 | Review / transition note | ملاحظة المراجعة / الانتقال | help/error |
+| J-governed-workflowSequential | governed.workflowSequential | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:444 | Advance one stage at a time. Source verification, rules, tests, universe comparison, human review, and approval are checked by the server. | انتقل مرحلة واحدة في كل مرة. يتحقق الخادم من توثيق المصدر والقواعد والاختبارات ومقارنة مجموعة الأوراق والمراجعة البشرية والاعتماد. | help/error |
+| J-governed-workspaceLabel | governed.workspaceLabel | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:129 | ADMIN / METHODOLOGY GOVERNANCE | الإدارة / حوكمة المنهجية | UI label |
+| U-046cdb1a59ccce3770bef340fca3203df993eb0d60259cdd26a79e61591ae4aa | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/gates.ts:17 | The editorial default methodology version cannot be unpublished; select another default first | لا يمكن إلغاء إتاحة إصدار المنهجية الافتراضي للتحرير؛ اختر إصدارًا افتراضيًا آخر أولًا. | help/error |
+| U-06ea2cb94625081b51ae94659b8811b882f84adfc61d0f7914ddf2a97831f94d | runtime phrase | Conditionally rendered: admin action failure: src/components/methodology/AdminMethodologies.tsx:114 | The change was not accepted. | لم يُقبل التغيير. | help/error |
+| U-09880ba227f2c0deb59b541908cfa99c89bca6f286d389b46a1edd64de1882ed | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:46 | The evaluator requires a criterion effective date | يتطلب المُقيّم تاريخ سريان للمعيار. | help/error |
+| U-0c8f706339a8109ee873c59b2c2af12b4e26f963cb8aea6406c90b127a4d9dd8 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:205 | Demo, internal example or permanently blocked provenance cannot be enabled | لا يمكن اعتماد بيانات تجريبية أو مثال داخلي أو مصادر محظورة نهائيًا للاستخدام الفعلي. | help/error |
+| U-10ae681554a6656449ac3a00995da31dce2385fe2bf92f3079aa5067b404ed09 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:45 | No registered evaluator | لا يوجد مُقيّم مسجّل. | help/error |
+| U-1552d46b0b7728257512970667b8ff972ec89e338bcf2e743383183238779648 | runtime phrase | Rendered/conditionally rendered: src/components/methodology/AdminMethodologies.tsx:193 | Methodology records | سجلات المنهجيات | help/error |
+| U-1d3a70336761901b5239ce457b374b4d3bbf3baeb5168e7ac98b7f3fbb08c7b0 | runtime phrase | Conditionally rendered: governance refusal: src/app/[locale]/(private)/admin/(protected)/methodology-actions.ts:24 | Unknown methodology operation | عملية منهجية غير معروفة. | help/error |
+| U-1e47f2ccb81d4818bf0c2272f722ebe0fa9a40731620d5a946401335c0864cba | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:56 | Non-permissible categories are required | فئات الأنشطة غير المباحة مطلوبة. | help/error |
+| U-1f7b7296816a56dab1d92e37fd7d7d08d5802894d9971fa80de26264f8a73869 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:204 | Production is already enabled | مُعتمد للاستخدام الفعلي بالفعل. | help/error |
+| U-260c294c4558aea2123da577e033070571ac696cd326b6b8f30bb861fffa61a4 | runtime phrase | Conditionally rendered: report/action error fallback: src/app/[locale]/(private)/admin/(protected)/methodology-actions.ts:37 | Database refused the change: the identity may already exist, content may be finalized, or required production provenance is missing. Reload and review the record. | رفضت قاعدة البيانات التغيير: قد يكون المعرّف موجودًا، أو المحتوى مثبّتًا، أو أدلة المصدر المطلوبة للاعتماد غير متوفرة. أعد تحميل السجل وراجعه. | help/error |
+| U-266aea9ed587762249b277aff818a8aa9ddee4611f234618909bf75d46f6b510 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:55 | Prohibited categories are required | الفئات المحظورة مطلوبة. | help/error |
+| U-294915ee59ad8a86714ab7dd8726bbed46dedf4cc4cdb3aad6b8bdb3f875a532 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/gates.ts:12 | Publish the version before enabling production | أتح الإصدار للعموم قبل اعتماده للاستخدام الفعلي. | help/error |
+| U-2a3eb49fc0154ce6c7283e69375606bb14018581152a5cd4631d26dbb99e6567 | runtime phrase | Conditionally rendered: report/action error fallback: src/lib/methodology/service.ts:156 | No usable annual period | لا توجد فترة سنوية صالحة للاستخدام. | help/error |
+| U-2a643160b5480a10ac2a9bafa5dc01fb33f81fb0795e2b3e58af37d45cdfb2fd | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:211 | All tests and mandatory analyst criterion coverage must pass | يجب اجتياز جميع الاختبارات واستيفاء تغطية المحلّل الإلزامية للمعايير. | help/error |
+| U-2a8c8ecbc0972da7fd1a5e46e58831d36cf0c701d0c3eed36d40677c2792eb38 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:206 | Approval is required | الاعتماد مطلوب. | help/error |
+| U-354029069e288ed72dbeca5e0a175a411952bc011c931770a7d9c99c8615b88b | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:93 | Criterion does not belong to this version | المعيار لا يتبع هذا الإصدار. | help/error |
+| U-37e50234b54b7af50a46e537b09a219ee0ed403867c45b37080e4a5e6933d53a | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:134 | Associate a genuine verified methodology document; metadata alone is insufficient | اربط وثيقة منهجية أصلية متحقّقًا منها؛ البيانات الوصفية وحدها لا تكفي. | help/error |
+| U-3d655f29f8332114cac91806c4ed64619c7d8a4c539e4c2024195ba361202af2 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:27 | Methodology not found | لم يُعثر على المنهجية. | help/error |
+| U-48c78502021c81d611b5ff8eaa2140f025e5f084caf2cec49e28366cf4f75427 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:53 | Ratio operands cannot be empty | لا يمكن ترك بنود حساب النسبة فارغة. | help/error |
+| U-4b9302d9ffa8549c8b541144a13410d33842e970dc2355b50e4e1e3c38421ccc | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:51 | Business activity requires boolean direction and unit | يتطلب نشاط الأعمال اتجاهًا ووحدة منطقيين. | help/error |
+| U-4c75e0e50be625b99dc809fe5d767bf548b1fe6bc87b15982cfd9111bb17e489 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:191 | Same-version passing reports are required | تُطلب تقارير ناجحة تخص الإصدار نفسه. | help/error |
+| U-4cb6661d58130385cee1965db5cc744dd01436ab25e5e247119d23b5590feafc | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:170 | Invalid workflow note | ملاحظة سير العمل غير صالحة. | help/error |
+| U-4e1af7c74096cf0a47ce343febcea35ec03b9599324314b5b8fc1de2fa479705 | runtime phrase | Conditionally rendered: report/action error fallback: src/app/[locale]/(private)/admin/(protected)/methodology-actions.ts:39 | Operation failed | تعذّر تنفيذ العملية. | help/error |
+| U-513a36c68d73433d0e1c60d5f6323f944a1d5c618e4cfa3611618797d4f81085 | runtime phrase | Conditionally rendered: admin action recheck/failure: src/lib/auth/errors.ts:9 | operation_failed | تعذّر تنفيذ العملية. | help/error |
+| U-5641396afafb5341680ff19f55ecd2c2c3179d9d15cdecd7f73ad18de7cd479f | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:192 | Recorded human review is required | تُطلب مراجعة بشرية مسجّلة. | help/error |
+| U-58f32e7049301e64afac5129359c69d2eca53bc4b4579ced193fd708969060d9 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:106 | Criterion not found | لم يُعثر على المعيار. | help/error |
+| U-5930a7aeed358109b5ac1ae81b362d52a52bec412d8fe2503459e29aa385c46f | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:115 | Expected results reference a criterion outside this version | تشير النتائج المتوقعة إلى معيار خارج هذا الإصدار. | help/error |
+| U-59e3e7aeaa1cb299ffc265bc2f373279030102170819bb8885b7b080c6a5cd15 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:15 | Invalid record identity | معرّف السجل غير صالح. | help/error |
+| U-60b847b9dda06296ac4e0839a55a6f8bde4d02e4340104fbf365d19af768e25f | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:48 | Threshold is required | الحد مطلوب. | help/error |
+| U-631f049bd7b5c4e4094945161a7955f0e2dc54ea5003ea59559fd0e9d1c20929 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:58 | Business activity uses business_segments only | يستخدم نشاط الأعمال business_segments فقط. | help/error |
+| U-67aae15266edcbe5427b850220c3b6f34432d39c0a408b4deadcac5f41f648a9 | runtime phrase | Conditionally rendered: report/action error fallback: src/lib/methodology/reports.ts:75 | No default baseline version | لا يوجد إصدار مرجعي افتراضي. | help/error |
+| U-6c6e0523f38527f74d4155582ccd7231f26eff94328402020bd02a766d5bf6a0 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:220 | Invalid visibility | إعداد الإتاحة غير صالح. | help/error |
+| U-7743ad273d5fad3f100b40ee09c0473259f4a4f2c5c19e04c9c3575016aa5552 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:89 | Finalized criteria are immutable; create a new draft | المعايير المثبّتة لا تقبل التعديل؛ أنشئ مسودة جديدة. | help/error |
+| U-7abd1401d118368ec1723a2ae013f5c0de7f834ebd49be1d2f29bccf49260601 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:111 | Finalized analyst cases are immutable | حالات المحلّل المثبّتة لا تقبل التعديل. | help/error |
+| U-7f1d09a0b955bd9c1882d6390a2e8d294a474f2bd7fa2d3cd4a1e8c337e8d756 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:126 | Select a genuine verified methodology document matching the methodology HTTPS URL | اختر وثيقة منهجية أصلية متحقّقًا منها وتطابق رابط HTTPS للمنهجية. | help/error |
+| U-8021d2a3b66f3ef10033c1da88802e21f344f1e3ec0c4e4b53f118b251255d6f | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:63 | Finalized content is immutable; create a new draft | المحتوى المثبّت لا يقبل التعديل؛ أنشئ مسودة جديدة. | help/error |
+| U-81dfe8557beaa7c9fde8b205863f149d1b78178c3596f6ef7eabe46b4a2e59fb | runtime phrase | Conditionally rendered: report/action error fallback: src/lib/methodology/service.ts:180 | Tests failed or mandatory criterion coverage is missing; see the persisted report | لم تنجح الاختبارات أو لم تكتمل تغطية المعايير الإلزامية؛ راجع التقرير المحفوظ. | help/error |
+| U-82ddded2b61ef0c74ce6d6f827c3212e331236ca2616b9022b1ef23717f61f22 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:69 | Clone must belong to this methodology | يجب أن يكون الإصدار المنسوخ من المنهجية نفسها. | help/error |
+| U-89f14fbaa3dc3922d8f96fbe01c37661e7310d82d557a0bc1b5eb3bf8e0c8685 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:62 | Version belongs to another methodology | الإصدار يتبع منهجية أخرى. | help/error |
+| U-9a82fe3c4bb023d5939b576cd7445f8ed17636c625dcf6ab5b6e97319059993f | runtime phrase | Conditionally rendered: report/action error fallback: src/app/[locale]/(private)/admin/(protected)/methodology-actions.ts:33 | Invalid or contradictory engine evidence. No result was produced. | أدلة المحرك غير صالحة أو متناقضة. لم تُنتج نتيجة. | help/error |
+| U-9d3a6028028a2365ac147e0f3ec18f9049afba2764035e22c564a293e8e09e10 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:47 | Duplicate line items would double-count evidence | تكرار البنود يؤدي إلى احتساب الأدلة مرتين. | help/error |
+| U-9d9208bab9f1f84d20afcbb13aed033c41cb9513950d5b25fcb4cedb157329fe | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:207 | Set an eligible licensing status | حدد حالة ترخيص مستوفية للشروط. | help/error |
+| U-a3b8a709baaaa26733d743e8169639bd69b750e835aa34ac65db7395ab07c028 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:54 | Ratios require financial line items | تتطلب النسب بنودًا مالية. | help/error |
+| U-a4e5ae51fed7526178bf28458c2ad8d08ce3f95d42d66c353450437f5ad759f3 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:52 | A boolean unit requires boolean direction | تتطلب الوحدة المنطقية اتجاهًا منطقيًا. | help/error |
+| U-a8f65ec3d83f0d49808fac4b620504a78e8be3f4fe60ca303777c0eef2ac9b18 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:23 | Version not found | لم يُعثر على الإصدار. | help/error |
+| U-ace976b68fc3112c0738ba2f8cbe67af9312765c21ff45d44b599db0e05b2a81 | runtime phrase | Conditionally rendered: admin action failure: src/components/methodology/AdminMethodologies.tsx:118 | The request failed. Reload the record and try again. | تعذّر تنفيذ الطلب. أعد تحميل السجل وحاول مجددًا. | help/error |
+| U-af8aa6314e341b1e08d6848d6bd05a4a02cd73d02a3b4a075daf7e485f0d4605 | runtime phrase | Conditionally rendered: report/action error fallback: src/lib/methodology/service.ts:184 | Impact comparison is incomplete; see the persisted report | مقارنة الأثر غير مكتملة؛ راجع التقرير المحفوظ. | help/error |
+| U-afe67ec7971f610b34401a5115d5726f0a10080bf079920fc4fe6f6e08c7193a | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:104 | Finalized criteria are immutable | المعايير المثبّتة لا تقبل التعديل. | help/error |
+| U-b485fdb388c08207e2255b68df9991da7c84f3401245df7373ebc91b2c3ae35c | runtime phrase | Conditionally rendered: admin action recheck/failure: src/lib/auth/actions.ts:15 | role_required | يتطلب الوصول دورًا مخوّلًا. | help/error |
+| U-bdfe253f5f8319eb43e678cf498be725a767eaf113dbf2dfb61a930fe097d986 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:171 | Workflow must advance exactly one stage; reload this version | يجب الانتقال مرحلة واحدة فقط؛ أعد تحميل هذا الإصدار. | help/error |
+| U-c0de89fd917035582d2a3dc8b554e2a3cef666d773cd1299565cbfe76bb26aee | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:40 | Add at least one valid criterion | أضف معيارًا صالحًا واحدًا على الأقل. | help/error |
+| U-c8da394a934c3100f07c55b1ab1bbf429b45fa67f79723983a5172d1099f5426 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/contracts.ts:57 | Revenue evaluator uses business_segments divided by total_revenue | يستخدم مُقيّم الإيرادات business_segments مقسومًا على total_revenue. | help/error |
+| U-cf3bfa91516503807cd154a987e61861c053ee59a67a375e8445fb55e05297bc | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/gates.ts:16 | A production-enabled version cannot be unpublished | لا يمكن إلغاء إتاحة إصدار مُعتمد للاستخدام الفعلي. | help/error |
+| U-cf6124c762a913011b7c859c00b360344af6ec4895223d852e31b4561769384f | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:186 | A human reviewer note is required | ملاحظة المراجع البشري مطلوبة. | help/error |
+| U-d2b8d4809fa618e690e397239688a97d0f552ec6de744059a12575562f202491 | runtime phrase | Conditionally rendered: report execution failure: src/lib/methodology/reports.ts:6 | Engine execution failed; no result produced | تعذّر تشغيل المحرك؛ لم تُنتج نتيجة. | help/error |
+| U-db493ceafe3ddfe7440f6e39e8c7b0b8ee6f02e89a73e4c7d41d93ea1dfdbcfa | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:124 | Source associations are immutable after draft | لا تقبل روابط المصادر التعديل بعد مرحلة المسودة. | help/error |
+| U-de0d389bb7905017234d50f88b5b2e35be38c97bbb48cb17b7cae3de9914c127 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:212 | Invalid production note | ملاحظة الاعتماد للاستخدام الفعلي غير صالحة. | help/error |
+| U-ede105e7bc4acfe1f4ef72bd4fcd015008c507edfc15e1c58e376e4432b9b3b9 | runtime phrase | Conditionally rendered: methodology review-error via action result: src/lib/methodology/service.ts:131 | Complete HTTPS source title/URL, verifier and verification date | أكمل عنوان المصدر ورابط HTTPS وجهة التحقق وتاريخ التحقق. | help/error |
 
-## 4. Unapproved account phrases
+## Legal pages — /terms and /privacy
 
-Every row originates in `src/components/accounts/types.ts` → `accountMessages` → `accountCopyDictionary[English].ar`, which computes `⟦AR-REVIEW⟧ ${english}` when absent from `approvedArabicCopy`. The caller column lists usages rather than duplicating a reused phrase. All are currently renderable under the specified conditions.
-
-| ID | Key/location | Screen/context | English source | Proposed Arabic draft — UNAPPROVED | Category |
+| ID | Key/source | Page/component rendering context | Current English source | Arabic draft — UNAPPROVED, documentation only | Category |
 | --- | --- | --- | --- | --- | --- |
-| A-001 | `accountMessages`; AuthScreens.tsx | Sign-in noscript | Enable JavaScript to continue with Google. | فعّل JavaScript للمتابعة باستخدام Google. | help/error |
-| A-002 | `accountMessages`; AuthScreens.tsx → failure → providerMessage | Sign-in inside embedded frame | Google sign-in needs a separate browser tab. Open sign-in in a new tab, then continue with Google. | يتطلب تسجيل الدخول عبر Google علامة تبويب منفصلة في المتصفح. افتح تسجيل الدخول في علامة تبويب جديدة، ثم اختر المتابعة باستخدام Google. | help/error |
-| A-003 | `accountMessages`; AuthScreens.tsx → failure → providerMessage | Sign-in request/configuration failure | Google sign-in could not be started. Check your connection and try again in a new tab. If it still fails, contact the site owner to check Google provider and callback settings. | تعذّر بدء تسجيل الدخول عبر Google. تحقّق من اتصالك وحاول مجددًا في علامة تبويب جديدة. إذا استمرت المشكلة، فتواصل مع مالك الموقع للتحقق من إعدادات تسجيل الدخول عبر Google وعنوان إعادة التوجيه. | help/error |
-| A-004 | `accountMessages`; AuthScreens.tsx → failure → providerMessage | Sign-in navigation timeout | Google navigation did not complete. Open sign-in in a new tab and try again. | لم يكتمل الانتقال إلى Google. افتح تسجيل الدخول في علامة تبويب جديدة وحاول مجددًا. | help/error |
-| A-005 | `accountMessages`; AccountScreen.tsx | Account deletion unsuccessful; response or exception | Account deletion could not be completed. Try again. | تعذّر إكمال حذف الحساب. حاول مجددًا. | help/error |
-| A-006 | `accountMessages`; MfaScreens.tsx | Enrollment and verification still require stronger session | Additional verification is still required. | لا يزال يلزم تحقق إضافي. | help/error |
-| A-007 | `accountMessages`; AccountScreen.tsx | Admin/editor deletion restriction | An admin or editor account cannot be deleted. Ask another admin to remove your role first. | لا يمكن حذف حساب مسؤول النظام أو المحرّر. اطلب من مسؤول نظام آخر إزالة دورك أولًا. | help/error |
-| A-008 | `accountMessages`; AdminScreens.tsx | Audit subtitle | A read-only record of privileged changes. | سجل للقراءة فقط للتغييرات التي تتطلب صلاحيات خاصة. | help/error |
-| A-009 | `accountMessages`; AccountScreen.tsx | Account subtitle | A small set of preferences and account details. | مجموعة محدودة من التفضيلات وتفاصيل الحساب. | help/error |
-| A-010 | `accountMessages`; MfaScreens.tsx | Enrollment verified status | Authenticator verified. | تم التحقق من تطبيق المصادقة. | help/error |
-| A-011 | `accountMessages`; MfaScreens.tsx | Enrollment preparation errors, including unavailable client/provider | Could not prepare authenticator enrollment. Try again. | تعذّر تجهيز إعداد تطبيق المصادقة. حاول مجددًا. | help/error |
-| A-012 | `accountMessages`; AccountControl.tsx | Shared public account menu; sign-out failure | Could not sign out. Please try again. | تعذّر تسجيل الخروج. يُرجى المحاولة مجددًا. | help/error |
-| A-013 | `accountMessages`; AdminScreens.tsx | Settings eligibility switch help; D-96 scope of ineligible | Editors may publish an explicitly marked pick even when it is not eligible under the selected screening configuration. | يمكن للمحرّرين نشر اختيار يحمل علامة توضيحية صريحة، حتى إن كان غير مؤهل وفق إعدادات الفحص المختارة. | help/error |
-| A-014 | `accountMessages`; MfaScreens.tsx | Verification instruction | Enter the current code from your verified authenticator to continue to the editorial workspace. | أدخل الرمز الحالي من تطبيق المصادقة الذي تم التحقق منه للمتابعة إلى مساحة عمل التحرير. | help/error |
-| A-015 | `accountMessages`; AccountScreen.tsx | Sign-in method provider value | Google | Google | UI label |
-| A-016 | `accountMessages`; AccountScreen.tsx | Language-save response or exception | Language preference could not be saved. Try again. | تعذّر حفظ تفضيل اللغة. حاول مجددًا. | help/error |
-| A-017 | `accountMessages`; AccountScreen.tsx | Language-save success | Language saved | تم حفظ اللغة | help/error |
-| A-018 | `accountMessages`; MfaScreens.tsx | Verification recovery help | Lost your authenticator? Contact another administrator for a reset. | فقدت إمكانية الوصول إلى تطبيق المصادقة؟ تواصل مع مسؤول نظام آخر لإعادة إعداده. | help/error |
-| A-019 | `accountMessages`; MfaScreens.tsx | Verification without a verified factor | No verified authenticator is available for this account. | لا يتوفر لهذا الحساب تطبيق مصادقة تم التحقق منه. | help/error |
-| A-020 | `accountMessages`; AuthScreens.tsx | Sign-in provider help | One Google account. No password to manage. | حساب Google واحد. لا حاجة إلى إدارة كلمة مرور. | help/error |
-| A-021 | `accountMessages`; AdminScreens.tsx | Settings default-version selector help | Only public, eligible versions are listed. | تُعرض الإصدارات المتاحة للجميع والمؤهلة فقط. | help/error |
-| A-022 | `accountMessages`; AuthScreens.tsx | Re-consent notice | Policy acceptance is recorded on your account. | تُسجَّل موافقتك على السياسات في حسابك. | help/error |
-| A-023 | `accountMessages`; AccountControl.tsx | Shared public account menu; profile request failure | Profile is temporarily unavailable. | الملف الشخصي غير متاح مؤقتًا. | help/error |
-| A-024 | `accountMessages`; AdminScreens.tsx | Users role-change dialog help | Role changes are audited. A promoted user must enroll an authenticator before entering admin. | تُسجَّل تغييرات الأدوار في سجل التدقيق. يجب على المستخدم الذي مُنح دورًا أعلى إعداد تطبيق المصادقة قبل الدخول إلى الإدارة. | help/error |
-| A-025 | `accountMessages`; AdminScreens.tsx | Users role-change failure; response or exception | Role could not be updated. Try again. | تعذّر تحديث الدور. حاول مجددًا. | help/error |
-| A-026 | `accountMessages`; AdminScreens.tsx | Users subtitle | Roles are granted deliberately and every change is recorded. | تُمنح الأدوار بقرار مقصود، ويُسجَّل كل تغيير. | help/error |
-| A-027 | `accountMessages`; AdminScreens.tsx | Users role-change success | Role updated. | تم تحديث الدور. | help/error |
-| A-028 | `accountMessages`; AdminScreens.tsx | Settings-save failure; response or exception | Settings could not be saved. Try again. | تعذّر حفظ الإعدادات. حاول مجددًا. | help/error |
-| A-029 | `accountMessages`; AdminScreens.tsx | Settings-save success | Settings saved. | تم حفظ الإعدادات. | help/error |
-| A-030 | `accountMessages`; auth/sign-in/page.tsx → providerError → AuthScreens.tsx | Sign-in `error=cancelled` | Sign-in was cancelled. You can try again. | أُلغي تسجيل الدخول. يمكنك المحاولة مجددًا. | help/error |
-| A-031 | `accountMessages`; MfaScreens.tsx | Enrollment code verification failure | That code could not be verified. Check the time on your device and try again. | تعذّر التحقق من هذا الرمز. تحقّق من الوقت على جهازك وحاول مجددًا. | help/error |
-| A-032 | `accountMessages`; MfaScreens.tsx | Verification code failure | That code could not be verified. Try again. | تعذّر التحقق من هذا الرمز. حاول مجددًا. | help/error |
-| A-033 | `accountMessages`; MfaScreens.tsx | Enrollment unavailable/configuration notice | The account provider is not configured for this browser session. Contact an administrator. | لم تُضبط خدمة الحسابات لجلسة المتصفح هذه. تواصل مع مسؤول النظام. | help/error |
-| A-034 | `accountMessages`; auth/sign-in/page.tsx → providerError → AuthScreens.tsx | Sign-in `error=provider` | Google sign-in could not be started. Please try again. | تعذّر بدء تسجيل الدخول عبر Google. يُرجى المحاولة مجددًا. | help/error |
-| A-035 | `accountMessages`; AdminScreens.tsx | Settings subtitle | These settings affect editorial defaults. Changes are audited. | تؤثر هذه الإعدادات في الخيارات الافتراضية للتحرير. وتُسجَّل التغييرات في سجل التدقيق. | help/error |
-| A-036 | `accountMessages`; AdminScreens.tsx | Deferred admin methodology, securities, ingestion, editions and analysts screens | This area is reserved for a later editorial workflow. No data can be changed here. | هذا القسم مخصّص لسير عمل تحريري لاحق. لا يمكن تغيير أي بيانات هنا. | help/error |
-| A-037 | `accountMessages`; AccountScreen.tsx | Language-preference help | This controls the language used when you open Suhail. | يحدد هذا الخيار اللغة المستخدمة عند فتح سهيل. | help/error |
-| A-038 | `accountMessages`; AccountScreen.tsx | Ordinary user's deletion warning | This permanently removes your account and cannot be undone. | يؤدي هذا إلى حذف حسابك نهائيًا، ولا يمكن التراجع عنه. | help/error |
-| A-039 | `accountMessages`; AdminScreens.tsx | Users table column heading, distinct from approved lowercase role `user` | User | المستخدم | UI label |
-| A-040 | `accountMessages`; MfaScreens.tsx | Enrollment and verification exception | Verification could not be completed. Try again. | تعذّر إكمال التحقق. حاول مجددًا. | help/error |
-| A-041 | `accountMessages`; AuthScreens.tsx | Re-consent introduction | Your agreement needs to be renewed before you continue using your account. | يلزم تجديد موافقتك قبل متابعة استخدام حسابك. | help/error |
-| A-042 | `accountMessages`; AuthScreens.tsx | Sign-in public-access reassurance | Your public research remains open to everyone. | تظل الأبحاث المتاحة للجميع مفتوحة للجميع. | help/error |
+| L-privacy-body | content/legal/privacy.ar.md | Rendered: /privacy, /en/privacy; LegalDocument body; O-7 unresolved | Privacy Policy — draft awaiting founder-supplied Arabic-first legal review, including Saudi PDPL and data residency. This is not approved legal text. | Do not translate; needs O-7 text | legal document (do not translate; needs O-7 text) |
+| L-terms-body | content/legal/terms.ar.md | Rendered: /terms, /en/terms; LegalDocument body; O-7 unresolved | Terms of Use — draft awaiting founder-supplied Arabic-first legal review. This is not approved legal text. | Do not translate; needs O-7 text | legal document (do not translate; needs O-7 text) |
 
-## 5. Concrete fallback caller: audit codes
+## Public methodology — /methodology and /methodology/[slug]
 
-`AdminScreens.tsx` → `AuditScreen` calls `reviewText(locale, row.event_type)` and `reviewText(locale, row.summary)`. These codes are absent from both account and approved dictionaries, so Arabic renders `⟦AR-REVIEW⟧ <code>`. Exact source strings here are machine codes, not invented English labels. The same code used as event type and summary has one row. Origins are `src/db/schema/accounts.ts` → `auditEventType`; writer locations are noted below.
-
-**Current writers:** `src/lib/auth/audit.ts` emits `user_registered` and `consent_recorded`; `src/lib/auth/admin-mutations.ts` emits `user_role_change` and `editorial_setting_change`; `scripts/admin/grant.ts` also emits `user_role_change`; `scripts/admin/reset-mfa.ts` emits `user_mfa_reset`; `drizzle/0004_account_security.sql` emits `user_account_deleted`. These six writers use the code itself as summary. No database records or personal data were queried.
-
-| ID | Key/location | Screen/context | English source / exact code | Proposed Arabic draft — UNAPPROVED | Category |
+| ID | Key/source | Page/component rendering context | Current English source | Arabic draft — UNAPPROVED, documentation only | Category |
 | --- | --- | --- | --- | --- | --- |
-| F-methodology_create | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | methodology_create | إنشاء منهجية | UI label |
-| F-methodology_update | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | methodology_update | تحديث منهجية | UI label |
-| F-methodology_version_create | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | methodology_version_create | إنشاء إصدار منهجية | UI label |
-| F-methodology_version_production_enable | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | methodology_version_production_enable | تفعيل إصدار منهجية للإنتاج | UI label |
-| F-criterion_create | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | criterion_create | إنشاء معيار | UI label |
-| F-criterion_update | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | criterion_update | تحديث معيار | UI label |
-| F-screening_run | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | screening_run | تشغيل الفحص | UI label |
-| F-explanation_generated | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | explanation_generated | إنشاء شرح | UI label |
-| F-data_ingest | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | data_ingest | استيراد البيانات | UI label |
-| F-alert_created | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | alert_created | إنشاء تنبيه | UI label |
-| F-edition_draft_created | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | edition_draft_created | إنشاء مسودة إصدار | UI label |
-| F-edition_published | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | edition_published | نشر إصدار | UI label |
-| F-edition_revision | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | edition_revision | مراجعة إصدار | UI label |
-| F-edition_status_change | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | edition_status_change | تغيير حالة إصدار | UI label |
-| F-score_model_version_create | `auditEventType`; AuditScreen fallback | Audit; future scoring code, no current writer found | score_model_version_create | إنشاء إصدار نموذج تقييم | UI label |
-| F-score_model_status_change | `auditEventType`; AuditScreen fallback | Audit; future scoring code, no current writer found | score_model_status_change | تغيير حالة نموذج تقييم | UI label |
-| F-score_model_backtest | `auditEventType`; AuditScreen fallback | Audit; future scoring code, no current writer found | score_model_backtest | اختبار نموذج تقييم على بيانات سابقة | UI label |
-| F-editor_pick_saved | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | editor_pick_saved | حفظ اختيار المحرّر | UI label |
-| F-approval_recorded | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | approval_recorded | تسجيل موافقة | UI label |
-| F-performance_recorded | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | performance_recorded | تسجيل الأداء | UI label |
-| F-price_advance | `auditEventType`; AuditScreen fallback | Audit; schema-supported, no current writer found | price_advance | تحديث السعر إلى تاريخ لاحق | UI label |
-| F-editorial_setting_change | `auditEventType`; AuditScreen fallback | Audit type and summary; current settings writer | editorial_setting_change | تغيير إعداد تحريري | UI label |
-| F-user_registered | `auditEventType`; AuditScreen fallback | Audit type and summary; current registration writer | user_registered | تسجيل مستخدم | UI label |
-| F-user_role_change | `auditEventType`; AuditScreen fallback | Audit type and summary; current admin action and grant CLI | user_role_change | تغيير دور مستخدم | UI label |
-| F-user_mfa_reset | `auditEventType`; AuditScreen fallback | Audit type and summary; current reset CLI | user_mfa_reset | إعادة إعداد المصادقة متعددة العوامل لمستخدم | UI label |
-| F-user_account_deleted | `auditEventType`; AuditScreen fallback | Audit type and summary; current deletion function | user_account_deleted | حذف حساب مستخدم | UI label |
-| F-consent_recorded | `auditEventType`; AuditScreen fallback | Audit type and summary; current consent writer | consent_recorded | تسجيل الموافقة | UI label |
-
-## 6. Six screening-reason templates
-
-Origins: `src/engine/reasons/ar.ts` → `renderArabicDraft`, one marked template per `reason.kind`; corresponding English source is from `src/engine/reasons/en.ts` → `renderEnglish`, not a back-translation of the existing Arabic draft. There is no current application call to the Arabic renderer; these are exported, callable engine templates for the subsequent evidence UI. They are not claims that public screening pages already exist.
-
-### Interpolation mapping and evidence boundary
-
-Review notation uses braces; original source uses JavaScript `${...}`. Preserve all original evidence fields. Display proposals below include the English renderer's explanation and retain the Arabic renderer's explicit reason-code field; this is a proposal for review, not authorization to change formatting or renderer behavior.
-
-- `{label}` → `reason.label`; `{field}` → `reason.field`; `{reasonCode}` → `reason.reasonCode`, kept as the exact machine code (not a translated replacement).
-- `{ratio}` → original Arabic `${reason.ratio}`; corresponding English `${ratio}` is `reason.ratio === null ? "unknown" : reason.ratio.toFixed(2) + suffix`. `{threshold}` → original Arabic `${reason.threshold}`; corresponding English `${threshold}` is `reason.threshold === null ? "not set" : reason.threshold + suffix`. For the proposed display reading, `unknown` is `غير معروف`, `not set` is `غير محدد`. Preserve Western digits and applicable suffix. `suffix` is empty for null/absolute/boolean units and `%` for `percent_*`, from `unitSuffix(reason.thresholdUnit)`. Do not universally append `%`. The existing Arabic renderer currently interpolates raw numeric/null values without English unit formatting; any implementation must explicitly reconcile that distinction, not silently assume it has already changed.
-- `{explanation}` → English `explanations[reason.reasonCode]`; Arabic review mapping immediately below. It is not a new explanation, inferred fact or LLM output.
-- `{borderlineCount}` → `reason.borderlineCount`; `{unknownCount}` → `reason.unknownCount`. Retain explicit zero counts. `criterion_counts` is the structured reason code of the counts template, not an extra displayed explanation.
-- Labels and fields are runtime evidence, not fixed Arabic wording. Their translations/data provenance are outside this finite marked-template inventory. Examples include configured criterion labels, numerator/denominator definitions, and the generated `Business segments` and `Data freshness` fields. Do not replace an unavailable input with an assumed value.
-
-| ID | Key/location | Screen/context | English source template | Proposed Arabic draft — UNAPPROVED | Category |
-| --- | --- | --- | --- | --- | --- |
-| E-failure | `reasons/ar.ts`, `failure`; `en.ts` same kind | Engine failure reasons; each failed criterion; future evidence UI | {label} criterion: Fail — {ratio} against a {threshold} limit. {explanation} | معيار {label}: لم يجتز الفحص — النسبة {ratio} مقابل حد {threshold}. {explanation} رمز السبب: {reasonCode}. | status reason template |
-| E-borderline | `reasons/ar.ts`, `borderline`; `en.ts` same kind | Engine review reasons; each borderline criterion | {label} criterion: Borderline — {ratio} against a {threshold} limit. {explanation} | معيار {label}: نتيجة حدية — النسبة {ratio} مقابل حد {threshold}. {explanation} رمز السبب: {reasonCode}. | status reason template |
-| E-criterion_unknown | `reasons/ar.ts`, `criterion_unknown`; `en.ts` same kind | Engine review reasons; each unknown criterion | {label} criterion: Unknown — {explanation} | معيار {label}: النتيجة غير معروفة — {explanation} رمز السبب: {reasonCode}. | status reason template |
-| E-blocking_unknown | `reasons/ar.ts`, `blocking_unknown`; `en.ts` shared unknown branch | Engine insufficient-data reasons; blocking unknown fields | {field}: {explanation} | {field}: بيانات لازمة غير متاحة؛ لا تُفترض قيمة. {explanation} رمز السبب: {reasonCode}. | status reason template |
-| E-review_unknown | `reasons/ar.ts`, `review_unknown`; `en.ts` shared unknown branch | Engine review reasons; review-severity unknown fields | {field}: {explanation} | {field}: يلزم مراجعة البيانات. {explanation} رمز السبب: {reasonCode}. | status reason template |
-| E-counts | `reasons/ar.ts`, `counts`; `en.ts` same kind | Engine failure summary; includes zero counts | {borderlineCount} borderline criteria; {unknownCount} unknown criteria. | عدد المعايير الحدية: {borderlineCount}؛ عدد المعايير غير المعروفة: {unknownCount}. | status reason template |
-
-### Explanation substitutions — part of the six row proposals, not extra marked origins
-
-These 19 finite English lookup values are included so `{explanation}` is reviewable, not an unresolved translation instruction. Approving an engine row must include its applicable substitutions; edits can identify the reason code. Codes not emitted for a given kind must not be invented into that kind. The mappings preserve current evidence and D-79/D-80 meanings.
-
-- `boolean_positive`: “The value is greater than zero.” → `القيمة أكبر من صفر.`
-- `boolean_nonpositive`: “The value is zero or negative.” → `القيمة صفر أو سالبة.`
-- `within_margin`: “The ratio is within the configured borderline margin.” → `تقع النسبة ضمن هامش الحد المحدد.`
-- `max_within_limit`: “The ratio is at or below the limit.” → `النسبة عند الحد أو دونه.`
-- `max_exceeded`: “The ratio exceeds the limit.” → `تتجاوز النسبة الحد.`
-- `min_met`: “The ratio meets the minimum.” → `تبلغ النسبة الحد الأدنى أو تتجاوزه.`
-- `min_not_met`: “The ratio is below the minimum.” → `النسبة دون الحد الأدنى.`
-- `denominator_unavailable`: “cannot be evaluated; screen is Insufficient Data; no value assumed” → `لا يمكن تقييمه؛ حالة الفحص هي «بيانات غير كافية»؛ لم تُفترض أي قيمة.`
-- `denominator_nonpositive`: “denominator is zero or negative; ratio undefined; no value assumed” → `المقام صفر أو سالب؛ النسبة غير معرّفة؛ لم تُفترض أي قيمة.`
-- `numerator_unavailable`: “numerator unavailable; no value assumed” → `البسط غير متاح؛ لم تُفترض أي قيمة.`
-- `no_segments`: “no segment disclosure recorded” → `لم يُسجَّل إفصاح عن القطاعات.`
-- `shares_unavailable`: “segment revenue share unavailable; primary activity not assumed” → `حصة القطاع من الإيرادات غير متاحة؛ لم يُفترض النشاط الرئيسي.`
-- `unclassified_primary`: “primary activity is unclassified” → `النشاط الرئيسي غير مصنّف.`
-- `primary_tied`: “primary activity tied between segments” → `تعادلت القطاعات في تحديد النشاط الرئيسي.`
-- `primary_prohibited`: “The primary activity is in the prohibited categories.” → `يندرج النشاط الرئيسي ضمن الفئات المحظورة.`
-- `primary_permissible`: “The primary activity is not in the prohibited categories.” → `لا يندرج النشاط الرئيسي ضمن الفئات المحظورة.`
-- `evaluator_unregistered`: “no evaluator is registered” → `لا توجد دالة تقييم مسجلة.`
-- `stale_data`: “The financial period is older than the configured staleness limit.” → `تجاوز عمر الفترة المالية حد قدم البيانات المحدد.`
-- `criterion_counts`: `""` → `""` (empty; no added explanatory text).
-
-## 7. Inline message and legal bodies
-
-The legal body's English source column preserves the exact English currently carried inside the Arabic marked body, not a substitution of the shorter `*.en.md` draft. Both locale pairs were inspected. Arabic Markdown bodies are loaded by `src/lib/auth/legal.ts` and rendered by `LegalDocument` using `react-markdown` with `skipHtml`; they are runtime content, not comments.
-
-| ID | Key/location | Screen/context | English source | Proposed Arabic draft — UNAPPROVED | Category |
-| --- | --- | --- | --- | --- | --- |
-| I-forbidden | `src/app/[locale]/(private)/forbidden.tsx`, paragraph | Framework forbidden screen; literal marker currently appears regardless of locale; heading remains `403` | Access is restricted to authorized roles. | يقتصر الوصول على أصحاب الأدوار المصرّح لها. | help/error |
-| L-terms-body | `content/legal/terms.ar.md`, body after `draft-2026-10-11` front matter | `/terms` → LegalDocument; markers `⟦LEGAL-REVIEW⟧ ⟦AR-REVIEW⟧` both retained | Terms of Use — draft awaiting founder-supplied Arabic-first legal review. This is not approved legal text. | Do not translate; needs O-7 text | legal document (do not translate; needs O-7 text) |
-| L-privacy-body | `content/legal/privacy.ar.md`, body after `draft-2026-10-11` front matter | `/privacy` → LegalDocument; markers `⟦LEGAL-REVIEW⟧ ⟦AR-REVIEW⟧` both retained | Privacy Policy — draft awaiting founder-supplied Arabic-first legal review, including Saudi PDPL and data residency. This is not approved legal text. | Do not translate; needs O-7 text | legal document (do not translate; needs O-7 text) |
-
-No Terms or Privacy translation is drafted. O-7 and legal review remain unresolved. Their approved headings and policy-version display are not review rows. This document neither resolves consent/legal readiness nor changes policy versions.
-
-## 8. Dynamic contexts, exclusions and completeness
-
-### Traced dynamic callers
-
-- `AuthScreens.tsx`: `reviewText(locale, failure || providerError || "")` resolves to A-002/A-003/A-004 plus provider/cancellation A-030/A-034 in the current page. Empty text is not passed in the displayed branch. Arbitrary future providerError props are not a finite source vocabulary.
-- `AdminScreens.tsx`: `label` comes from the fixed navigation list; `title` comes from deferred section titles. All of these are already D-96-approved, including `Securities and data`, `Ingestion`, `Editions`, `Analysts` and `Methodologies`. The deferred section's explanation is A-036.
-- `private-page-metadata.ts`: `title` callers use approved sign-in, consent, account, MFA, users, audit, settings, methodology and deferred-section titles, with approved `Admin section` as fallback. Metadata helper produces no additional unapproved finite phrase here.
-- `LegalDocument.tsx`: title conditional selects approved `Terms of Use` / `Privacy Policy`; marked bodies are L-terms-body/L-privacy-body, not the title.
-- Audit event types are bounded by the 27 schema codes in §5. `row.summary` is an arbitrary stored text field; the six current writers' exact summaries are the same six codes already inventoried. Other historical, external or future summary values are unknown without a separately authorized data inventory. Do not claim that 171 rows cover every possible database string. User-entered notes/identities, entity identifiers and JSON details are not finite marked source literals.
-- Engine `{label}` / `{field}` are supplied or generated evidence; `{reasonCode}` is a structured code, deliberately retained. English explanation substitutions are bounded and listed above. No extra machine-generated explanation or interpretation is proposed.
-- The generic `reviewText(locale, source)` fallback can mark any future unlisted caller. Its expression is a marker producer, not one translatable phrase row. This snapshot contains no additional unapproved literal `reviewText` call outside the 42 account phrases; audit values are accounted for separately. Future code/data additions require another scan before approved-copy application.
-
-### Excluded occurrences
-
-Whole-checkout marker search distinguished origins from consumers, assertions and documentation:
-
-- `src/components/foundation/shared.tsx` consumes the prefix to set English language/direction semantics; `LocaleSwitcher.tsx` and `ThemeToggle.tsx` inspect it for language attributes. These three consumers contain no new marked copy origins.
-- `src/components/accounts/types.ts` contains two producer expressions (dictionary fallback and generic fallback). Their concrete phrases/codes are inventoried, not the expressions themselves.
-- Six `AR-REVIEW: needs human Arabic drafting` comments beside engine templates are comments, not displayed text.
-- `src/components/accounts/copy.test.ts`, `src/engine/reasons.test.ts`, `tests/foundation.test.ts`, `tests/mfa-copy.test.ts` and `e2e/accounts-locales-fixture.spec.ts` contain assertions/fixtures (including `Unapproved new phrase`), not extra runtime origins.
-- `scripts/foundation-report.ts` detects markers and describes them in generated documentation; it does not introduce runtime UI copy. Do not regenerate its historical report for this task.
-- Existing marker mentions in `docs/FOUNDATION_HANDOFF.md`, `docs/ACCOUNTS_HANDOFF.md`, `docs/STEP_3_REPORT.md` and `docs/ACCOUNT_ADMIN_LOCALE_CHECKS.md` are handoff/review context, not runtime phrases. This sheet's own marker mentions are also documentation.
-- `content/legal/terms.en.md` and `privacy.en.md` have legal-review markers only, not Arabic-review origins. Existing approved Arabic labels, unmarked Appendix B leaves, English-only sample content, generated outputs, dependencies and uploaded assets are outside the marked-source inventory.
-
-### Verification of this deliverable
-
-- Re-scanned `src`, `content`, scripts, tests and existing documentation for literal markers and traced computed account fallbacks using the current AST/callers.
-- Reconciled every marked JSON key (93), every unapproved account entry (42), the audit schema code set (27), each Arabic reason kind (6), the inline message (1) and both legal bodies (2). One ID per origin/template; no duplicate account phrase rows.
-- Checked exact English sources against paired JSON keys, account phrases, English engine renderer and legal placeholders. Count/category totals above describe finite source rows, not a count of visible occurrences on every screen.
-- Checked retained literals, Western digits, interpolation mapping, D-96 terminology, unchanged fixed status labels and `ليست فتوى` in both disclaimers. Legal draft columns contain only the mandated O-7 instruction.
-- No application behavior is changed or new UI delivered. No browser interaction, database access, migration, translation application, copy-test update or launch action is part of this sheet. Only `docs/ARABIC_REVIEW.md` is the intended project diff.
-- `pnpm typecheck`, `pnpm lint`, `pnpm lint:logical` and `pnpm test` passed (557 tests in 25 files). A read-only screenshot of the unchanged public home confirmed the shell still renders with its existing review-marked disclaimer. The signed-in UI was not visually verified.
-
-**Stop here.** Await the founder's row-level decisions. Existing Arabic-copy application tasks remain separate; no Phase 2 work is initiated.
+| J-methodologies-borderline | methodologies.borderline | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:227; Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:305 | Borderline margin | الهامش الحدي | UI label |
+| J-methodologies-changeHistory | methodologies.changeHistory | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:176 | Change history | سجل التغييرات | UI label |
+| J-methodologies-definition | methodologies.definition | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:278 | Definition | التعريف | UI label |
+| J-methodologies-edgeCases | methodologies.edgeCases | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:318 | Edge cases | الحالات الخاصة | UI label |
+| J-methodologies-effectiveDate | methodologies.effectiveDate | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:170; Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:272 | Effective date | تاريخ السريان | UI label |
+| J-methodologies-formula | methodologies.formula | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:281 | Formula | الصيغة | UI label |
+| J-methodologies-inProduction | methodologies.inProduction | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:165 | Available in production | مُعتمد للاستخدام الفعلي | UI label |
+| J-methodologies-licensing | methodologies.licensing | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:148 | Licensing | الترخيص | UI label |
+| J-methodologies-noChangeHistory | methodologies.noChangeHistory | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:177 | No recorded changes since this version became effective. | لا توجد تغييرات مسجلة منذ سريان هذا الإصدار. | help/error |
+| J-methodologies-notInProduction | methodologies.notInProduction | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:165 | Not enabled for production | غير مُعتمد للاستخدام الفعلي | UI label |
+| J-methodologies-officialOrAdapted | methodologies.officialOrAdapted | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:145 | Official or adapted | رسمي أو مقتبس | UI label |
+| J-methodologies-productionStatus | methodologies.productionStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:164 | Production status | حالة الاعتماد للاستخدام الفعلي | UI label |
+| J-methodologies-publisher | methodologies.publisher | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:144 | Publisher | الجهة الناشرة | UI label |
+| J-methodologies-requiredInputs | methodologies.requiredInputs | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:321 | Required inputs | المدخلات المطلوبة | UI label |
+| J-methodologies-ruleGroups | methodologies.ruleGroups | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:205 | Rule groups | مجموعات القواعد | UI label |
+| J-methodologies-rules | methodologies.rules | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:210 | criteria | معايير | UI label |
+| J-methodologies-sourceDocument | methodologies.sourceDocument | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:137; Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:151 | Source document | وثيقة المصدر | UI label |
+| J-methodologies-sourceRef | methodologies.sourceRef | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:324 | Source reference | مرجع المصدر | UI label |
+| J-methodologies-subtitle | methodologies.subtitle | Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:28 | Every rule this application applies, with its source reference, version and verification status. | كل قاعدة يطبّقها هذا التطبيق، مع مرجع مصدرها وإصدارها وحالة التحقق منها. | help/error |
+| J-methodologies-title | methodologies.title | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:104; Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:25 | Methodology Center | مركز المنهجيات | UI label |
+| J-methodologies-treatment | methodologies.treatment | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:310 | Treatment rules | قواعد المعالجة | UI label |
+| J-methodologies-verificationDate | methodologies.verificationDate | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:161 | Verification date | تاريخ التحقق | UI label |
+| J-methodologies-verifiedBy | methodologies.verifiedBy | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:160 | Verified by | جهة التحقق | UI label |
+| J-methodologies-version | methodologies.version | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:128; Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:167; Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:85 | Version | الإصدار | UI label |
+| J-publicMethodology-breadcrumb | publicMethodology.breadcrumb | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:102 | Breadcrumb | مسار الصفحة | UI label |
+| J-publicMethodology-chooseVersion | publicMethodology.chooseVersion | Rendered/conditionally rendered: src/components/methodology/PublicMethodologyVersions.tsx:56 | Choose a version | اختر إصدارًا | UI label |
+| J-publicMethodology-criteriaSummaryTable | publicMethodology.criteriaSummaryTable | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:218 | Concise comparison of the criteria documented in this version. | مقارنة موجزة للمعايير الموثّقة في هذا الإصدار. | help/error |
+| J-publicMethodology-criterionType | publicMethodology.criterionType | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:223 | Criterion type | نوع المعيار | UI label |
+| J-publicMethodology-denominatorLineItems | publicMethodology.denominatorLineItems | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:293 | Denominator line items | بنود المقام | help/error |
+| J-publicMethodology-documentedMethods | publicMethodology.documentedMethods | Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:33 | DOCUMENTED METHODS | المنهجيات الموثّقة | UI label |
+| J-publicMethodology-methodologyRecords | publicMethodology.methodologyRecords | Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:54 | Methodology records | سجلات المنهجيات | UI label |
+| J-publicMethodology-noPublicCriteria | publicMethodology.noPublicCriteria | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:254 | No public criteria are recorded for this version. | لا توجد معايير عامة مسجّلة لهذا الإصدار. | help/error |
+| J-publicMethodology-numeratorLineItems | publicMethodology.numeratorLineItems | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:290 | Numerator line items | بنود البسط | UI label |
+| J-publicMethodology-openDocumentation | publicMethodology.openDocumentation | Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:99 | Open documentation | فتح التوثيق | UI label |
+| J-publicMethodology-publicResearchDocumentation | publicMethodology.publicResearchDocumentation | Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:22 | PUBLIC RESEARCH / DOCUMENTATION | أبحاث عامة / توثيق | UI label |
+| J-publicMethodology-publicVersion | publicMethodology.publicVersion | Rendered/conditionally rendered: src/components/methodology/PublicMethodologyVersions.tsx:52 | Public version | إصدار متاح للعموم | UI label |
+| J-publicMethodology-publicVersions | publicMethodology.publicVersions | Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:89 | Public versions | الإصدارات المتاحة للعموم | UI label |
+| J-publicMethodology-publishedVersionsOnly | publicMethodology.publishedVersionsOnly | Rendered/conditionally rendered: src/components/methodology/PublicMethodologyVersions.tsx:53 | Only published versions are listed. | تُعرض الإصدارات المنشورة فقط. | help/error |
+| J-publicMethodology-purificationTreatment | publicMethodology.purificationTreatment | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:190 | Purification treatment | معالجة التطهير | UI label |
+| J-publicMethodology-researchRegister | publicMethodology.researchRegister | Rendered/conditionally rendered: src/components/methodology/MethodologyDirectory.tsx:44 | RESEARCH REGISTER | سجل الأبحاث | UI label |
+| J-publicMethodology-ruleRegister | publicMethodology.ruleRegister | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:202 | RULE REGISTER | سجل القواعد | UI label |
+| J-publicMethodology-storedMethodologyData | publicMethodology.storedMethodologyData | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:185 | STORED METHODOLOGY DATA | بيانات المنهجية المحفوظة | UI label |
+| J-publicMethodology-thresholdDirection | publicMethodology.thresholdDirection | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:226; Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:302 | Threshold direction | اتجاه الحد | UI label |
+| J-publicMethodology-thresholdUnit | publicMethodology.thresholdUnit | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:225; Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:299 | Threshold unit | وحدة الحد | UI label |
+| J-publicMethodology-treatmentRuleData | publicMethodology.treatmentRuleData | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:313 | Treatment rule data | بيانات قواعد المعالجة | UI label |
+| J-publicMethodology-versionSelector | publicMethodology.versionSelector | Rendered/conditionally rendered: src/components/methodology/PublicMethodologyVersions.tsx:49 | Select a published methodology version | اختر إصدار منهجية منشورًا | UI label |
+| J-publicMethodology-workflowStatus | publicMethodology.workflowStatus | Rendered/conditionally rendered: src/components/methodology/MethodologyDetail.tsx:173 | Workflow status | حالة سير العمل | UI label |
