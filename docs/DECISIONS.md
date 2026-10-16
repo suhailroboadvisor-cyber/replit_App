@@ -99,6 +99,20 @@ Each decision has a stable ID; the numbers are not in date or section order. Cod
 | D-38 | **Approvals:** the stages are `qa` → `editorial` → `publish`. One person may approve more than one stage while the team is small. Every approval is recorded with its approver. |
 | D-39 | **Discovery:** reference §5.2 has no search or stock-index page. In Phase 0, stock pages are reached through editions, the sitemap and search engines. Add a `/stocks` index only if the founder asks for one. |
 
+## Founder-approved public stock-search performance
+
+On 16 October 2026 the founder approved **10,000 total securities** as the future
+search-planning size and **250 ms p95 for a warm database search call**, across
+representative queries in preview and live modes. This is not a hosted HTTP/page
+SLA or authorization to populate the curated universe. The disposable PostgreSQL
+17 baseline meets this target; see [SEARCH_PERFORMANCE.md](SEARCH_PERFORMANCE.md)
+for measurements and limitations.
+
+The 50,000- and 100,000-security scenarios are stress tests, not approved coverage
+forecasts. The proposed screening-history index remains a separate
+approval/migration. No extension, new dependency, list-all route, production
+change or altered matching semantics is authorized by this performance decision.
+
 ## Open — ask the founder before the affected step
 
 | ID | Question | Blocks |
