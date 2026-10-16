@@ -30,7 +30,16 @@ for (const locale of ["ar", "en"] as const) {
       await expect(page.locator("html")).toHaveAttribute("dir", locale === "ar" ? "rtl" : "ltr");
       await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", new RegExp(company));
       await expect(page.locator('meta[property="og:description"]')).toHaveAttribute("content", /EX-A/);
-      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /app-icon/);
+      const socialImage = "http://127.0.0.1:3400/icons/icon-512.png";
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", socialImage);
+      await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute("content", socialImage);
+      const image = await request.get(socialImage);
+      expect(image.status()).toBe(200);
+      expect(image.headers()["content-type"]).toBe("image/png");
+      const png = await image.body();
+      expect(png.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
+      expect(png.readUInt32BE(16)).toBe(512);
+      expect(png.readUInt32BE(20)).toBe(512);
       await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary");
       expect(await page.locator("[data-section]").evaluateAll(nodes => nodes.map(node => node.getAttribute("data-section")))).toEqual(["header", "screening", "why", "known", "unknown", "methodology", "criteria", "fundamentals", "sources", "history", "metadata", "disclaimer"]);
       expect(checkRegister(await page.locator("body").innerText(), locale).hardBans).toEqual([]);

@@ -19,7 +19,7 @@ export function stockMetadata(data: PublicStockData, locale: "ar" | "en", siteUr
     title: { absolute: title }, description,
     alternates: { canonical, languages: { ar: url(path), en: url(`/en${path}`), "x-default": url(path) } },
     robots: data.version?.production_enabled ? { index: true, follow: true } : { index: false, follow: false },
-    openGraph: { type: "website", title, description, url: canonical, siteName: "Suhail | سهيل", locale: locale === "ar" ? "ar" : "en_US", alternateLocale: [locale === "ar" ? "en_US" : "ar"], images: [{ url: url("/brand/app-icon.svg"), alt: `${company} (${data.security.ticker}) — ${status}` }] },
-    twitter: { card: "summary", title, description, images: [url("/brand/app-icon.svg")] },
+    openGraph: { type: "website", title, description, url: canonical, siteName: "Suhail | سهيل", locale: locale === "ar" ? "ar" : "en_US", alternateLocale: [locale === "ar" ? "en_US" : "ar"], images: [{ url: url("/icons/icon-512.png"), alt: `${company} (${data.security.ticker}) — ${status}` }] },
+    twitter: { card: "summary", title, description, images: [url("/icons/icon-512.png")] },
   };
 }

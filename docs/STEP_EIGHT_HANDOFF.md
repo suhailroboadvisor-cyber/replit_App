@@ -35,13 +35,18 @@ The existing database `input_state` enum already supports `missing`.
 ## Verification
 
 `src/screening/verify.ts`: `verifyRun(runId)` computes the SHA-256 of the canonical
-stored payload and replays its embedded inputs through the engine. It reports
-`valid`, `hashMatches`, `replayMatches`, both hashes and path-level differences.
+stored payload and replays its embedded inputs only for the current engine version. It reports
+`valid`, `hashMatches`, `replaySupported`, `replayMatches`, `engineVersion`, both hashes and path-level differences.
 It does not read current facts, segments or methodology content.
 
 Non-evaluated metadata omitted by the existing hash projection receives neutral
-replay-only placeholders; these are not new evidence. Malformed/unsupported
-payloads return a replay difference rather than claiming verification succeeded.
+replay-only placeholders; these are not new evidence. Malformed current-engine
+inputs return a replay difference rather than claiming verification succeeded.
+For another stored engine version, replay is not attempted: `replayMatches` is
+null and `valid` reflects the immutable hash check only. Admin feedback says
+“Hash verified.” and “replay not supported for engine X” with the stored version,
+never “Replay matches” = Yes/No for an unavailable replay. A hash mismatch still
+fails verification. The new Arabic-facing phrases remain marked and pending review.
 
 ## Live gate and selected versions
 

@@ -19,7 +19,7 @@ const formatting = {
       meta: {
         type: "problem",
         schema: [],
-        messages: { shared: "Use src/lib/format.ts for date and number formatting (D-107)." },
+        messages: { shared: "Use src/lib/format.ts for date and number formatting (D-121)." },
       },
       create(context) {
         return {

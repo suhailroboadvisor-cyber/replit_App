@@ -254,6 +254,11 @@
     "draft": "⟦AR-REVIEW⟧ Universe membership",
     "category": "help/error"
   },
+  "U-2b20a72bf7be962dfb991fdb105daca0d82157dd2a42f63998d88b119c578a0b": {
+    "source": "Hash verified.",
+    "draft": "⟦AR-REVIEW⟧ Hash verified.",
+    "category": "help/error"
+  },
   "U-2c74499f1b9dad4d192a585c0b5fd2598193ad5cb22497c544a72373cad2e67d": {
     "source": "Accession / reference",
     "draft": "⟦AR-REVIEW⟧ Accession / reference",
@@ -1362,6 +1367,11 @@
   "U-e565ca7422ac6e6c9eeacf0ffffe71b74d57faf6e77935ad14ba8445759b78d9": {
     "source": "Calculation trace",
     "draft": "⟦AR-REVIEW⟧ Calculation trace",
+    "category": "help/error"
+  },
+  "U-e856bf88761db489d1534e4eef19f63147a1a1a6bae8f4664ea6e8d0eb3421c2": {
+    "source": "replay not supported for engine",
+    "draft": "⟦AR-REVIEW⟧ replay not supported for engine",
     "category": "help/error"
   },
   "U-e91fadf24f78c081972a2015146e9b7ad4636bb5a208f5733b54ee4407682078": {

@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { formatTimestamp } from "../src/lib/format";
+import ar from "../src/i18n/messages/ar.json";
+import en from "../src/i18n/messages/en.json";
 
 const failures = new WeakMap<Page, string[]>();
 test.beforeEach(async ({ page, context }) => {
@@ -26,7 +28,8 @@ async function checkTheme(page: Page, theme: string) {
   if (/\/admin\/methodologies/.test(page.url())) {
     // The unchanged admin header has no theme toggle. Exercise a real client
     // state transition instead of treating static markup as hydrated UI.
-    const create = page.getByRole("button", { name: /Create methodology/ });
+    const messages = await page.locator("html").getAttribute("lang") === "ar" ? ar : en;
+    const create = page.getByRole("button", { name: messages.governed.createMethodology, exact: true });
     await create.click();
     await expect(page.locator("form")).toHaveCount(2); // sign-out + metadata form
     await create.click();

@@ -437,6 +437,13 @@ for (const locale of ["ar", "en"] as const) {
     // Non-tabindex main landmarks receive the browser's sequential-focus start.
     // The next Tab must bypass the header, not return to its navigation.
     await page.keyboard.press("Tab");
+    const main = page.getByRole("main");
+    await expect(main.getByRole("searchbox")).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(main.getByRole("button", { name: (locale === "ar" ? arMessages : enMessages).publicSearch.submit, exact: true })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(main.getByRole("link")).toBeFocused();
+    await page.keyboard.press("Tab");
     const details = page.locator("#full-disclaimer");
     const summary = details.locator("summary");
     await expect(summary).toBeFocused();

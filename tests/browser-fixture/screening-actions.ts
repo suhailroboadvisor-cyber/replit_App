@@ -20,12 +20,15 @@ export async function runScreenAction(input: { securityId: string; methodologyVe
 }
 export async function verifyScreenAction(runId: string): Promise<VerifyActionResult> {
   record("verifyScreenAction", [runId]);
-  const failed = new URLSearchParams(window.location.search).get("verify") === "fail";
+  const mode = new URLSearchParams(window.location.search).get("verify");
+  const failed = mode === "fail" || mode === "unsupported-tampered";
+  const unsupported = mode === "unsupported" || mode === "unsupported-tampered";
   return { ok: true, verification: {
-    valid: !failed, hashMatches: !failed, replayMatches: !failed,
+    valid: !failed, hashMatches: !failed, replayMatches: unsupported ? null : !failed,
+    replaySupported: !unsupported, engineVersion: unsupported ? "engine-0.9.0" : "engine-1.0.1",
     storedHash: "abcdef0123456789abcdef0123456789",
     computedHash: failed ? "fedcba9876543210fedcba9876543210" : "abcdef0123456789abcdef0123456789",
-    differences: failed ? [{ path: "outputs.status", expected: "pass", actual: "fail" }] : [],
+    differences: failed ? [{ path: unsupported ? "$.immutable_hash" : "outputs.status", expected: "pass", actual: "fail" }] : [],
   } };
 }
 export async function runUniverseAction(kind: "ingest" | "screen", id?: string): Promise<BulkActionResult> {

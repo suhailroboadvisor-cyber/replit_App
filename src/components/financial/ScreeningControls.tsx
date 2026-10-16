@@ -32,6 +32,7 @@ const copy = [
   "Unchanged result",
   "No reason template available.", "Criterion ID", "Reason code", "Field", "Threshold unit",
   "Borderline count", "Unknown count",
+  "Hash verified.", "replay not supported for engine",
 ] as const;
 function t(locale: Locale, value: string) {
   for (const phrase of copy) if (phrase === value) return reviewText(locale, phrase);
@@ -197,7 +198,8 @@ export function ScreeningRunDetail({ detail, role }: DetailProps) {
         const result = await verifyScreenAction(run.id);
         if (!result.ok) { setFeedback(t(locale, result.error)); return; }
         setVerification(result.verification);
-        setFeedback(t(locale, result.verification.valid ? "Verification passed." : "Verification failed."));
+        setFeedback(t(locale, !result.verification.valid ? "Verification failed."
+          : result.verification.replaySupported ? "Verification passed." : "Hash verified."));
       } catch { setFeedback(t(locale, "The request failed. Reload and try again.")); }
     });
   };
@@ -219,7 +221,9 @@ export function ScreeningRunDetail({ detail, role }: DetailProps) {
         <p className="flex items-center gap-2 text-xs font-semibold">{verification.valid ? <Check size={14} aria-hidden="true" /> : <CircleAlert size={14} aria-hidden="true" />}{t(locale, "Verify")}</p>
         <dl className="grid gap-3 sm:grid-cols-3 text-xs">
           <div><dt className="text-muted-foreground">{t(locale, "Hash matches")}</dt><dd className="mt-1">{t(locale, verification.hashMatches ? "Yes" : "No")}</dd></div>
-          <div><dt className="text-muted-foreground">{t(locale, "Replay matches")}</dt><dd className="mt-1">{t(locale, verification.replayMatches ? "Yes" : "No")}</dd></div>
+          <div><dt className="text-muted-foreground">{t(locale, "Replay matches")}</dt><dd className="mt-1">{verification.replaySupported
+            ? t(locale, verification.replayMatches ? "Yes" : "No")
+            : <span lang="en" dir="ltr">{t(locale, "replay not supported for engine")} {ltr(verification.engineVersion)}</span>}</dd></div>
           <div><dt className="text-muted-foreground">{t(locale, "Stored hash")}</dt><dd className="mt-1 break-all">{ltr(verification.storedHash)}</dd></div>
         </dl>
         <p className="text-[10px] text-muted-foreground">{t(locale, "Computed hash")}: {ltr(verification.computedHash)}</p>
