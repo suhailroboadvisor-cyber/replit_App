@@ -140,3 +140,17 @@ mtime_ms = 1792114263746
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/a98b7093-2b46-4a8a-b137-d279beaed68e/ceb33936-264d-464c-8664-415afbafac9b"
 storage_version_token = "1792114430834366"
 content_type = "text/markdown"
+
+[[outputs]]
+id = "f9pTB2CcUoEH15lUp70DM"
+uri = "file://docs/STEP_EIGHT_HANDOFF.md"
+type = "text"
+title = "Step 8 handoff"
+description = "Screening persistence, stored-payload verification, live production gate, jobs/admin controls and verification results."
+logical_id = "205ef28e-a735-4edc-92f3-cb7bd153e7bb"
+content_hash = "sha256:df763eb6397311aa079398628af354f0a4e154cd9aecf0a944400da6c301d255"
+size = 6336
+mtime_ms = 1792116761001
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/205ef28e-a735-4edc-92f3-cb7bd153e7bb/fc716d56-1df6-43e6-8222-4abd43313463"
+storage_version_token = "1792116857151163"
+content_type = "text/markdown"

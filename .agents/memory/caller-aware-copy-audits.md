@@ -16,3 +16,10 @@ can similarly retain an entire dictionary unless its callers are examined.
 discovery. Preserve and report unresolved dynamic families instead of deleting
 them. Exercise the audit with new, approved, removed and whole-namespace inputs,
 not only current pending-row counts.
+
+A zero-unresolved report alone does not prove a new UI family was discovered.
+Broad string forwarding can hide its new phrases entirely. Preserve finite
+literal types and check that newly rendered phrases actually enter the inventory.
+
+**Why:** A new page's generic copy wrapper initially produced a clean coverage
+report while most of its pending interface labels were absent.

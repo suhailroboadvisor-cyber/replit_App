@@ -15,7 +15,7 @@ const css = await postcss([tailwindcss()]).process(await readFile("src/app/globa
 await build({
   entryPoints:["tests/browser-fixture/app.tsx"],outfile:path.join(out,"app.js"),bundle:true,platform:"browser",format:"iife",
   define:{"process.env.NODE_ENV":'"production"',"process.env.NEXT_PUBLIC_SUPABASE_URL":'"https://auth.fixture.test"'},
-  alias:{"@":path.resolve("src"),"@/app/[locale]/(private)/admin/(protected)/financial-actions":path.resolve("tests/browser-fixture/financial-actions.ts"),"@/lib/auth/browser":path.resolve("tests/browser-fixture/auth.ts"),"@/i18n/navigation":path.resolve("tests/browser-fixture/navigation.tsx"),"next/image":path.resolve("tests/browser-fixture/image.tsx"),"next/navigation":path.resolve("tests/browser-fixture/router.ts")},
+  alias:{"@":path.resolve("src"),"@/app/[locale]/(private)/admin/(protected)/financial-actions":path.resolve("tests/browser-fixture/financial-actions.ts"),"@/app/[locale]/(private)/admin/(protected)/screening-actions":path.resolve("tests/browser-fixture/screening-actions.ts"),"@/lib/auth/browser":path.resolve("tests/browser-fixture/auth.ts"),"@/i18n/navigation":path.resolve("tests/browser-fixture/navigation.tsx"),"next/image":path.resolve("tests/browser-fixture/image.tsx"),"next/navigation":path.resolve("tests/browser-fixture/router.ts")},
 });
 const server=createServer(async(req,res)=>{
   const url=new URL(req.url??"/","http://127.0.0.1:3300");

@@ -1,5 +1,10 @@
 import type { ComponentProps } from "react";
-export function Link({href,...props}:ComponentProps<"a">) {return <a href={typeof href==="string"?href:"/"} {...props}/>;}
+export function Link({href,...props}:ComponentProps<"a">) {
+  const target=typeof href==="string"?href:"/";
+  const english=window.location.pathname==="/en"||window.location.pathname.startsWith("/en/");
+  const localized=english&&target.startsWith("/")&&!target.startsWith("/en/")?`/en${target}`:target;
+  return <a href={localized} {...props}/>;
+}
 export function useRouter(){return {
   refresh:()=>{},
   // Router stand-in records destinations without loading real protected routes.

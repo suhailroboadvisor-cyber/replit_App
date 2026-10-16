@@ -318,7 +318,7 @@ Drafts are retained only while their exact English source matches. A source
 change requires a new draft; missing drafts are visibly flagged.
 Edit docs/arabic-drafts.json to retain a row-specific documentation draft;
 docs/arabic-draft-proposals.json supplies documentation-only defaults for new sources.
-Step-7 rows beginning ⟦AR-REVIEW⟧ are intentionally untranslated English placeholders,
+Rows beginning ⟦AR-REVIEW⟧ are intentionally untranslated English placeholders,
 not Arabic proposals or approved translations. They need a separate translation review.
 Neither file is imported by the application.
 

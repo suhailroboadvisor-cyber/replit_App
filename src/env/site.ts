@@ -41,3 +41,8 @@ const siteEnvSchema = z
 export function getSiteEnv() {
   return parseEnv("Site", siteEnvSchema);
 }
+
+// Metadata needs the canonical origin, not future preview-auth settings (D-24).
+export function getSiteUrl() {
+  return parseEnv("Site metadata", z.object({ SITE_URL: z.url() })).SITE_URL;
+}

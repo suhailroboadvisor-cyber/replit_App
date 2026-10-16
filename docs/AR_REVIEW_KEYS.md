@@ -1,6 +1,6 @@
 # Live Arabic review keys
 
-Generated deterministically by `pnpm ar-review:list`. Live pending rows: **148**.
+Generated deterministically by `pnpm ar-review:list`. Live pending rows: **288**.
 
 ## Boundaries and coverage
 
@@ -15,7 +15,7 @@ Drafts are retained only while their exact English source matches. A source
 change requires a new draft; missing drafts are visibly flagged.
 Edit docs/arabic-drafts.json to retain a row-specific documentation draft;
 docs/arabic-draft-proposals.json supplies documentation-only defaults for new sources.
-Step-7 rows beginning ⟦AR-REVIEW⟧ are intentionally untranslated English placeholders,
+Rows beginning ⟦AR-REVIEW⟧ are intentionally untranslated English placeholders,
 not Arabic proposals or approved translations. They need a separate translation review.
 Neither file is imported by the application.
 
@@ -76,149 +76,289 @@ origins; unknown future navigation copy is not approved or invented.
 
 | Key/source | Page/component rendering context | Current English source | Arabic (approved) |
 | --- | --- | --- | --- |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | English name |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Current facts |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Failed |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Mapping note |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Outside universe |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | derived |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Ingest now |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Source |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Override saved. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Save |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Manual price history |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Add a security |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Security details |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Source URL |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Ingestion controls |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | real_estate_permissible |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | No ingestion jobs recorded. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Security removed from universe. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | No |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Assigned analyst |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Completed |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | conventional_media |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Source type |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | This security will no longer be part of the curated universe. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Universe membership |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Sector |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Preview |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Fiscal year end |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Pending |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Security added and ingestion started. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Coverage started |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | interest_based_lending |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Facts |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Shares outstanding are unknown or missing. A market-cap fact cannot be derived from a close until shares are available. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | energy |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | retail_permissible |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Confirm and ingest |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Currency |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | internal |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | healthcare |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Select a security to inspect its records. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | AI Interpretation |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Segment name |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Override |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | adult_entertainment |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Edit |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Start a resumable ingestion job for the curated universe, or resume a recorded run below. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Segments |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Protected current |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Source notes |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | conventional_finance |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Security universe |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Job started. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Coverage |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Description |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Segment saved. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Prices |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | SEC alternative accepted. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Retained SEC alternatives |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Revenue amount |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Open source |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | unclassified |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Security record |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Save coverage |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | No latest period |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Business segments |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Finished |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Save close |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Inspect sourced financial records across the curated universe. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | industrials |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Confidence tier |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | One or more segments are unclassified; classify them using filing evidence. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Job history, progress and failed security retries. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | The request failed. Reload and try again. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Manual close saved. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | insurance_conventional |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Yes |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Job history |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Editors have read-only access. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Save company fields |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Value |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | reported |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Removing a security keeps its historical records and removes it from the curated universe. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Status |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Accept SEC |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Date |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | No business segments are recorded for the latest period. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Segment deleted. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | State |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Add segment |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Resume requested. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | records |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Save segment |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Arabic description |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Job |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Look up a US ticker before adding it to the curated universe. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | pork_related |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Delete this segment? |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Arabic name |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | No securities in the curated universe. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | unknown |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | English description |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Unknown |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Estimated |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Confirm removal |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | regulatory_filing |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | weapons_conventional |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | telecom |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Ticker |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Coverage assignment saved. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Counts |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Retry queued. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | alcohol |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Category basis |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Filing confirmation saved. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Calculated |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Tier |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Source label |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Company profile |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | inactive |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Filing note reference |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | estimated |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Origin |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Exchange |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Resume |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Confirm from filing |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | CIK |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Note |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | tobacco |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | generic_permissible |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Company |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | SEC changed |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Delete |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | In universe |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | gambling |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | technology |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | No manual prices are recorded. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Started |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Input state |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | No facts are recorded for this period. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Running |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Remove from universe |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | No analyst assigned |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Activity category |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Saved. |  |
-| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:47 | Actions |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | English name |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Current facts |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Calculation |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:108; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Source reference |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Failed |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Mapping note |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No reason template available. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Data adequacy |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Universe job started. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Outside universe |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | STORED RUN EVIDENCE |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | derived |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Ingest now |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Threshold |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No result is shown because no stored run is available. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Source |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Label |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Ratio |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Override saved. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Save |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Manual price history |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Add a security |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Security details |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Source URL |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No sources were stored for this page. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Ingestion controls |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | real_estate_permissible |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Verification passed. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Run screening now |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | No ingestion jobs recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Security removed from universe. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | No criteria recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | No |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Assigned analyst |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Effect |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Completed |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | conventional_media |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Source type |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | SCREENING RESULT |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | This security will no longer be part of the curated universe. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Universe membership |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Accession / reference |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Open methodology and this version |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Filed date |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Differences |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No current-period facts were recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Criterion |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Sector |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Preview |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Fiscal year end |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Pending |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Security added and ingestion started. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Coverage started |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | interest_based_lending |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Facts |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Shares outstanding are unknown or missing. A market-cap fact cannot be derived from a close until shares are available. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | energy |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | retail_permissible |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Confirm and ingest |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Numerator |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | SUHAIL / SCREENING |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Currency |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | The generated text did not pass validation against the engine's evidence, so it was discarded. Every figure below comes straight from the engine. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | internal |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | healthcare |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Select a security to inspect its records. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | AI Interpretation |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Segment name |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Data date |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Override |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | adult_entertainment |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Edit |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Start a resumable ingestion job for the curated universe, or resume a recorded run below. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Segments |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Protected current |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Source notes |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | conventional_finance |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Security universe |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Screening |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Unit |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Computed hash |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Hash matches |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Job started. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Coverage |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Analyst profile unavailable |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Description |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Job summary |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Threshold unit |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | IMMUTABLE RUN RECORD |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Data as of |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Segment saved. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | SUHAIL / SCREENING RUN |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Prices |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Field or input |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Inserted |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | No production methodology to screen with |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | SEC alternative accepted. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Why? |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Severity |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | CURRENT PERIOD FACTS |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Processed |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Retained SEC alternatives |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Revenue amount |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Path |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Confidence |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | No screening runs recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No safe profile image URL is available; no image has been manufactured. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | EXPLANATION OBJECT |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | IMPORTANT CONTEXT |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Open source |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Hash payload |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | unclassified |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No screening run recorded for this methodology yet. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Period |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Result |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Security record |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Filing date |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Save coverage |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | No latest period |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Engine version |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Business segments |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Criteria |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Reasons |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Arabic narrative is not available; structured evidence only. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:239; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:266; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No calculation trace was stored. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | No differences recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | What we know |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Unchanged records |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Finished |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Save close |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | PUBLIC SCREENING RECORD |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Methodology version |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Inspect sourced financial records across the curated universe. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | industrials |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No criteria were recorded for this run. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Run details |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | PROVENANCE |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Screen all |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Confidence tier |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | One or more segments are unclassified; classify them using filing evidence. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Job history, progress and failed security retries. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Under |  |
+| runtime phrase | Rendered/conditionally rendered: src/stock/metadata.ts:13 | No run yet |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Generated |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | The request failed. Reload and try again. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Manual close saved. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | insurance_conventional |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Yes |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Job history |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | SEC label |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Editors have read-only access. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Ingest all |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No specific status reasons were recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Unchanged |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Criterion ID |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Save company fields |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Value |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | reported |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Security |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Removing a security keeps its historical records and removes it from the curated universe. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Fundamentals |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Status |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Denominator |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Accept SEC |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Resume screen job |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Input states |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Replay matches |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No earlier run for this methodology. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Calculation version |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Stored hash |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Date |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | DOCUMENTED RULE SET |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Borderline margin |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Run started. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Reason code |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | No business segments are recorded for the latest period. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | CRITERION RECORD |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Screening runs |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Segment deleted. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | State |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Add segment |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | AI explanation |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Resume requested. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Hash |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Run metadata |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | records |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Save segment |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Arabic description |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Job |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Look up a US ticker before adding it to the curated universe. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | pork_related |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Why missing |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Unchanged result |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Delete this segment? |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Arabic name |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | No securities in the curated universe. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | unknown |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | English description |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Unknown |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Estimated |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | AI text discarded — showing structured evidence only |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Financial period |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:212; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Unavailable in the stored source record |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | What we don't know |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | No unknowns recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Type |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Confirm removal |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Screening runs are append-only. This record is never edited. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | regulatory_filing |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | weapons_conventional |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | telecom |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Ticker |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Coverage assignment saved. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Borderline count |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Arabic only |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | No structured reasons recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Counts |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Actual |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Structured evidence |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Retry queued. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Every figure in this text was checked against the engine's evidence. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | alcohol |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Category basis |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Filing confirmation saved. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Calculated |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdict.tsx:289; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:218; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Unavailable |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Expected |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:106; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Sources |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Tier |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Source label |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | APPEND-ONLY RUNS |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Company profile |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No unknown inputs were recorded for this run. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | inactive |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Filing note reference |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Coverage by |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | estimated |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Show calculation |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Origin |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Unknowns |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Exchange |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Resume |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Confirm from filing |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | CIK |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdict.tsx:30; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Methodology unavailable |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Note |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | DETERMINISTIC RECORD |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | tobacco |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No validated narrative text is stored; structured evidence only. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | generic_permissible |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Choose a methodology version |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Version |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdict.tsx:162; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:223; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Unlabelled criterion |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Company |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Stored criterion labels are English only |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Current |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Why this assessment |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | SEC changed |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Delete |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Run hash |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | In universe |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | gambling |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Calculation trace |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | technology |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | No manual prices are recorded. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Started |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49; Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Input state |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | English only |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Verify |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Period end |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Verification failed. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | No criterion evidence was stored for this run. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | RECORDED GAPS |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Methodology |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | No facts are recorded for this period. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Field |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Running |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Kind |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Remove from universe |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Reason |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | No analyst assigned |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Activity category |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/ScreeningControls.tsx:37 | Unknown count |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Change history / prior runs |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Saved. |  |
+| runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Actions |  |

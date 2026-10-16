@@ -57,3 +57,17 @@ export async function runIngestBatch(id?: string, mutate: Mutation = jobMutation
   });
   return run.id;
 }
+
+/** Step 8 manual runner drains the same resumable batches inside the request. */
+export async function ingestUniverse(id?: string, mutate: Mutation = jobMutation) {
+  let jobId = await runIngestBatch(id, mutate);
+  for (;;) {
+    const [run] = await mutate(tx => tx.select().from(jobRun).where(eq(jobRun.id, jobId)));
+    requireFinancial(run, "Ingestion job not found");
+    if (run.status === "completed") return {
+      jobId, summary: { status: run.status, processed: run.counts?.processed ?? 0, failed: run.counts?.failed ?? 0,
+        inserted: run.counts?.inserted ?? 0, unchanged: 0 },
+    };
+    jobId = await runIngestBatch(jobId, mutate);
+  }
+}
