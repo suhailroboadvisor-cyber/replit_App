@@ -19,3 +19,4 @@
 - [ISR health verification](isr-health-verification.md) — healthy cached public pages do not establish that live database reads or private application connections work.
 - [Fallback locale isolation](fallback-locale-isolation.md) — root recovery cannot assume a surviving locale provider or use server request reads to infer language.
 - [Caller-aware copy audits](caller-aware-copy-audits.md) — imported JSON can appear as compiler source files; dictionary data is not runtime caller evidence.
+- [SEC mapping checkpoint](sec-mapping-checkpoint.md) — founder review and explicit go-ahead are mandatory before persistence, analyst operations, jobs or UI.

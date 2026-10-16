@@ -112,3 +112,17 @@ mtime_ms = 1792109252235
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/921e07a9-d28e-42e5-bcd9-924e26321275/abb01642-b7fc-49bc-802f-03a6544decb4"
 storage_version_token = "1792109762613911"
 content_type = "text/markdown"
+
+[[outputs]]
+id = "kLV_X4MBFCJAZz7kwTWa2"
+uri = "file://docs/SEC_ANNUAL_MAPPING.md"
+type = "text"
+title = "SEC annual mapping — founder review"
+description = "Complete AAPL, MSFT, JPMorgan and synthetic-fixture mapping tables, component values and absences, filing provenance, candidate inventory and limitations, versioning, and request-budget scope."
+logical_id = "60f78982-ab42-4356-85bd-cbc2c01c1aa5"
+content_hash = "sha256:fca0319b9cf9bcc8f3359804daad130528ff40f88b04c9a478e34be3caf4aa11"
+size = 32592
+mtime_ms = 1792110593224
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/60f78982-ab42-4356-85bd-cbc2c01c1aa5/95b4ad3c-32b0-4e5a-8c96-8f5996ff138d"
+storage_version_token = "1792110725976078"
+content_type = "text/markdown"
