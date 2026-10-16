@@ -25,10 +25,12 @@
     "test:engine": "vitest run --config vitest.engine.config.ts --coverage",
     "test:e2e": "playwright test",
     "test:e2e:accounts": "playwright test --config playwright.accounts.config.ts",
+    "test:e2e:stock": "playwright test --config playwright.stock.config.ts",
     "test:e2e:hydration": "playwright test --config playwright.hydration.config.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db/migrate.ts",
     "db:seed": "tsx scripts/db/seed.ts",
+    "db:seed:demo": "tsx --conditions=react-server scripts/db/seed-demo.ts",
     "db:studio": "drizzle-kit studio",
     "db:test:up": "tsx scripts/db/test-up.ts",
     "test:db": "vitest run --config vitest.database.config.ts"

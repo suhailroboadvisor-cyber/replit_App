@@ -48,7 +48,10 @@ export async function screenSecurity(
     requireFinancial(version, "Methodology version not found");
     const [method] = await tx.select().from(methodology).where(eq(methodology.id, version.methodology_id));
     requireFinancial(method, "Methodology not found");
-    requireFinancial(process.env.NODE_ENV === "test" || !isExample(method, version),
+    // D-120: explicit preview seed only; never permit examples for real issuers.
+    const demoSeed = options.trigger === "demo-seed" && process.env.SITE_MODE !== "live" &&
+      s.is_demo && c.is_demo && method.is_demo && version.is_demo;
+    requireFinancial(process.env.NODE_ENV === "test" || demoSeed || !isExample(method, version),
       "Demo and example methodologies cannot screen live securities");
     const criteria = await tx.select().from(methodologyCriterion).where(eq(methodologyCriterion.methodology_version_id, version.id))
       .orderBy(asc(methodologyCriterion.sort_order), asc(methodologyCriterion.id));

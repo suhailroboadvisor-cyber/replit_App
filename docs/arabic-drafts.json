@@ -19,6 +19,16 @@
     "draft": "⟦AR-REVIEW⟧ Current facts",
     "category": "help/error"
   },
+  "U-025194fba737d2482baf082e533e2c434b6b732094063ad3d6fa4a4bdab939c1": {
+    "source": "Calculation",
+    "draft": "⟦AR-REVIEW⟧ Calculation",
+    "category": "help/error"
+  },
+  "U-028a758b1cfca5961718f58742c7fe89b4bd1a5c4e20203f7d2b9911c57ad2f5": {
+    "source": "Source reference",
+    "draft": "مرجع المصدر",
+    "category": "help/error"
+  },
   "U-031a8f0f659df890dfd53c92e45295b0f14c997185bae46e168831e403b273f7": {
     "source": "Failed",
     "draft": "⟦AR-REVIEW⟧ Failed",
@@ -49,6 +59,11 @@
     "draft": "⟦AR-REVIEW⟧ Outside universe",
     "category": "help/error"
   },
+  "U-070611ae22a3d23232f7cf82712b698fbf48699033e35fe5b039e06ef590b9db": {
+    "source": "STORED RUN EVIDENCE",
+    "draft": "⟦AR-REVIEW⟧ STORED RUN EVIDENCE",
+    "category": "help/error"
+  },
   "U-08f0be883564cbf2d0031e32d0b433425a4ca7b3bc87dbcd9b1b12571be9d663": {
     "source": "derived",
     "draft": "⟦AR-REVIEW⟧ derived",
@@ -64,9 +79,19 @@
     "draft": "الحد",
     "category": "help/error"
   },
+  "U-0e4b0472a71c4885fb0cc88ca03240144fbd2b937898733ebb58a32d1a34d688": {
+    "source": "No result is shown because no stored run is available.",
+    "draft": "⟦AR-REVIEW⟧ No result is shown because no stored run is available.",
+    "category": "help/error"
+  },
   "U-0e570ca6fabe24f94e52c1833f3ffd25567022beb826fa16891f3322051bc221": {
     "source": "Source",
     "draft": "⟦AR-REVIEW⟧ Source",
+    "category": "help/error"
+  },
+  "U-0e66373f45dcf3dd656151e519f7ee5e3d558d9c22cb87df339bbdd2b6c6a3c1": {
+    "source": "Label",
+    "draft": "التسمية",
     "category": "help/error"
   },
   "U-1348beb03ed9067bd42223ca28adf22a5786b55c0537eb5fbe0ed37a4bc6802d": {
@@ -102,6 +127,11 @@
   "U-1adf66b33f7971af29e871d20ef397fb7b0072505fd676270b173698ab9662d9": {
     "source": "Source URL",
     "draft": "⟦AR-REVIEW⟧ Source URL",
+    "category": "help/error"
+  },
+  "U-1ae968348195d651a28f32f1e99ba669729561dbe005fd15acaac7143006a091": {
+    "source": "No sources were stored for this page.",
+    "draft": "⟦AR-REVIEW⟧ No sources were stored for this page.",
     "category": "help/error"
   },
   "U-1b9c5ddd13957ee79d86e241111cf3e3d9518e4c8936c8bdb9414e14564c37f6": {
@@ -169,6 +199,11 @@
     "draft": "⟦AR-REVIEW⟧ Source type",
     "category": "help/error"
   },
+  "U-2717fd4197c4fe6ddcf18e832f1eb6c47fe4a3db3c87084daeb34b495735cdef": {
+    "source": "SCREENING RESULT",
+    "draft": "⟦AR-REVIEW⟧ SCREENING RESULT",
+    "category": "help/error"
+  },
   "U-284e55dcc5a4772a8106d49d7060ee95c45c32d7331c58dd787249f48d75d56c": {
     "source": "This security will no longer be part of the curated universe.",
     "draft": "⟦AR-REVIEW⟧ This security will no longer be part of the curated universe.",
@@ -179,9 +214,29 @@
     "draft": "⟦AR-REVIEW⟧ Universe membership",
     "category": "help/error"
   },
+  "U-2c74499f1b9dad4d192a585c0b5fd2598193ad5cb22497c544a72373cad2e67d": {
+    "source": "Accession / reference",
+    "draft": "⟦AR-REVIEW⟧ Accession / reference",
+    "category": "help/error"
+  },
+  "U-2dca7847fc1ead88554ca3600f1a9df73724e9c4bc60d40d13aa267a25271e14": {
+    "source": "Open methodology and this version",
+    "draft": "⟦AR-REVIEW⟧ Open methodology and this version",
+    "category": "help/error"
+  },
+  "U-2e421e6bedbf78528895b814279b5af530b96660aeeb4cf02d3bd4b82a9fab0a": {
+    "source": "Filed date",
+    "draft": "⟦AR-REVIEW⟧ Filed date",
+    "category": "help/error"
+  },
   "U-2ee528b0b86f72ea1132fc0c3041c036afc09060c7e970e046c976a7831b817d": {
     "source": "Differences",
     "draft": "⟦AR-REVIEW⟧ Differences",
+    "category": "help/error"
+  },
+  "U-2f7bfdeb32e919310efd33ef132545d14733d6cdc1c4136a50311a5f57d7ab67": {
+    "source": "No current-period facts were recorded.",
+    "draft": "⟦AR-REVIEW⟧ No current-period facts were recorded.",
     "category": "help/error"
   },
   "U-3162a17a51df9fb7de2ea8300ae8999e8ac616e8b224ce0fb3e0af7ac0ac0455": {
@@ -264,6 +319,11 @@
     "draft": "⟦AR-REVIEW⟧ Currency",
     "category": "help/error"
   },
+  "U-3b6ba06ea668280ea2f9d8a0f9409ee0a972b509bddc327322f71d1056678eb2": {
+    "source": "The generated text did not pass validation against the engine's evidence, so it was discarded. Every figure below comes straight from the engine.",
+    "draft": "⟦AR-REVIEW⟧ The generated text did not pass validation against the engine's evidence, so it was discarded. Every figure below comes straight from the engine.",
+    "category": "help/error"
+  },
   "U-3bed2cb3a3acf7b6a8ef408420cc682d5520e26976d354254f528c965612054f": {
     "source": "internal",
     "draft": "⟦AR-REVIEW⟧ internal",
@@ -287,6 +347,11 @@
   "U-40a44be8d4f241e3935760cf81de5cdad7fd01d49c078191472b8b6927144db3": {
     "source": "Segment name",
     "draft": "⟦AR-REVIEW⟧ Segment name",
+    "category": "help/error"
+  },
+  "U-4291347f6494352d32fbc82261877c5c200c083f28f80cbb238aa81c52c89646": {
+    "source": "Data date",
+    "draft": "⟦AR-REVIEW⟧ Data date",
     "category": "help/error"
   },
   "U-43bc0f5fc035108f88cb7436ade1a103b0c710ba82c733cb5835a2b89dc4568f": {
@@ -334,6 +399,16 @@
     "draft": "⟦AR-REVIEW⟧ Security universe",
     "category": "help/error"
   },
+  "U-4c4f03abfa8d1f77ab584a6eaf3804fee1c9c37f03cd0d1ca691f703f2daa818": {
+    "source": "Screening",
+    "draft": "⟦AR-REVIEW⟧ Screening",
+    "category": "help/error"
+  },
+  "U-4e545960f1bffc134026127ef92963e136ec84b24bb2a6103c0731a64843a40b": {
+    "source": "Unit",
+    "draft": "⟦AR-REVIEW⟧ Unit",
+    "category": "help/error"
+  },
   "U-4f53dce259bb8083d257c10dc690cb7b5d58dda156a5868e1bc6a231f7a0ed84": {
     "source": "Computed hash",
     "draft": "⟦AR-REVIEW⟧ Computed hash",
@@ -354,6 +429,11 @@
     "draft": "⟦AR-REVIEW⟧ Coverage",
     "category": "help/error"
   },
+  "U-525382e719d67dc94b7fbb8bc4b48dfeab6af842664d362a36a4a32a9430d757": {
+    "source": "Analyst profile unavailable",
+    "draft": "⟦AR-REVIEW⟧ Analyst profile unavailable",
+    "category": "help/error"
+  },
   "U-526e0087cc3f254d9f86f6c7d8e23d954c4dfda2b312efc29194ae8a860106ba": {
     "source": "Description",
     "draft": "⟦AR-REVIEW⟧ Description",
@@ -367,6 +447,11 @@
   "U-533a6bbfbf5c4ccdc9dc78ddcf514ae7203c8f1084995847694d2496833a473f": {
     "source": "Threshold unit",
     "draft": "وحدة الحد",
+    "category": "help/error"
+  },
+  "U-53d42de445bdac66b6a991ff00b8fd179da4fc9a8b8488ef9a8a39cc8ed84ede": {
+    "source": "IMMUTABLE RUN RECORD",
+    "draft": "⟦AR-REVIEW⟧ IMMUTABLE RUN RECORD",
     "category": "help/error"
   },
   "U-53fcd93ec19888d61613a374b1e0c4f604d063c4a23e0be98428b00da81f315b": {
@@ -409,9 +494,19 @@
     "draft": "⟦AR-REVIEW⟧ SEC alternative accepted.",
     "category": "help/error"
   },
+  "U-5d8a995a6fa7cf7c577cc9d49ca9e00d4aee4d0bcd5e2ad5caff27e2a8097276": {
+    "source": "Why?",
+    "draft": "⟦AR-REVIEW⟧ Why?",
+    "category": "help/error"
+  },
   "U-5e9f98120dbe568255ee059f39671686982b113d4e917b6d6faf149918c81709": {
     "source": "Severity",
     "draft": "⟦AR-REVIEW⟧ Severity",
+    "category": "help/error"
+  },
+  "U-6047fdc89ef2a721b980b6eb5227b260b2d3b7490bdaf73dd5869fbce7f4c70e": {
+    "source": "CURRENT PERIOD FACTS",
+    "draft": "⟦AR-REVIEW⟧ CURRENT PERIOD FACTS",
     "category": "help/error"
   },
   "U-6071b9b565c939cdfdd26222ba55f41fce381bf17e8ecd9e4bd4adf21468dedc": {
@@ -444,6 +539,21 @@
     "draft": "⟦AR-REVIEW⟧ No screening runs recorded.",
     "category": "help/error"
   },
+  "U-6520d72af34356c55c1ddef6176c6aa184a7df189252998c8504ee18a0597ece": {
+    "source": "No safe profile image URL is available; no image has been manufactured.",
+    "draft": "⟦AR-REVIEW⟧ No safe profile image URL is available; no image has been manufactured.",
+    "category": "help/error"
+  },
+  "U-65411b5e761f4ab0fc95c38b3fbf0a9def8be4024c3f112e72a7771e0db6cd4c": {
+    "source": "EXPLANATION OBJECT",
+    "draft": "⟦AR-REVIEW⟧ EXPLANATION OBJECT",
+    "category": "help/error"
+  },
+  "U-656aa89852170df1b7a34355fc82e902f17edd7f958049b0273ffc284006e4bc": {
+    "source": "IMPORTANT CONTEXT",
+    "draft": "⟦AR-REVIEW⟧ IMPORTANT CONTEXT",
+    "category": "help/error"
+  },
   "U-67a0d2e0dab41fca184a37454ca4e946011756ec7b74eede7810d7df89904a18": {
     "source": "Open source",
     "draft": "⟦AR-REVIEW⟧ Open source",
@@ -459,6 +569,16 @@
     "draft": "⟦AR-REVIEW⟧ unclassified",
     "category": "help/error"
   },
+  "U-6d0423b468b5b8edc6ca28322226db0d31291dd267e478e4a12330d617d475f7": {
+    "source": "No screening run recorded for this methodology yet.",
+    "draft": "⟦AR-REVIEW⟧ No screening run recorded for this methodology yet.",
+    "category": "help/error"
+  },
+  "U-6e795d4d3cc21c5ca8349ab5e917482197aa612d1a218f9e9411467db73242bb": {
+    "source": "Period",
+    "draft": "⟦AR-REVIEW⟧ Period",
+    "category": "help/error"
+  },
   "U-6e7d50e84f4731ef74187cf8cfa2672184eed8866b0b0074a772f4a64e0f4ba2": {
     "source": "Result",
     "draft": "النتيجة",
@@ -467,6 +587,11 @@
   "U-6ebe42f5ba36b0d428f2ee65e0e6f21d807bc4c180096be563e7991348c8cce7": {
     "source": "Security record",
     "draft": "⟦AR-REVIEW⟧ Security record",
+    "category": "help/error"
+  },
+  "U-6ee1c9a2e1ca91541b1f5fdcfcba8fd754d6b021994be8ec20538789adffa69c": {
+    "source": "Filing date",
+    "draft": "⟦AR-REVIEW⟧ Filing date",
     "category": "help/error"
   },
   "U-6f43db5c3a93c8596d1df06377040dbc3476baef4879f143ffa866fc1a729ef6": {
@@ -499,9 +624,24 @@
     "draft": "⟦AR-REVIEW⟧ Reasons",
     "category": "help/error"
   },
+  "U-72fe1a110762efce29864b1ab6cd246e506f27be682a49f675670d49aa6c08dc": {
+    "source": "Arabic narrative is not available; structured evidence only.",
+    "draft": "⟦AR-REVIEW⟧ Arabic narrative is not available; structured evidence only.",
+    "category": "help/error"
+  },
+  "U-7342c24ffec8b0301219f7f1bbc2bab19ead406cce0a7adee82c21facca47007": {
+    "source": "No calculation trace was stored.",
+    "draft": "⟦AR-REVIEW⟧ No calculation trace was stored.",
+    "category": "help/error"
+  },
   "U-73d68d795fc19e9d8f06b69efcb39d8ceb3967ec3ae4ed3e07db430cbce04a0e": {
     "source": "No differences recorded.",
     "draft": "⟦AR-REVIEW⟧ No differences recorded.",
+    "category": "help/error"
+  },
+  "U-766b33ce887eec278e9fb62dc24faecf440d702dbca7d3263fa2feef01a7843c": {
+    "source": "What we know",
+    "draft": "⟦AR-REVIEW⟧ What we know",
     "category": "help/error"
   },
   "U-772a2bbde3f20e185625dded95e8ad0365a307d776e79e73ad52e9a3e5f3515f": {
@@ -519,6 +659,11 @@
     "draft": "⟦AR-REVIEW⟧ Save close",
     "category": "help/error"
   },
+  "U-781a7883146228a78e872ec4b25b808a39b3923998cee43219035330395fcf55": {
+    "source": "PUBLIC SCREENING RECORD",
+    "draft": "⟦AR-REVIEW⟧ PUBLIC SCREENING RECORD",
+    "category": "help/error"
+  },
   "U-7869e7f8b8bc4688fefd97892e16bca36564fe5bf852ac320f9d4d69ee7a0aa8": {
     "source": "Methodology version",
     "draft": "⟦AR-REVIEW⟧ Methodology version",
@@ -534,9 +679,19 @@
     "draft": "⟦AR-REVIEW⟧ industrials",
     "category": "help/error"
   },
+  "U-7ba8191f6dfca95fbefaf8005926977aaa7894f7842997e5c3585950e339e744": {
+    "source": "No criteria were recorded for this run.",
+    "draft": "⟦AR-REVIEW⟧ No criteria were recorded for this run.",
+    "category": "help/error"
+  },
   "U-7bbc36905270774ef9d63abed8e46f42954fea1e901066fa2eeabcb944074aad": {
     "source": "Run details",
     "draft": "⟦AR-REVIEW⟧ Run details",
+    "category": "help/error"
+  },
+  "U-7f309769df3d3645a76062f620fd6ec1046619062905d753f262fbaa59fac774": {
+    "source": "PROVENANCE",
+    "draft": "⟦AR-REVIEW⟧ PROVENANCE",
     "category": "help/error"
   },
   "U-7f5ac612591d3663441f1e82a8cfd4bdde6ccd824924d6bf832bf9e385741a85": {
@@ -557,6 +712,16 @@
   "U-809b6c543a046c50cc357aedbd38cb3149d91d63fb34b8d5f9d4f8f3163f57dd": {
     "source": "Job history, progress and failed security retries.",
     "draft": "⟦AR-REVIEW⟧ Job history, progress and failed security retries.",
+    "category": "help/error"
+  },
+  "U-80e4ad056bd7eb907b42aac6795f2295df87a1bd9a196ea0ff1dd3eb11fabf8b": {
+    "source": "Under",
+    "draft": "⟦AR-REVIEW⟧ Under",
+    "category": "help/error"
+  },
+  "U-812efc4e39d159ddb7983d867db804f3f54f7f7359bce1f3707fb6e14d6e8623": {
+    "source": "No run yet",
+    "draft": "⟦AR-REVIEW⟧ No run yet",
     "category": "help/error"
   },
   "U-827ec8d9f99d052149cd4fce69d14f57563bd5c972074172777670c36907a5a7": {
@@ -589,6 +754,11 @@
     "draft": "⟦AR-REVIEW⟧ Job history",
     "category": "help/error"
   },
+  "U-881a251f38a2c34de399a46918ff78469edb4ba82d78697087dcaa5e470527d4": {
+    "source": "SEC label",
+    "draft": "⟦AR-REVIEW⟧ SEC label",
+    "category": "help/error"
+  },
   "U-881d6295619ac4f25495d586e7d67a19e9b138bbec1ae545049df94825d01fde": {
     "source": "Editors have read-only access.",
     "draft": "⟦AR-REVIEW⟧ Editors have read-only access.",
@@ -597,6 +767,11 @@
   "U-88496a6df99bcb1a7d075dc0abf267f4bd3789b114f269bc92b7d5f26d8740db": {
     "source": "Ingest all",
     "draft": "⟦AR-REVIEW⟧ Ingest all",
+    "category": "help/error"
+  },
+  "U-88563592e3c6f6cd3f156aa54fba4cfc810be580bc10f720a3421ff953d7f08a": {
+    "source": "No specific status reasons were recorded.",
+    "draft": "⟦AR-REVIEW⟧ No specific status reasons were recorded.",
     "category": "help/error"
   },
   "U-88b6f7429ce74e858aaf5913d19440c3cc49af1ef44e53ac6dccaf30c01f4fd0": {
@@ -634,6 +809,11 @@
     "draft": "⟦AR-REVIEW⟧ Removing a security keeps its historical records and removes it from the curated universe.",
     "category": "help/error"
   },
+  "U-915ff7435daeac2f66aa866e59bf293f101b79403dbdde2b631fd37fa524f26b": {
+    "source": "Fundamentals",
+    "draft": "⟦AR-REVIEW⟧ Fundamentals",
+    "category": "help/error"
+  },
   "U-920e413c7d411b61ef3e8c63b1cb6ad058d5f95f8b481dbafe60248387d8c355": {
     "source": "Status",
     "draft": "⟦AR-REVIEW⟧ Status",
@@ -664,6 +844,11 @@
     "draft": "⟦AR-REVIEW⟧ Replay matches",
     "category": "help/error"
   },
+  "U-9631bca4a10ed08187ed6e5254b863567fa2924ab1d7eb57e1886685a573e52c": {
+    "source": "No earlier run for this methodology.",
+    "draft": "⟦AR-REVIEW⟧ No earlier run for this methodology.",
+    "category": "help/error"
+  },
   "U-968fac9dbfee3b5636aa88516b1760bbfbf52f9d926703b19c746feb9ef183b0": {
     "source": "Calculation version",
     "draft": "إصدار الحساب",
@@ -679,6 +864,16 @@
     "draft": "⟦AR-REVIEW⟧ Date",
     "category": "help/error"
   },
+  "U-9a29cc1e3febfd0edb4f2ea880d862b9f8acb387bcd5c3a30a3a4021cce3e788": {
+    "source": "DOCUMENTED RULE SET",
+    "draft": "⟦AR-REVIEW⟧ DOCUMENTED RULE SET",
+    "category": "help/error"
+  },
+  "U-9cab1f2dcbeb1f6a5d6dacc5845b0b543867812f68765f435c0ac16440d1f783": {
+    "source": "Borderline margin",
+    "draft": "الهامش الحدي",
+    "category": "help/error"
+  },
   "U-9cd6577b34f5fa191d82f2a594671e5f9bfd38e7be570fec25914b0303289b52": {
     "source": "Run started.",
     "draft": "⟦AR-REVIEW⟧ Run started.",
@@ -692,6 +887,11 @@
   "U-9e18708c89d9c4771ecf959dfafc463113f5a2abe403e6068dd311bef21907ba": {
     "source": "No business segments are recorded for the latest period.",
     "draft": "⟦AR-REVIEW⟧ No business segments are recorded for the latest period.",
+    "category": "help/error"
+  },
+  "U-9fc507fcc84f055d3a814ac91a71952d534643f21efa635c4e3f084c5e0e8eab": {
+    "source": "CRITERION RECORD",
+    "draft": "⟦AR-REVIEW⟧ CRITERION RECORD",
     "category": "help/error"
   },
   "U-a01ae82090d8ca00928585bbc88e23af0717bbb0f5e64478d7e3c2dbb8cde9e4": {
@@ -714,6 +914,11 @@
     "draft": "⟦AR-REVIEW⟧ Add segment",
     "category": "help/error"
   },
+  "U-a5ba0d307d8151a65ddb989811c78aad322e9563397dfbb43262cd08e8f19602": {
+    "source": "AI explanation",
+    "draft": "⟦AR-REVIEW⟧ AI explanation",
+    "category": "help/error"
+  },
   "U-a7e3dbddddaee1873db6e0114c90b9753156590bb361a1efd7842a39f17b9cc6": {
     "source": "Resume requested.",
     "draft": "⟦AR-REVIEW⟧ Resume requested.",
@@ -722,6 +927,11 @@
   "U-a91069147f9bd9245cdacaef8ead4c3578ed44f179d7eb6bd4690e62ba4658f2": {
     "source": "Hash",
     "draft": "⟦AR-REVIEW⟧ Hash",
+    "category": "help/error"
+  },
+  "U-a9389daacf956073c47e2f8ebfa4e077ad61512c6b6a54e2342f69f9187e775d": {
+    "source": "Run metadata",
+    "draft": "⟦AR-REVIEW⟧ Run metadata",
     "category": "help/error"
   },
   "U-a94e7bcfcbed3c846d491d4f47c948e53a23908d480248b3ffe9e126e83ea865": {
@@ -799,9 +1009,24 @@
     "draft": "⟦AR-REVIEW⟧ Estimated",
     "category": "help/error"
   },
+  "U-b7f63dd9319d9808330b304d1bf22435b0daf6072a7be26a4f75514ceb4c70a4": {
+    "source": "AI text discarded — showing structured evidence only",
+    "draft": "⟦AR-REVIEW⟧ AI text discarded — showing structured evidence only",
+    "category": "help/error"
+  },
   "U-b8163aa95e72461859c52ae7107eec941c2b50a2aa54fc5a566c7fddbe06e126": {
     "source": "Financial period",
     "draft": "⟦AR-REVIEW⟧ Financial period",
+    "category": "help/error"
+  },
+  "U-b8f48c5f1694055d23900e67ab43f913ba4c0988775f2b5fc2a4d0256dddb208": {
+    "source": "Unavailable in the stored source record",
+    "draft": "⟦AR-REVIEW⟧ Unavailable in the stored source record",
+    "category": "help/error"
+  },
+  "U-b995f20a6ba0d6affd124b1b48fec15929ab9fcd22b157df7784424d6e005955": {
+    "source": "What we don't know",
+    "draft": "⟦AR-REVIEW⟧ What we don't know",
     "category": "help/error"
   },
   "U-ba8418ed4512fd9a2ceae87a2c13deedd68b4a90447b8198f02ebfd28a7ad2a2": {
@@ -809,9 +1034,19 @@
     "draft": "⟦AR-REVIEW⟧ No unknowns recorded.",
     "category": "help/error"
   },
+  "U-baaddf70fb5d432b8bd948ef91d6f910124a6d138edae4d5f000c4610ddc8eae": {
+    "source": "Type",
+    "draft": "⟦AR-REVIEW⟧ Type",
+    "category": "help/error"
+  },
   "U-bb0f9ad6dc335c9a511426682bc10069ef7456504c2fd8687df1cc429b6b0302": {
     "source": "Confirm removal",
     "draft": "⟦AR-REVIEW⟧ Confirm removal",
+    "category": "help/error"
+  },
+  "U-bca1c48547c2de8002e41a65cfb8c7d91e31654e6e7d5c12d253cf795477d3ad": {
+    "source": "Screening runs are append-only. This record is never edited.",
+    "draft": "⟦AR-REVIEW⟧ Screening runs are append-only. This record is never edited.",
     "category": "help/error"
   },
   "U-bd006bfdd99121179d5ef458f28500d44304b848d2c88142f03f34103ed8aa43": {
@@ -844,6 +1079,11 @@
     "draft": "⟦AR-REVIEW⟧ Borderline count",
     "category": "help/error"
   },
+  "U-c2c70271eb934ca6032fa698e603a87f26ff45f68b0235b456c423d6c4363df6": {
+    "source": "Arabic only",
+    "draft": "⟦AR-REVIEW⟧ Arabic only",
+    "category": "help/error"
+  },
   "U-c3a5ffbf7c38a0512bd8ea122e5a8c2f63b2e8b2dbb20932707b7e20ee35fb6a": {
     "source": "No structured reasons recorded.",
     "draft": "⟦AR-REVIEW⟧ No structured reasons recorded.",
@@ -859,9 +1099,19 @@
     "draft": "الفعلي",
     "category": "help/error"
   },
+  "U-c59ccc242a17c8a10ae75fac1aa421fa798e215a0b59dcda5295976000d961b8": {
+    "source": "Structured evidence",
+    "draft": "⟦AR-REVIEW⟧ Structured evidence",
+    "category": "help/error"
+  },
   "U-c6553c490c604bb0950847eef441e1cad8f6e2a07397ae969db7db230c3413e4": {
     "source": "Retry queued.",
     "draft": "⟦AR-REVIEW⟧ Retry queued.",
+    "category": "help/error"
+  },
+  "U-c670805d54f82a5448c543fdc79660db628b80d40445f096e88b4d054509ee0f": {
+    "source": "Every figure in this text was checked against the engine's evidence.",
+    "draft": "⟦AR-REVIEW⟧ Every figure in this text was checked against the engine's evidence.",
     "category": "help/error"
   },
   "U-c7c7eb1087c4e24d4c121b65abe24f4e54b06a997aa9eac86f3215271f635672": {
@@ -884,9 +1134,19 @@
     "draft": "⟦AR-REVIEW⟧ Calculated",
     "category": "help/error"
   },
+  "U-ca184496974204a0bd3fd4925e0540bc4b0df6fcc232994d29754272b7183812": {
+    "source": "Unavailable",
+    "draft": "⟦AR-REVIEW⟧ Unavailable",
+    "category": "help/error"
+  },
   "U-ca99b7f1b14ee2c04f7aaefde89858fc947fa88de518c2e6d4b6132892175218": {
     "source": "Expected",
     "draft": "المتوقع",
+    "category": "help/error"
+  },
+  "U-caf85b0888d78f1f83771a07b25c3d30fa1210242f2fae6e5ae5d9a686602800": {
+    "source": "Sources",
+    "draft": "⟦AR-REVIEW⟧ Sources",
     "category": "help/error"
   },
   "U-cb9e8664edea8cf5965fb4d4d013974ef10caeaad734702b19617210828cd7ab": {
@@ -899,9 +1159,19 @@
     "draft": "⟦AR-REVIEW⟧ Source label",
     "category": "help/error"
   },
+  "U-cd93bba5bc3046ea66440084b4eac833b9eb2b8de9d1c81f0801222918234b52": {
+    "source": "APPEND-ONLY RUNS",
+    "draft": "⟦AR-REVIEW⟧ APPEND-ONLY RUNS",
+    "category": "help/error"
+  },
   "U-cd9a67fca2a5477ee4c6ada47fb682c860723b7acfd387b61c4eec58bd6bb98b": {
     "source": "Company profile",
     "draft": "⟦AR-REVIEW⟧ Company profile",
+    "category": "help/error"
+  },
+  "U-d0b69e2bfce979a5a0f938c6890fe4b04a83c53b735d0dda71818b692c754505": {
+    "source": "No unknown inputs were recorded for this run.",
+    "draft": "⟦AR-REVIEW⟧ No unknown inputs were recorded for this run.",
     "category": "help/error"
   },
   "U-d1022618b99a974b56caeae99b4f9e2eac444335123e3ab94bbbc817c306f2c0": {
@@ -914,9 +1184,19 @@
     "draft": "⟦AR-REVIEW⟧ Filing note reference",
     "category": "help/error"
   },
+  "U-d320c64c2650360931862be2269decf032096f8d8bf518d7d0ec8af3aadfbc9b": {
+    "source": "Coverage by",
+    "draft": "⟦AR-REVIEW⟧ Coverage by",
+    "category": "help/error"
+  },
   "U-d342ed822e55a972f8070862f9433af9c5cedd89d9c3098b249fa4c12dd0dccd": {
     "source": "estimated",
     "draft": "⟦AR-REVIEW⟧ estimated",
+    "category": "help/error"
+  },
+  "U-d35e80945977c391cae07a22836756d7d0c6ff51db5d5d0f7b1b7f28a1bd1715": {
+    "source": "Show calculation",
+    "draft": "⟦AR-REVIEW⟧ Show calculation",
     "category": "help/error"
   },
   "U-d3e1c5f8a6e240fc97f057908e6f99feebc73acb865b641a38e28d6ae9b1264c": {
@@ -949,14 +1229,29 @@
     "draft": "⟦AR-REVIEW⟧ CIK",
     "category": "help/error"
   },
+  "U-d7adf3c91cf3dbac7d08686f7376678b876d94584b72446966db5e351f909c74": {
+    "source": "Methodology unavailable",
+    "draft": "⟦AR-REVIEW⟧ Methodology unavailable",
+    "category": "help/error"
+  },
   "U-d8da2c49df39d91df7ecd199b92da7bf264f026242ccc69b08daeadfe587c45b": {
     "source": "Note",
     "draft": "⟦AR-REVIEW⟧ Note",
     "category": "help/error"
   },
+  "U-d9e1042f6e648d45152c1183d3ba465c9baba139914d9d1d55c1ba1f1c029fde": {
+    "source": "DETERMINISTIC RECORD",
+    "draft": "⟦AR-REVIEW⟧ DETERMINISTIC RECORD",
+    "category": "help/error"
+  },
   "U-da43f06caa04c6fd627b63e9e825119a41a376d12ca7a306769d6ea652f9a486": {
     "source": "tobacco",
     "draft": "⟦AR-REVIEW⟧ tobacco",
+    "category": "help/error"
+  },
+  "U-dbb7d1e1e3e7f7d12047d0ddc159a1c92425c1977e57a27fcff20de4f92f6ef6": {
+    "source": "No validated narrative text is stored; structured evidence only.",
+    "draft": "⟦AR-REVIEW⟧ No validated narrative text is stored; structured evidence only.",
     "category": "help/error"
   },
   "U-dbdd1978417b5679c951cc0f1cc26629e58e6026cc5c97a84d7522be9872755d": {
@@ -974,9 +1269,29 @@
     "draft": "الإصدار",
     "category": "help/error"
   },
+  "U-dd676181b5935e4e145c85c4b768f0fe09a7fa68e4dd360e69ef4959425321a0": {
+    "source": "Unlabelled criterion",
+    "draft": "معيار بلا تسمية",
+    "category": "help/error"
+  },
   "U-de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b": {
     "source": "Company",
     "draft": "⟦AR-REVIEW⟧ Company",
+    "category": "help/error"
+  },
+  "U-e0c481878297f6729442fe18edc00a4fa238cbbc0818c8778b40576a2028fd16": {
+    "source": "Stored criterion labels are English only",
+    "draft": "⟦AR-REVIEW⟧ Stored criterion labels are English only",
+    "category": "help/error"
+  },
+  "U-e0d1b68224bf0b31ef16b206c65b5f8f6b89d18161f4a7cdcb8d0ac8d952549a": {
+    "source": "Current",
+    "draft": "⟦AR-REVIEW⟧ Current",
+    "category": "help/error"
+  },
+  "U-e0fe792efe18e7a3f4c69c18ab4433f9ec8f542bfab842ddeee4f03bdce5f644": {
+    "source": "Why this assessment",
+    "draft": "⟦AR-REVIEW⟧ Why this assessment",
     "category": "help/error"
   },
   "U-e28eb2b99802051b5d6ae6da4b3dd010182524088bbbdc069ca946df153869c5": {
@@ -987,6 +1302,11 @@
   "U-e2d0a54968ead24efc0dffa6ac78fc606dceec34a0f586177a74a54cc2272cf8": {
     "source": "Delete",
     "draft": "⟦AR-REVIEW⟧ Delete",
+    "category": "help/error"
+  },
+  "U-e3458522c38d7231f8ee15f6049c7edc9525197536bdfcea4219410684126929": {
+    "source": "Run hash",
+    "draft": "⟦AR-REVIEW⟧ Run hash",
     "category": "help/error"
   },
   "U-e39d9d9bf7de33b6c3f7b2b38a8037636ec20c37c8ce4433ca1743dd56cd1c37": {
@@ -1024,14 +1344,39 @@
     "draft": "⟦AR-REVIEW⟧ Input state",
     "category": "help/error"
   },
+  "U-eda32f2849958d759095ce4509f925dc7fd2712b493b6d1b654d50031a52acaa": {
+    "source": "English only",
+    "draft": "⟦AR-REVIEW⟧ English only",
+    "category": "help/error"
+  },
   "U-eea2745e2867a6772adc3e813211e6ce7b6ebd312d7e84a7c1b1aa2f8c75fd4b": {
     "source": "Verify",
     "draft": "⟦AR-REVIEW⟧ Verify",
     "category": "help/error"
   },
+  "U-eeae9fdd63e0d5124bbce9ad39d4ce87e7576590cc79101610aa0e7a76e9be4e": {
+    "source": "Period end",
+    "draft": "⟦AR-REVIEW⟧ Period end",
+    "category": "help/error"
+  },
   "U-f07240d45a0dae2e3080ebd21cb43fd986a6f5d7c26a172a07dcfb9d61bfb063": {
     "source": "Verification failed.",
     "draft": "⟦AR-REVIEW⟧ Verification failed.",
+    "category": "help/error"
+  },
+  "U-f21a608947fbfad7bdc60aa6935605b17daf211978ec16a43c272215928331b1": {
+    "source": "No criterion evidence was stored for this run.",
+    "draft": "⟦AR-REVIEW⟧ No criterion evidence was stored for this run.",
+    "category": "help/error"
+  },
+  "U-f25ddeb6a2da2a726509f8b2e498112a291e198ea97c62a6c5ed2395b0d904e3": {
+    "source": "RECORDED GAPS",
+    "draft": "⟦AR-REVIEW⟧ RECORDED GAPS",
+    "category": "help/error"
+  },
+  "U-f26d07e6b71e42596791a241e24179315c0f6e256b19a911328c05ca97f4a6a1": {
+    "source": "Methodology",
+    "draft": "⟦AR-REVIEW⟧ Methodology",
     "category": "help/error"
   },
   "U-f2d544096d1303087b7eb5a78d201723fd66edf43977d240eb880f7fd0fac836": {
@@ -1077,6 +1422,11 @@
   "U-fa9ca5f2c6eca12568e1aa91bce558fed9d338f0ab0e3a2413a2460a40c291d0": {
     "source": "Unknown count",
     "draft": "⟦AR-REVIEW⟧ Unknown count",
+    "category": "help/error"
+  },
+  "U-fb11d27271500cfd4d73a5d2e28a723553d6526945840cd0757dd8942d2b9b90": {
+    "source": "Change history / prior runs",
+    "draft": "⟦AR-REVIEW⟧ Change history / prior runs",
     "category": "help/error"
   },
   "U-fca046ccd586c67f7fe0b3c12c29873a8abf9376f7cd514fc6272ec03b2de0b3": {
