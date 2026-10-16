@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import type messages from "../../i18n/messages/en.json";
 import { LocalizedText } from "../foundation";
+import { formatCalendarDate } from "@/lib/format";
 
 export function MethodologyCopy({
   id,
@@ -13,13 +14,10 @@ export function MethodologyCopy({
 
 export function formatMethodologyDate(value: string | null, locale: string) {
   if (!value) return "—";
-  const date = new Date(`${value.slice(0, 10)}T00:00:00Z`);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US", {
+  return formatCalendarDate(value, locale === "ar" ? "ar" : "en", {
     year: "numeric",
     month: "short",
     day: "numeric",
-    timeZone: "UTC",
-  }).format(date);
+  });
 }
 

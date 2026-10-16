@@ -82,7 +82,7 @@ describe("D-101 row-level Arabic approval boundary", () => {
     expect(approvedArabicCopy["Default methodology version"]).toBe("إصدار المنهجية الافتراضي");
   });
   it.each(["ar", "en"])("renders the %s forbidden message using the route locale and retains 403", (locale) => {
-    const providerProps = { locale, messages: {}, timeZone: "UTC", children: null };
+    const providerProps = { locale, messages: {}, timeZone: "Asia/Riyadh", children: null };
     const markup = renderToStaticMarkup(createElement(
       NextIntlClientProvider,
       providerProps,

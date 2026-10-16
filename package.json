@@ -22,6 +22,7 @@
     "test:engine": "vitest run --config vitest.engine.config.ts --coverage",
     "test:e2e": "playwright test",
     "test:e2e:accounts": "playwright test --config playwright.accounts.config.ts",
+    "test:e2e:hydration": "playwright test --config playwright.hydration.config.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db/migrate.ts",
     "db:seed": "tsx scripts/db/seed.ts",

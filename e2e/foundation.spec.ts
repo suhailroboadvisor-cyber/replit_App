@@ -49,6 +49,10 @@ test.afterEach(async ({ page }, testInfo) => {
     body: (diagnosticLogs.get(page) ?? []).join("\n"),
     contentType: "text/plain",
   });
+  expect((diagnosticLogs.get(page) ?? []).filter((message) =>
+    message.startsWith("pageerror ") || message.startsWith("console error ") ||
+    (message.startsWith("console warning ") && /hydrat/i.test(message)),
+  ), "No console errors, hydration warnings or uncaught page errors").toEqual([]);
 });
 
 for (const locale of ["ar", "en"] as const) {

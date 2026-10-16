@@ -15,6 +15,7 @@ import { methodologyHref, type MethodologySelection } from "@/lib/methodology/na
 import { AdminBreadcrumbs } from "./AdminBreadcrumbs";
 import { BackLink } from "@/components/accounts/BackLink";
 import { reviewText } from "@/components/accounts/types";
+import { formatNumber, formatTimestamp } from "@/lib/format";
 
 type Props = {
   data: MethodologyAdminData;
@@ -29,12 +30,7 @@ type CriterionRow = MethodologyAdminData["criteria"][number];
 const labelForVersion = (version: VersionRow) => version.version_label ?? version.version;
 
 function formatDate(locale: Locale, value: Date | string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value);
-  return new Intl.DateTimeFormat(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US", {
-    dateStyle: "medium", timeStyle: "short", timeZone: "UTC",
-  }).format(date);
+  return formatTimestamp(value, locale, { dateStyle: "medium", timeStyle: "short" });
 }
 function reviewError(locale: Locale, error: string) {
   return reviewText(locale, error);
@@ -172,15 +168,15 @@ export function AdminMethodologies({ data, locale, role, action, selection = {} 
         <div className="relative grid gap-0 border-t border-border sm:grid-cols-3">
           <div className="flex items-center gap-3 border-b border-border p-4 sm:border-b-0 sm:border-e">
             <BookOpenText aria-hidden="true" size={17} strokeWidth={1.6} className="text-[var(--byline)]" />
-            <Metric label={<GovernedCopy id="methodologyRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{data.methodologies.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</bdi>} />
+            <Metric label={<GovernedCopy id="methodologyRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{formatNumber(data.methodologies.length, locale)}</bdi>} />
           </div>
           <div className="flex items-center gap-3 border-b border-border p-4 sm:border-b-0 sm:border-e">
             <GitBranch aria-hidden="true" size={17} strokeWidth={1.6} className="text-[var(--byline)]" />
-            <Metric label={<GovernedCopy id="versionRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{data.versions.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</bdi>} />
+            <Metric label={<GovernedCopy id="versionRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{formatNumber(data.versions.length, locale)}</bdi>} />
           </div>
           <div className="flex items-center gap-3 p-4">
             <Check aria-hidden="true" size={17} strokeWidth={1.6} className="text-[var(--byline)]" />
-            <Metric label={<GovernedCopy id="criteriaRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{data.criteria.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</bdi>} />
+            <Metric label={<GovernedCopy id="criteriaRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{formatNumber(data.criteria.length, locale)}</bdi>} />
           </div>
         </div>
       </div>
@@ -574,4 +570,3 @@ function Meta({ label, value, ltr = false }: { label: GovernedKey; value: string
     </div>
   );
 }
-

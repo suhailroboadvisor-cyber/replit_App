@@ -201,6 +201,7 @@ describe("bilingual status and coverage", () => {
         const props = {
           locale,
           messages,
+          timeZone: "Asia/Riyadh",
           children: createElement(StatusBadge, { status }),
         };
         const html = renderToStaticMarkup(
@@ -293,6 +294,12 @@ describe("formatting and contrast", () => {
   });
 });
 describe("static-safe early theme restoration", () => {
+  it("serves exactly the tested theme source as the root's render-blocking resource", async () => {
+    expect((await readFile("public/theme-restore.js", "utf8")).trim()).toBe(THEME_SCRIPT);
+    const document = await readFile("src/components/foundation/LocaleDocument.tsx", "utf8");
+    expect(document).toContain('src="/theme-restore.js" async blocking="render" nonce={nonce}');
+    expect(document).not.toContain("dangerouslySetInnerHTML");
+  });
   it.each(["light", "dark", null, "invalid"])(
     "restores only explicit choice %s",
     (choice) => {

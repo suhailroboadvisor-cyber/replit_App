@@ -1,6 +1,7 @@
 import { getRequestConfig } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { routing } from "./routing";
+import { DISPLAY_TIME_ZONE } from "../lib/format";
 
 export default getRequestConfig(async ({ requestLocale }) => {
   // Layout/pages call setRequestLocale before any hooks: cached locale avoids
@@ -12,6 +13,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
   return {
     locale,
     messages: (await import(`./messages/${locale}.json`)).default,
-    timeZone: "UTC",
+    timeZone: DISPLAY_TIME_ZONE,
   };
 });

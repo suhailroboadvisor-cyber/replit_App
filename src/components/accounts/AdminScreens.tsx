@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { ActionResult, Locale, Role } from "./types";
 import { reviewText } from "./types";
+import { formatNumber, formatTimestamp } from "@/lib/format";
 import { localePath } from "@/lib/auth/paths";
 import { Lockup } from "@/components/foundation/Lockup";
 import { BackLink } from "./BackLink";
@@ -217,7 +218,7 @@ export function UsersAdminScreen({
           <h1 className="text-3xl font-semibold">{reviewText(locale, "Users")}</h1>
           <p className="mt-2 text-sm text-muted-foreground">{reviewText(locale, "Roles are granted deliberately and every change is recorded.")}</p>
         </div>
-        <span className="font-mono text-xs text-muted-foreground">{initialTotal.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")} {reviewText(locale, "RECORDS")}</span>
+        <span className="font-mono text-xs text-muted-foreground">{formatNumber(initialTotal, locale)} {reviewText(locale, "RECORDS")}</span>
       </div>
       <form onSubmit={(event) => { event.preventDefault(); runSearch(1); }} className="mt-7 flex max-w-2xl gap-2">
         <label className="flex-1">
@@ -255,9 +256,9 @@ export function UsersAdminScreen({
                     {row.verified_totp ? reviewText(locale, "Verified") : reviewText(locale, "Not enrolled")}
                   </span>
                 </td>
-                <td className="px-4 py-4 text-xs text-muted-foreground">{formatDate(locale, row.created_at)}</td>
+                <td className="px-4 py-4 text-xs text-muted-foreground"><bdi className="font-mono tabular-nums">{formatDate(locale, row.created_at)}</bdi></td>
                 <td className="px-4 py-4 text-xs text-muted-foreground">
-                  {row.last_sign_in_at ? formatDate(locale, row.last_sign_in_at) : "—"}
+                  <bdi className="font-mono tabular-nums">{row.last_sign_in_at ? formatDate(locale, row.last_sign_in_at) : "—"}</bdi>
                 </td>
                 <td className="px-4 py-4 text-end">
                   <button
@@ -399,7 +400,7 @@ export function AuditAdminScreen({
                 <p className="mt-2 truncate text-sm">{reviewText(locale, row.summary)}</p>
               </div>
               <span className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
-                {formatDate(locale, row.occurred_at)}
+                <bdi className="font-mono tabular-nums">{formatDate(locale, row.occurred_at)}</bdi>
                 <ChevronDown aria-hidden="true" size={16} className="transition-transform group-open:rotate-180" />
               </span>
             </summary>
@@ -492,10 +493,10 @@ export function SettingsAdminScreen({
 }
 
 function formatDate(locale: Locale, date: Date | string) {
-  return new Intl.DateTimeFormat(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US", {
+  return formatTimestamp(date, locale, {
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(new Date(date));
+  });
 }
 
 function safeJson(value: unknown) {

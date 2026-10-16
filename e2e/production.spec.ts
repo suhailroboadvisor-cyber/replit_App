@@ -120,13 +120,13 @@ test("@security private production scripts use nonce CSP and restore theme; lega
   request,
 }) => {
   const violations: string[] = [];
+  page.on("pageerror", (error) => violations.push(`${page.url()} pageerror: ${error.message}`));
   page.on("console", (message) => {
     if (
-      /Refused to execute|violates.*Content Security Policy|Executing inline script/.test(
-        message.text(),
-      )
+      message.type() === "error" ||
+      (message.type() === "warning" && /hydrat|server.render|script/i.test(message.text()))
     )
-      violations.push(message.text());
+      violations.push(`${page.url()} console.${message.type()}: ${message.text()}`);
   });
   await page.addInitScript(() => localStorage.setItem("suhail-theme", "light"));
   let profiles = 0;

@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { NextIntlClientProvider } from "next-intl";
+import { DISPLAY_TIME_ZONE } from "../../src/lib/format";
 import { AccountControl } from "../../src/components/accounts/AccountControl";
 import { SignInScreen,ConsentScreen } from "../../src/components/accounts/AuthScreens";
 import { MfaClientPanel } from "../../src/components/accounts/MfaScreens";
@@ -46,5 +47,5 @@ if (mode==="global-error") {
   // localized page that would silently rely on a surviving layout/provider.
   createRoot(document).render(<RecoveryDocument kind="error"/>);
 } else {
-  createRoot(document.getElementById("root")!).render(<NextIntlClientProvider locale={locale} messages={messages} timeZone="UTC">{header}{content}</NextIntlClientProvider>);
+  createRoot(document.getElementById("root")!).render(<NextIntlClientProvider locale={locale} messages={messages} timeZone={DISPLAY_TIME_ZONE}>{header}{content}</NextIntlClientProvider>);
 }

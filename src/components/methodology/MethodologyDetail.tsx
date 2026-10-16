@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { formatNumber } from "@/lib/format";
 import { useTranslations } from "next-intl";
 import { ExampleMethodologyBanner, LocalizedText, Num } from "../foundation";
 import { Link } from "../../i18n/navigation";
@@ -26,7 +27,7 @@ function Field({
 function StoredValue({ value }: { value: JsonValue }) {
   if (value === null) return <span lang="en" dir="ltr">null</span>;
   if (typeof value === "string") return <span className="whitespace-pre-wrap">{value}</span>;
-  if (typeof value === "number") return <Num>{value.toLocaleString("en-US", { maximumFractionDigits: 8 })}</Num>;
+  if (typeof value === "number") return <Num>{formatNumber(value, "en", { maximumFractionDigits: 8 })}</Num>;
   if (typeof value === "boolean") return <span lang="en" dir="ltr">{String(value)}</span>;
   if (Array.isArray(value)) {
     return value.length === 0 ? <span>—</span> : (
@@ -206,8 +207,8 @@ export function MethodologyDetail({
             </h2>
           </div>
           <span className="text-sm text-muted-foreground">
-            {locale === "ar" ? t("rules", { count: criteria.length, displayCount: String(criteria.length) }) : <>
-              <Num>{criteria.length.toLocaleString("en-US")}</Num>
+            {locale === "ar" ? t("rules", { count: criteria.length, displayCount: formatNumber(criteria.length, "ar") }) : <>
+              <Num>{formatNumber(criteria.length, "en")}</Num>
               <span className="ms-2"><LocalizedText>{t("rules")}</LocalizedText></span>
             </>}
           </span>

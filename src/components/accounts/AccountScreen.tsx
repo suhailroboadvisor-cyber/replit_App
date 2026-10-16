@@ -6,6 +6,7 @@ import { Globe2, ShieldCheck, Trash2, UserRound } from "lucide-react";
 import { localePath } from "@/lib/auth/paths";
 import type { ActionResult, AccountProfile, Locale } from "./types";
 import { reviewText } from "./types";
+import { formatTimestamp } from "@/lib/format";
 
 type Props = {
   locale: Locale;
@@ -88,9 +89,9 @@ export function AccountScreen({ locale, profile, updateLocale, deleteAccount }: 
   };
 
   const acceptedDate = profile.accepted_at
-    ? new Intl.DateTimeFormat(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US", {
+    ? formatTimestamp(profile.accepted_at, locale, {
         dateStyle: "medium",
-      }).format(new Date(profile.accepted_at))
+      })
     : reviewText(locale, "Not recorded");
 
   return (
@@ -179,7 +180,7 @@ export function AccountScreen({ locale, profile, updateLocale, deleteAccount }: 
             </span>
             <div>
               <h2 className="font-medium">{copy.consent}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">{acceptedDate}</p>
+              <p className="mt-1 text-sm text-muted-foreground"><bdi className="font-mono tabular-nums">{acceptedDate}</bdi></p>
             </div>
           </div>
           <div className="space-y-3 text-sm">

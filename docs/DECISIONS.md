@@ -201,6 +201,17 @@ participate in the same serialized production-prerequisite gate.
 
 | D-102 | **Public on-demand ISR and visibility integrity.** Builds must not require database credentials or database access, consistent with D-78/D-94. The public layout returns `[]` from `generateStaticParams`, keeps `setRequestLocale`, and uses classic ISR (`revalidate = 900`, `force-static`). All public locale pages generate on their first runtime request and cache successful renders; no parent locale enumeration may reintroduce build-time rendering. Public server pages read no request cookies/headers. Database reads throw on failure: failed first renders return uncached errors, and failed revalidation retains the last good page. Runtime public reads use the restricted public database role with verified TLS; CI never connects to Supabase. Production enablement requires a public version. Production-enabled or editorial-default versions cannot be unpublished; choose another default first. Service gates and migration `0007_methodology_visibility` enforce these invariants, including direct SQL and default-pointer writes serialized with D-93's advisory lock. The migration refuses existing visibility violations without editing data. |
 
+| D-107 | **Display dates consistently on the server and in the browser.** Calendar-only `YYYY-MM-DD` values retain their original Gregorian date in every host time zone. Timestamps (including consent acceptance, audit, generated and published times) default to `Asia/Riyadh`; an explicit market time zone passed to the shared formatter overrides that timestamp default without changing stored values, market cut-offs or calculations. All application date/number display uses `src/lib/format.ts`, Gregorian calendars and Western digits, retaining bidi isolation and caller-appropriate date/time precision. next-intl request configuration and client providers use the same Saudi time zone. Missing dates render `—` unless a screen supplies its existing contextual missing-value label. Date styles must not be mixed with component fields. |
+
+D-22 implementation clarification: the server root document owns a stable,
+same-origin `async` external-script resource with `blocking="render"`, which the
+installed Next/React App Router renderer hoists and deduplicates. This replaces
+the raw inline script, retaining private per-request nonces and cookie/header-free
+public ISR. In the installed Next version, inline `next/script beforeInteractive`
+queues execution until bootstrap: browser paint-timing checks with delayed
+bootstrap demonstrate that it is pre-hydration but not necessarily pre-paint.
+The external resource is independently render-blocking, with the same fixed
+localStorage-only behavior and no auth or request personalization.
 ## Founder-specified Arabic review terminology
 
 D-103–D-106 began as documentation-only constraints. D-107 applies them to
