@@ -1,6 +1,6 @@
 # Live Arabic review audit
 
-## Founder-approved batch 2 — D-107
+## Founder-approved batch 2 — D-107 (historical approval scope)
 
 The inspected checkout contains Step 6's governed methodology management,
 public methodology documents, runtime marker adapters and merged locale-aware
@@ -12,7 +12,7 @@ The founder subsequently approved all 275 non-legal rows under D-107, including
 these five newly inventoried rows. The exact reviewed drafts and applied wording
 are pinned in `tests/fixtures/arabic-batch-two-approval.json`; every changed row is
 listed in `docs/ARABIC_APPROVAL_BATCH_TWO.md`. Terminology follows D-103–D-111.
-Only the two legal bodies remain unapproved. English, engine decisions, stored
+At batch-2 completion only the two legal bodies remained unapproved. English, engine decisions, stored
 evidence, governance states and legal content are unchanged.
 
 ## Removed copy and parity
@@ -115,3 +115,12 @@ was performed. No dependencies were added.
   because the managed WebKit executable is absent. Chromium desktop/phone and
   public HTTP checks passed. This is not physical iPhone Safari verification.
 - Legal bodies, English copy and original D-101 evidence were not changed.
+
+## Step-7 inventory update
+
+Step 7 introduces new financial admin controls and finite error text, not a new
+Arabic approval. The regenerated sheet has 148 pending rows: 146 Step-7 phrases
+and the same two O-7 legal holds. New documentation placeholders and runtime UI
+copy remain visibly marked in English; they are not Arabic translation proposals
+or founder-approved wording. D-101/D-107 evidence and applied translations remain
+unchanged. Caller coverage reports zero unresolved surfaces and unused keys.

@@ -1,7 +1,7 @@
 {
   "metadata": {
     "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
-    "retrieved_at": "2026-10-16T00:20:43.792Z",
+    "retrieved_at": "2026-10-16T00:59:59.603Z",
     "is_synthetic": false,
     "is_demo": false,
     "original_sha256": "73a86c6aedc31f77cac2ea4df5f80f0b3bd7e6eb58bb4e01444fbedf3afb9c43",
@@ -2848,6 +2848,54 @@
             ]
           }
         },
+        "FinanceLeaseLiability": {
+          "label": "Finance Lease, Liability",
+          "description": "Present value of lessee's discounted obligation for lease payments from finance lease.",
+          "units": {
+            "USD": [
+              {
+                "end": "2022-09-24",
+                "val": 941000000,
+                "accn": "0000320193-22-000108",
+                "fy": 2022,
+                "fp": "FY",
+                "form": "10-K",
+                "filed": "2022-10-28",
+                "frame": "CY2022Q3I"
+              },
+              {
+                "end": "2023-09-30",
+                "val": 1024000000,
+                "accn": "0000320193-23-000106",
+                "fy": 2023,
+                "fp": "FY",
+                "form": "10-K",
+                "filed": "2023-11-03",
+                "frame": "CY2023Q3I"
+              },
+              {
+                "end": "2024-09-28",
+                "val": 896000000,
+                "accn": "0000320193-24-000123",
+                "fy": 2024,
+                "fp": "FY",
+                "form": "10-K",
+                "filed": "2024-11-01",
+                "frame": "CY2024Q3I"
+              },
+              {
+                "end": "2025-09-27",
+                "val": 1230000000,
+                "accn": "0000320193-25-000079",
+                "fy": 2025,
+                "fp": "FY",
+                "form": "10-K",
+                "filed": "2025-10-31",
+                "frame": "CY2025Q3I"
+              }
+            ]
+          }
+        },
         "FinanceLeaseLiabilityCurrent": {
           "label": "Finance Lease, Liability, Current",
           "description": "Present value of lessee's discounted obligation for lease payments from finance lease, classified as current.",
@@ -2988,6 +3036,54 @@
               {
                 "end": "2025-09-27",
                 "val": 692000000,
+                "accn": "0000320193-25-000079",
+                "fy": 2025,
+                "fp": "FY",
+                "form": "10-K",
+                "filed": "2025-10-31",
+                "frame": "CY2025Q3I"
+              }
+            ]
+          }
+        },
+        "OperatingLeaseLiability": {
+          "label": "Operating Lease, Liability",
+          "description": "Present value of lessee's discounted obligation for lease payments from operating lease.",
+          "units": {
+            "USD": [
+              {
+                "end": "2022-09-24",
+                "val": 11470000000,
+                "accn": "0000320193-22-000108",
+                "fy": 2022,
+                "fp": "FY",
+                "form": "10-K",
+                "filed": "2022-10-28",
+                "frame": "CY2022Q3I"
+              },
+              {
+                "end": "2023-09-30",
+                "val": 11818000000,
+                "accn": "0000320193-23-000106",
+                "fy": 2023,
+                "fp": "FY",
+                "form": "10-K",
+                "filed": "2023-11-03",
+                "frame": "CY2023Q3I"
+              },
+              {
+                "end": "2024-09-28",
+                "val": 11534000000,
+                "accn": "0000320193-24-000123",
+                "fy": 2024,
+                "fp": "FY",
+                "form": "10-K",
+                "filed": "2024-11-01",
+                "frame": "CY2024Q3I"
+              },
+              {
+                "end": "2025-09-27",
+                "val": 12490000000,
                 "accn": "0000320193-25-000079",
                 "fy": 2025,
                 "fp": "FY",

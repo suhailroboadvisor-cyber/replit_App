@@ -17,6 +17,7 @@ const config = [
       ".agents/**",
       "attached_assets/**",
       "coverage/**",
+      "dist/**",
       "playwright-report/**",
       "test-results/**",
       "generated-artifacts/**",

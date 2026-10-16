@@ -9,6 +9,7 @@ import {
   uniqueIndex,
   index,
   check,
+  foreignKey,
 } from "drizzle-orm/pg-core";
 import {
   appSchema,
@@ -41,6 +42,7 @@ export const company = appSchema.table("company", {
   ...base(),
   created_by: mutableCreator(),
   name: text("name").notNull(),
+  cik: text("cik").unique(),
   name_ar: text("name_ar"),
   legal_name: text("legal_name"),
   country: text("country"),
@@ -99,6 +101,8 @@ export const security = appSchema.table(
     listing_status: listingStatus("listing_status").notNull().default("listed"),
     slug: text("slug").notNull().unique(),
     in_universe: boolean("in_universe").notNull().default(false),
+    last_ingest_at: time("last_ingest_at"),
+    last_ingest_error: text("last_ingest_error"),
     coverage_analyst_id: uuid("coverage_analyst_id").references(
       () => analystProfile.id,
       { onDelete: "set null" },
@@ -208,9 +212,15 @@ export const financialFact = appSchema.table(
     as_of_date: date("as_of_date"),
     mapping_note: text("mapping_note"),
     unknown_note: text("unknown_note"),
+    origin: text("origin").notNull().default("legacy"),
+    protected_current: boolean("protected_current").notNull().default(false),
+    calculation_version: text("calculation_version"),
+    evidence_key: text("evidence_key").unique(),
+    sec_baseline_id: uuid("sec_baseline_id"),
     is_current: boolean("is_current").notNull().default(true),
   },
   (t) => [
+    foreignKey({ columns: [t.sec_baseline_id], foreignColumns: [t.id] }),
     uniqueIndex("financial_fact_current_unique")
       .on(t.company_id, t.period_id, t.line_item)
       .where(sql`${t.is_current}`),
@@ -259,4 +269,6 @@ export const priceBar = appSchema.table("price_bar", {
   advance_batch: text("advance_batch"),
   is_synthetic: boolean("is_synthetic").notNull().default(true),
   source_label: text("source_label"),
+  source_url: text("source_url"),
+  source_id: uuid("source_id").references(() => source.id),
 });
