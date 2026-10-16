@@ -206,8 +206,10 @@ export function MethodologyDetail({
             </h2>
           </div>
           <span className="text-sm text-muted-foreground">
-            <Num>{criteria.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</Num>
-            <span className="ms-2"><LocalizedText>{t("rules")}</LocalizedText></span>
+            {locale === "ar" ? t("rules", { count: criteria.length, displayCount: String(criteria.length) }) : <>
+              <Num>{criteria.length.toLocaleString("en-US")}</Num>
+              <span className="ms-2"><LocalizedText>{t("rules")}</LocalizedText></span>
+            </>}
           </span>
         </div>
 

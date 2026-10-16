@@ -98,3 +98,17 @@ mtime_ms = 1792107120295
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/27dd0938-0344-4442-85d2-e352a24d39d4/1ace87f7-d314-474f-af72-372ac4cd140f"
 storage_version_token = "1792107294610997"
 content_type = "text/markdown"
+
+[[outputs]]
+id = "VO7zHKVmyU152O9d3pxfL"
+uri = "file://docs/ARABIC_APPROVAL_BATCH_TWO.md"
+type = "text"
+title = "Arabic approval batch 2 — complete change list"
+description = "All 275 approved rows with original drafts and applied wording, plus identifier isolation and the two O-7 legal holds."
+logical_id = "921e07a9-d28e-42e5-bcd9-924e26321275"
+content_hash = "sha256:ab44f5c75ac5877b28969cee58bb08397cf840d183379fb8f5c2f67b1ae31fdb"
+size = 59968
+mtime_ms = 1792109252235
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:895f244d-f680-4fbc-97ba-da0cb308e612/921e07a9-d28e-42e5-bcd9-924e26321275/abb01642-b7fc-49bc-802f-03a6544decb4"
+storage_version_token = "1792109762613911"
+content_type = "text/markdown"

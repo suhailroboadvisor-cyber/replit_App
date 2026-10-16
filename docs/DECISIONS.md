@@ -201,7 +201,10 @@ participate in the same serialized production-prerequisite gate.
 
 | D-102 | **Public on-demand ISR and visibility integrity.** Builds must not require database credentials or database access, consistent with D-78/D-94. The public layout returns `[]` from `generateStaticParams`, keeps `setRequestLocale`, and uses classic ISR (`revalidate = 900`, `force-static`). All public locale pages generate on their first runtime request and cache successful renders; no parent locale enumeration may reintroduce build-time rendering. Public server pages read no request cookies/headers. Database reads throw on failure: failed first renders return uncached errors, and failed revalidation retains the last good page. Runtime public reads use the restricted public database role with verified TLS; CI never connects to Supabase. Production enablement requires a public version. Production-enabled or editorial-default versions cannot be unpublished; choose another default first. Service gates and migration `0007_methodology_visibility` enforce these invariants, including direct SQL and default-pointer writes serialized with D-93's advisory lock. The migration refuses existing visibility violations without editing data. |
 
-## Founder-specified Arabic review terminology — documentation drafts only
+## Founder-specified Arabic review terminology
+
+D-103–D-106 began as documentation-only constraints. D-107 applies them to
+its explicitly approved batch; unknown future wording remains unapproved.
 
 | ID | Decision |
 | --- | --- |
@@ -209,3 +212,9 @@ participate in the same serialized production-prerequisite gate.
 | D-104 | **Draft user-facing production terminology:** use `مُعتمد للاستخدام الفعلي` / `غير مُعتمد للاستخدام الفعلي`. This constrains review-document drafts only; it does not authorize applying translations, approving rows or changing production gates. |
 | D-105 | **Draft admin action terminology:** “Enable for production” = `اعتماد للاستخدام الفعلي` (including the current “Enable production” action). Documentation only, not authorization to apply translations or change workflow behavior. |
 | D-106 | **Draft verifier label:** “Verified by” = `جهة التحقق`. Documentation only; no new translation approval or runtime copy application is authorized. |
+
+| D-107 | **Founder Arabic approval, batch 2.** Approve and apply the 275 non-legal rows in the current 277-row review sheet. The four replacements are the preceding table's “Version sections”, “Back to Suhail”, “Retry” and “This page could not be loaded.” Apply all other drafts exactly except the explicit D-103–D-106 and D-108–D-111 terminology, ICU plural and LTR-isolation amendments. Preserve original drafts and exact applied values in `tests/fixtures/arabic-batch-two-approval.json`; list every row in `docs/ARABIC_APPROVAL_BATCH_TWO.md`. Keep `L-privacy-body` and `L-terms-body` pending O-7 and retain their markers. Arabic `methodologies.rules` uses correct zero/one/two/few/many/other ICU categories with Western-digit display counts; English remains unchanged. Isolate code identifiers with LRI/PDI without changing their spelling or the literal deletion input token. This supersedes D-101's deferral only for the enumerated batch and authorizes no unknown future copy, new edition copy, legal/religious approval, production enablement, database migration or governance change. |
+| D-108 | **Workflow approval terminology:** use `الموافقة` / `موافَق عليه`. Reserve `اعتماد` for production only. This extends the D-103–D-106 terminology list and applies under D-107. |
+| D-109 | **Finalized methodology content:** use `نهائي` / `نهائية`, replacing `مثبّت` / `تُثبّت` for finalization. This does not change version states, immutability or fixed identifier semantics. |
+| D-110 | **Publishing terminology:** publish / unpublish = `نشر` / `إلغاء النشر`; public / not-public badges = `منشور` / `غير منشور`. “Public visibility” remains `الإتاحة العامة`. |
+| D-111 | **Version terminology boundary:** reserve `إصدار` for methodology versions. Editorial editions must use a different term (the existing D-96 term is `الأعداد`). Do not create Step 11 edition copy in this batch. |

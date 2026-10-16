@@ -78,7 +78,7 @@ for (const locale of ["ar","en"] as const) {
     await page.locator('#version-record > a[href$="#methodology-record"]').click();
     await expect(page).toHaveURL(`${prefix}/admin/methodologies?methodology=${method}#methodology-record`);
     await expect(page.locator("#methodology-record")).toContainText("UI fixture methodology");
-    await page.locator('a').filter({hasText:"Back to Suhail"}).click();
+    await page.locator('a').filter({hasText:locale==="ar"?approvedArabicCopy["Back to Suhail"]:"Back to Suhail"}).click();
     await expect(page).toHaveURL(home);
   });
   test(`${locale}: a deep-linked version cannot escape its selected methodology`,async({page})=>{

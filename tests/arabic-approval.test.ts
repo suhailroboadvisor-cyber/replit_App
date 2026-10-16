@@ -11,6 +11,8 @@ import Forbidden from "../src/app/[locale]/(private)/forbidden";
 import ar from "../src/i18n/messages/ar.json";
 import en from "../src/i18n/messages/en.json";
 import baseline from "./fixtures/arabic-approval-baseline.json";
+import batchTwo from "./fixtures/arabic-batch-two-approval.json";
+import { isolateArabicCode } from "../src/i18n/bidi";
 
 // Immutable historical evidence, independent of the regenerated pending sheet.
 const rows = baseline.rows;
@@ -49,7 +51,8 @@ describe("D-101 row-level Arabic approval boundary", () => {
       }
       expect(english[namespace][key], id).toBe(source);
       expect(json[namespace][key], id).toBe(
-        deferred(id) ? `⟦AR-REVIEW⟧ ${source}` : approvedDraft(id, draft),
+        batchTwo.rows.find((row) => row.id === id && row.approved)?.applied ??
+          (deferred(id) ? `⟦AR-REVIEW⟧ ${source}` : isolateArabicCode(approvedDraft(id, draft))),
       );
       if (!deferred(id)) expect(approvedArabicCopy[source], id).toBe(json[namespace][key]);
     }
@@ -58,13 +61,13 @@ describe("D-101 row-level Arabic approval boundary", () => {
     const accountRows = rows.filter(([id]) => id.startsWith("A-"));
     expect(accountRows).toHaveLength(42);
     for (const [id, , , source, draft] of accountRows) {
-      expect(reviewText("ar", source), id).toBe(approvedDraft(id, draft));
+      expect(reviewText("ar", source), id).toBe(isolateArabicCode(approvedDraft(id, draft)));
       expect(reviewText("en", source), id).toBe(source);
     }
     for (const [source, translations] of Object.entries(accountCopyDictionary)) {
       expect(translations.ar, source).not.toContain("⟦AR-REVIEW⟧");
     }
-    expect(reviewText("ar", 'Type "DELETE" to confirm')).toBe('اكتب "DELETE" للتأكيد');
+    expect(reviewText("ar", 'Type "DELETE" to confirm')).toBe('اكتب "\u2066DELETE\u2069" للتأكيد');
   });
   it("covers all 27 audit enum codes and code-valued summaries without approving arbitrary summaries", () => {
     const codes = rows.filter(([id]) => id.startsWith("F-"));

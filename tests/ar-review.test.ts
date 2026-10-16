@@ -5,11 +5,12 @@ import en from "../src/i18n/messages/en.json";
 import ar from "../src/i18n/messages/ar.json";
 import removed from "../docs/arabic-dead-keys.json";
 import drafts from "../docs/arabic-drafts.json";
+import batchTwo from "./fixtures/arabic-batch-two-approval.json";
 
 let audit: ReturnType<typeof discover>;
 beforeAll(() => { audit = discover(); }, 60_000);
 
-describe("live-only Arabic inventories without copy application", () => {
+describe("live-only pending Arabic inventory with pinned founder approvals", () => {
   it("has recursive parity and no proven-unused message leaves", () => {
     expect(Object.keys(leaves(ar)).sort()).toEqual(Object.keys(leaves(en)).sort());
     expect(audit.errors).toEqual([]);
@@ -35,19 +36,18 @@ describe("live-only Arabic inventories without copy application", () => {
     }
     for (const key of ["governed.invalidJsonObject", "governed.confirmProduction",
       "governed.metadataSaved", "governed.saved", "publicMethodology.versionSelector"]) {
-      const entry = audit.entries.find((entry) => entry.key === key);
-      expect(entry, key).toBeDefined();
-      expect(entry?.contexts.join()).toMatch(/Rendered|rendered/);
+      expect(audit.usage.get(key)?.size, key).toBeGreaterThan(0);
+      expect([...audit.usage.get(key)!].join()).toMatch(/Rendered|rendered/);
     }
-    expect(audit.entries.some((entry) => entry.source === "All tests and mandatory analyst criterion coverage must pass")).toBe(true);
-    expect(audit.entries.some((entry) => entry.source === "role_required")).toBe(true);
-    expect(audit.entries.some((entry) => entry.source === "operation_failed")).toBe(true);
+    for (const source of ["All tests and mandatory analyst criterion coverage must pass", "role_required", "operation_failed"]) {
+      expect(batchTwo.rows.some((entry) => entry.source === source && entry.approved)).toBe(true);
+      expect(audit.entries.some((entry) => entry.source === source)).toBe(false);
+    }
   });
   it("has stable surviving IDs, no approved/dead rows, and legal placeholders under original IDs", () => {
     const ids = audit.entries.map((entry) => entry.id);
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids).toContain("J-methodologies-edgeCases");
-    expect(ids).toContain("J-methodologies-verifiedBy");
+    expect(ids).toEqual(["L-privacy-body", "L-terms-body"]);
     expect(ids).toContain("L-terms-body");
     expect(ids).toContain("L-privacy-body");
     expect(ids.some((id) => /^[AFEI]-/.test(id))).toBe(false);
@@ -59,7 +59,7 @@ describe("live-only Arabic inventories without copy application", () => {
       else expect(draftFor(entry, drafts), entry.id).toMatch(/[\u0600-\u06ff]/);
     }
   });
-  it("includes merged navigation and recovery wording as documentation-only drafts", () => {
+  it("preserves the D-107 approval for merged navigation and recovery wording", () => {
     const expected = {
       "Version sections": "أقسام الإصدار",
       "Breadcrumb": "مسار الصفحة",
@@ -68,15 +68,15 @@ describe("live-only Arabic inventories without copy application", () => {
       "This page could not be loaded.": "تعذّر تحميل هذه الصفحة.",
     };
     for (const [source, draft] of Object.entries(expected)) {
-      const entry = audit.entries.find((row) => row.source === source);
+      const entry = batchTwo.rows.find((row) => row.source === source && row.approved);
       expect(entry, source).toBeDefined();
-      expect(draftFor(entry!, drafts)).toBe(draft);
+      expect(entry?.applied).toBe(draft);
     }
     const sheet = readFileSync("docs/ARABIC_REVIEW.md", "utf8");
     expect(sheet).toContain("Step 6 and locale-aware navigation restoration are merged");
     expect(sheet).not.toContain("inventory is BLOCKED");
   });
-  it("uses the founder's terminology only in drafts, retaining runtime markers", () => {
+  it("applies the founder's terminology only at the enumerated approved origins", () => {
     const expected = {
       "Edge cases": "الحالات الخاصة", "Verified by": "جهة التحقق",
       "Available in production": "مُعتمد للاستخدام الفعلي",
@@ -84,11 +84,11 @@ describe("live-only Arabic inventories without copy application", () => {
       "Enable production": "اعتماد للاستخدام الفعلي",
     };
     for (const [source, draft] of Object.entries(expected)) {
-      const entries = audit.entries.filter((entry) => entry.source === source);
+      const entries = batchTwo.rows.filter((entry) => entry.source === source && entry.approved);
       expect(entries.length, source).toBeGreaterThan(0);
       entries.forEach((entry) => {
-        expect(draftFor(entry, drafts)).toBe(draft);
-        expect(audit.ar[entry.key]).toBe(marker + source);
+        expect(entry.applied).toBe(draft);
+        expect(audit.ar[entry.key]).toBe(draft);
       });
     }
   });

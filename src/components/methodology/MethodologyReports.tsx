@@ -4,6 +4,9 @@ import type { MethodologyAdminData } from "@/lib/methodology/admin-data";
 import { GovernedCopy } from "./GovernedCopy";
 import { AdminBreadcrumbs } from "./AdminBreadcrumbs";
 import { BackLink } from "@/components/accounts/BackLink";
+import { useLocale } from "next-intl";
+import { reviewText } from "@/components/accounts/types";
+import { LocalizedText } from "@/components/foundation";
 
 type Report = MethodologyAdminData["reports"][number];
 type JsonRecord = Record<string, unknown>;
@@ -11,6 +14,10 @@ const record = (value: unknown): JsonRecord | null =>
   value !== null && typeof value === "object" && !Array.isArray(value) ? value as JsonRecord : null;
 const array = (value: unknown): unknown[] => Array.isArray(value) ? value : [];
 const string = (value: unknown) => typeof value === "string" ? value : "";
+function ErrorText({ value }: { value: unknown }) {
+  const locale = useLocale() === "ar" ? "ar" : "en";
+  return <LocalizedText>{reviewText(locale, string(value))}</LocalizedText>;
+}
 const bool = (value: unknown) => value === true;
 const json = (value: unknown) => {
   try { return JSON.stringify(value ?? null, null, 2); } catch { return "null"; }
@@ -113,7 +120,7 @@ function TestReport({ payload }: { payload: JsonRecord }) {
                       </table>
                     </div>
                   )}
-                  {string(test.error) && <p className="mt-2 text-xs text-[var(--brass-soft)]">{string(test.error)}</p>}
+                  {string(test.error) && <p className="mt-2 text-xs text-[var(--brass-soft)]"><ErrorText value={test.error} /></p>}
                   {array(test.unexpectedIds).length > 0 && <p className="mt-2 break-all font-mono text-xs text-[var(--brass-soft)]" dir="ltr">{array(test.unexpectedIds).join(", ")}</p>}
                 </article>
               );
@@ -135,7 +142,7 @@ function TestReport({ payload }: { payload: JsonRecord }) {
                 <div><dt className="text-muted-foreground"><GovernedCopy id="expectedHash" /></dt><dd className="mt-1 break-all font-mono" dir="ltr">{string(golden.expectedHash) || "—"}</dd></div>
                 <div><dt className="text-muted-foreground"><GovernedCopy id="actualHash" /></dt><dd className="mt-1 break-all font-mono" dir="ltr">{string(golden.actualHash) || "—"}</dd></div>
                 <div><dt className="text-muted-foreground"><GovernedCopy id="actualStatus" /></dt><dd className="mt-1 font-mono" dir="ltr">{string(golden.actualStatus) || "—"}</dd></div>
-                {string(golden.error) && <div className="text-[var(--brass-soft)]">{string(golden.error)}</div>}
+                {string(golden.error) && <div className="text-[var(--brass-soft)]"><ErrorText value={golden.error} /></div>}
               </dl>
             </details>
           ))}
@@ -235,10 +242,10 @@ function ImpactReport({ payload }: { payload: JsonRecord }) {
                       <Value value={security.oldStatus} /> <span className="mx-2">→</span> <Value value={security.newStatus} />
                     </span>
                   <span className={`font-mono text-[10px] ${string(security.error) ? "text-[var(--brass-soft)]" : "text-muted-foreground"}`}>
-                      {string(security.error) || <><bdi dir="ltr">{changed.length.toLocaleString("en-US")}</bdi> <GovernedCopy id="criterionChanges" /></>}
+                      {string(security.error) ? <ErrorText value={security.error} /> : <><bdi dir="ltr">{changed.length.toLocaleString("en-US")}</bdi> <GovernedCopy id="criterionChanges" /></>}
                     </span>
                   </summary>
-                  {string(security.error) ? <p className="border-t border-border px-4 py-3 text-sm text-[var(--brass-soft)]">{string(security.error)}</p> : (
+                  {string(security.error) ? <p className="border-t border-border px-4 py-3 text-sm text-[var(--brass-soft)]"><ErrorText value={security.error} /></p> : (
                     <div className="space-y-4 border-t border-border bg-background px-4 py-4">
                       <div className="grid gap-4 sm:grid-cols-2">
                         <CriterionSnapshot titleKey="previousCriteria" values={oldResults} />

@@ -14,6 +14,7 @@ import { MethodologyReports } from "./MethodologyReports";
 import { methodologyHref, type MethodologySelection } from "@/lib/methodology/navigation";
 import { AdminBreadcrumbs } from "./AdminBreadcrumbs";
 import { BackLink } from "@/components/accounts/BackLink";
+import { reviewText } from "@/components/accounts/types";
 
 type Props = {
   data: MethodologyAdminData;
@@ -36,7 +37,7 @@ function formatDate(locale: Locale, value: Date | string | null) {
   }).format(date);
 }
 function reviewError(locale: Locale, error: string) {
-  return locale === "ar" ? `⟦AR-REVIEW⟧ ${error}` : error;
+  return reviewText(locale, error);
 }
 
 function Metric({ label, value }: { label: ReactNode; value: ReactNode }) {
@@ -301,7 +302,7 @@ export function AdminMethodologies({ data, locale, role, action, selection = {} 
                         }}
                           className={`min-h-12 min-w-36 border px-3 py-2 text-start ${active ? "border-[var(--brass)] bg-secondary" : "border-border hover:bg-secondary/60"}`}>
                           <span className="block font-mono text-xs" dir="ltr">{labelForVersion(version)}</span>
-                          <span className="mt-1 block text-[10px] text-muted-foreground">{version.workflow_status}</span>
+                          <span className="mt-1 block text-[10px] text-muted-foreground">{version.workflow_status === "approved" ? reviewText(locale, "approved") : version.workflow_status}</span>
                         </button>
                       );
                     })}
@@ -334,7 +335,7 @@ export function AdminMethodologies({ data, locale, role, action, selection = {} 
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-lg font-semibold">{labelForVersion(currentVersion)}</h3>
-                          <span className={`border px-2 py-1 font-mono text-[10px] ${currentVersion.workflow_status === "draft" ? "border-[var(--brass)] text-[var(--brass-soft)]" : "border-border text-muted-foreground"}`} dir="ltr">{currentVersion.workflow_status}</span>
+                          <span className={`border px-2 py-1 font-mono text-[10px] ${currentVersion.workflow_status === "draft" ? "border-[var(--brass)] text-[var(--brass-soft)]" : "border-border text-muted-foreground"}`} dir={locale === "ar" && currentVersion.workflow_status === "approved" ? "rtl" : "ltr"}>{currentVersion.workflow_status === "approved" ? reviewText(locale, "approved") : currentVersion.workflow_status}</span>
                           {currentVersion.production_enabled && <span className="border border-[var(--byline)] px-2 py-1 font-mono text-[10px] text-[var(--byline)]"><GovernedCopy id="productionEnabled" /></span>}
                           <span className={`border px-2 py-1 font-mono text-[10px] ${currentVersion.is_public ? "border-[var(--byline)] text-[var(--byline)]" : "border-border text-muted-foreground"}`}>
                             {currentVersion.is_public ? <GovernedCopy id="publicVisible" /> : <GovernedCopy id="notPublic" />}
@@ -485,7 +486,7 @@ export function AdminMethodologies({ data, locale, role, action, selection = {} 
                           return (
                             <li key={stage} className={`min-h-14 border px-3 py-2 ${current ? "border-[var(--brass)] bg-secondary" : complete ? "border-[var(--byline)]/50" : "border-border"}`}>
                               <span className="block font-mono text-[9px] text-muted-foreground" dir="ltr">{String(index + 1).padStart(2, "0")}</span>
-                              <span className={`mt-1 block break-words font-mono text-[10px] ${current ? "text-[var(--brass-soft)]" : complete ? "text-[var(--byline)]" : "text-muted-foreground"}`} dir="ltr">{stage}</span>
+                              <span className={`mt-1 block break-words font-mono text-[10px] ${current ? "text-[var(--brass-soft)]" : complete ? "text-[var(--byline)]" : "text-muted-foreground"}`} dir={locale === "ar" && stage === "approved" ? "rtl" : "ltr"}>{stage === "approved" ? reviewText(locale, "approved") : stage}</span>
                             </li>
                           );
                         })}
@@ -515,7 +516,7 @@ export function AdminMethodologies({ data, locale, role, action, selection = {} 
                         <div className="mt-5 grid gap-4 border border-border bg-background p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
                           <div className="space-y-3">
                             <p className="text-xs text-muted-foreground">
-                              <GovernedCopy id="nextWorkflowTarget" />: <bdi dir="ltr" className="ms-1 font-mono text-[var(--brass-soft)]">{destination}</bdi>
+                              <GovernedCopy id="nextWorkflowTarget" />: <bdi dir={locale === "ar" && destination === "approved" ? "rtl" : "ltr"} className="ms-1 font-mono text-[var(--brass-soft)]">{destination === "approved" ? reviewText(locale, "approved") : destination}</bdi>
                             </p>
                             <label htmlFor="workflow-note" className="block text-xs text-muted-foreground">
                               <span className="mb-1.5 block"><GovernedCopy id="workflowReviewNote" /></span>

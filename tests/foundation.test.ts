@@ -10,6 +10,7 @@ import ar from "../src/i18n/messages/ar.json";
 import en from "../src/i18n/messages/en.json";
 import { approvedArabicCopy } from "../src/i18n/approved-arabic";
 import baseline from "./fixtures/brand-sha256.json";
+import arabicBatchTwo from "./fixtures/arabic-batch-two-approval.json";
 import {
   StatusBadge,
   type StatusCode,
@@ -151,6 +152,11 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
         ["requires_review", "insufficient_data"].includes(key),
     );
     for (const [key, value] of Object.entries(leaves(ar))) {
+      const approvedRow = arabicBatchTwo.rows.find((row) => row.approved && row.key === key);
+      if (approvedRow) {
+        expect(value, key).toBe(approvedRow.applied);
+        continue;
+      }
       if (
         !(key in prior) &&
         !(key.startsWith("status.") && labels.includes(key.slice(7)))
@@ -243,7 +249,7 @@ describe("bilingual status and coverage", () => {
   });
   it("keeps the review marker visible and isolates English placeholder text", () => {
     const html = renderToStaticMarkup(
-      createElement(LocalizedText, null, ar.methodologies.title),
+      createElement(LocalizedText, null, "⟦AR-REVIEW⟧ Unknown future heading"),
     );
     expect(html).toContain('lang="en" dir="ltr"');
     expect(html).toContain("⟦AR-REVIEW⟧ ");

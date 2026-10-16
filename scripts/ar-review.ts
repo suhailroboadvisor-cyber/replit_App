@@ -239,7 +239,7 @@ export function discover(options: {
   };
   const entries: Entry[] = [];
   for (const [key, contexts] of usage) {
-    const current = key.startsWith("governed.") ? marker + en[key] : ar[key];
+    const current = ar[key];
     if (current === undefined) errors.push(`Missing Arabic counterpart: ${key}`);
     if (!current?.includes(marker)) continue;
     const sorted = [...contexts].sort();
@@ -250,6 +250,7 @@ export function discover(options: {
   // unapproved again, without using mutable draft mappings to decide liveness.
   const baseline = JSON.parse(readFileSync("tests/fixtures/arabic-approval-baseline.json", "utf8")) as { rows: string[][] };
   for (const [source, contexts] of phrases) {
+    if (approvedArabicCopy[source]) continue;
     const previous = baseline.rows.find((row) => row[3] === source && /^[AFEI]-/.test(row[0]));
     const sorted = [...contexts].sort();
     entries.push({ id: previous?.[0] ?? phraseId(source), key: "runtime phrase", source,
@@ -308,6 +309,9 @@ export const boundaries = `
 
 This is a live-only pending inventory, not an approval record. D-96/D-101
 approval evidence is pinned independently in tests/fixtures/arabic-approval-baseline.json.
+D-107 batch-2 evidence is pinned separately in tests/fixtures/arabic-batch-two-approval.json;
+docs/ARABIC_APPROVAL_BATCH_TWO.md lists every applied row. Approved rows are
+excluded from this pending sheet; the O-7 legal bodies remain unapproved.
 No translations are applied by this command. Existing IDs survive; keyed IDs
 are J-namespace-key; new unkeyed phrases use a full SHA-256 source ID (U-...).
 Drafts are retained only while their exact English source matches. A source
@@ -327,9 +331,9 @@ reviewText/reviewError preserve markers on arbitrary unapproved auth/audit/actio
 fallbacks; Zod paths/issues and EngineInputError details are unbounded.
 Concrete custom validation and governance-error sources are listed; generated
 Zod built-in messages are described here, not fabricated as an infinite list.
-Stored report errors render verbatim in report evidence (without a review marker);
-their concrete sources are included as unapproved documentation, not silently
-treated as approved translations. Arbitrary exception/report text remains unbounded.
+Known finite report errors are localized for display only under D-107; unknown
+display errors retain review markers. Raw report JSON and engine evidence remain
+unchanged. Arbitrary exception/report text remains unbounded.
 Approved account/audit entries and all currently approved engine templates are absent.
 No engine reason template currently carries a review marker.
 
@@ -340,22 +344,27 @@ the provider; passing the whole dictionary is not evidence that every leaf rende
 Whole-namespace dynamic consumers are retained and reported if unresolved.
 Tests, dictionaries and documentation alone never establish a live caller.
 
-## Draft terminology — D-103–D-106
+## Founder terminology — D-103–D-111
 
 - Edge cases = الحالات الخاصة; حدية is reserved for borderline.
 - User-facing production = مُعتمد للاستخدام الفعلي / غير مُعتمد للاستخدام الفعلي.
 - Admin “Enable for production” = اعتماد للاستخدام الفعلي.
 - Verified by = جهة التحقق.
+- Workflow approval = الموافقة / موافَق عليه; اعتماد is production-only.
+- Finalized = نهائي / نهائية, not مثبّت / تُثبّت.
+- Publish / unpublish = نشر / إلغاء النشر; badges = منشور / غير منشور.
+- Public visibility = الإتاحة العامة.
+- إصدار is reserved for methodology versions. Do not create edition copy here.
 
-These founder-specified draft constraints do not authorize copy application,
-new approvals or changing D-101. Legal bodies require O-7 text, not translation.
+Only D-107's enumerated batch has been applied. These terminology rules do not
+approve unknown future copy. Legal bodies require O-7 text, not translation.
 
 ## Integration boundary
 
 Step 6 and locale-aware navigation restoration are merged in this checkout.
 This inventory includes their actual callers, including breadcrumbs, version
-sections and recovery-screen home/retry controls. These remain unapproved
-documentation-only drafts; no future navigation copy is invented.
+sections and recovery-screen home/retry controls. D-107 approved these recorded
+origins; unknown future navigation copy is not approved or invented.
 `;
 export function generate(check = false) {
   const audit = discover();
@@ -404,11 +413,10 @@ export function pruneUnused() {
     );
     const result = prune(tree);
     if (locale === "ar") {
-      // GovernedCopy generates these exact marked English values at runtime.
-      // Mirror them for recursive parity; this is not translation application.
+      // Pruning must never revoke an existing founder-approved translation.
       result.governed = Object.fromEntries(Object.entries(audit.en)
         .filter(([key]) => key.startsWith("governed.") && audit.usage.has(key))
-        .map(([key, value]) => [key.slice("governed.".length), marker + value]));
+        .map(([key, value]) => [key.slice("governed.".length), audit.ar[key] ?? marker + value]));
     }
     writeFileSync(`src/i18n/messages/${locale}.json`, JSON.stringify(result, null, 2) + "\n");
   }

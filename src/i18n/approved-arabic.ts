@@ -1,5 +1,8 @@
-// Founder-approved UI wording (D-96/D-101). Unlisted copy must retain its review marker.
-export const approvedArabicCopy: Readonly<Record<string, string>> = {
+import batchTwo from "./approved-arabic-batch-two.json";
+import { isolateArabicCode } from "./bidi";
+
+// Founder-approved UI wording (D-96/D-101/D-107). Unknown copy stays marked.
+const approvedCopy: Readonly<Record<string, string>> = {
   "Sign in": "تسجيل الدخول",
   "ACCOUNT ACCESS": "الدخول إلى الحساب",
   "SUHAIL ACCOUNT": "حساب سهيل",
@@ -233,3 +236,6 @@ export const approvedArabicCopy: Readonly<Record<string, string>> = {
   "Coverage eligibility sample: covered and passing only.": "نموذج لأهلية إظهار ختم التغطية: للأوراق المالية المشمولة بالتغطية والتي اجتازت الفحص فقط.",
   "Self-hosted IBM Plex Sans Arabic / Sans / Mono": "خطوط IBM Plex Sans Arabic / Sans / Mono مستضافة محليًا",
 };
+export const approvedArabicCopy: Readonly<Record<string, string>> = Object.fromEntries(
+  Object.entries({ ...approvedCopy, ...batchTwo }).map(([source, text]) => [source, isolateArabicCode(text)]),
+);
