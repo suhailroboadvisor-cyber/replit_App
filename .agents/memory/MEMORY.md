@@ -21,3 +21,4 @@
 - [Caller-aware copy audits](caller-aware-copy-audits.md) — imported JSON can appear as compiler source files; dictionary data is not runtime caller evidence.
 - [SEC continuation scope](sec-mapping-checkpoint.md) — Step 7 go-ahead received; local implementation only, no live imports/migrations; serial ingest, process-local limiter.
 - [DB integration bootstrap](database-integration-order.md) — fresh disposable cluster per full run; bootstrap must precede suites that apply migrations.
+- [Live screening boundary](screening-live-boundary.md) — example fixtures are not live screening authority; preview mode is not production-methodology approval.

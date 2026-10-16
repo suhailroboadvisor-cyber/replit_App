@@ -8,7 +8,11 @@ export type StatusReason = {
   criterion_label: string | null;
   ratio: number | null;
   threshold: number | null;
+  threshold_unit?: string | null;
   reason_code: string;
+  field?: string | null;
+  borderline_count?: number;
+  unknown_count?: number;
 };
 export type EditorEvidence = {
   claim_ar: string;

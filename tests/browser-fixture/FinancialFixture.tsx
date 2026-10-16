@@ -1,7 +1,9 @@
 import { AdminShell } from "../../src/components/accounts/AdminScreens";
 import type { Locale } from "../../src/components/accounts/types";
 import { FinancialAdmin } from "../../src/components/financial/FinancialAdmin";
+import { ScreeningRunDetail } from "../../src/components/financial/ScreeningControls";
 import type { FinancialAdminData } from "../../src/lib/financial/contracts";
+import type { RunDetail, ScreeningAdminData } from "../../src/screening/contracts";
 
 const issuerId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const securityId = "11111111-1111-4111-8111-111111111111";
@@ -66,11 +68,47 @@ const fixtureData = {
   }],
 } as unknown as FinancialAdminData;
 
+const runId = "33333333-3333-4333-8333-333333333333";
+const screeningData = {
+  versions: [{ id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", label: "v1.2", methodologyName: "Fixture methodology" }],
+  runs: [{
+    id: runId, security_id: securityId, company_id: issuerId, ticker: "FIX", company_name: "Fixture Research Systems",
+    methodology_id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", methodology_name: "Fixture methodology",
+    methodology_version_id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", methodology_version_label: "v1.2",
+    financial_period_id: periodId, financial_period_label: "FY2025", financial_snapshot_id: "snap_fixture",
+    calculation_version: "calc-fixture", data_adequacy: "adequate", confidence: "High",
+    status: "requires_review", status_reasons: [{ kind: "review_unknown", criterion_id: null, criterion_label: null, ratio: null, threshold: null, threshold_unit: null, reason_code: "stale_data", field: "Data freshness" }],
+    hash_payload: { engine_version: "engine-fixture", calculation_version: "calc-fixture", security_id: securityId, methodology_version_id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", financial_period_id: periodId, facts: [], segments: [], criteria: [], outputs: { status: "requires_review" } },
+    data_as_of: "2026-01-20", generated_at: stamp, immutable_hash: "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+    engine_version: "engine-fixture", is_demo: false, created_by: null, created_at: stamp, updated_at: stamp,
+  }],
+  unchanged: [{ securityId, methodologyVersionId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", runId, jobId }],
+} as unknown as ScreeningAdminData;
+
+const runDetail = {
+  run: screeningData.runs[0],
+  criteria: [{
+    id: "dddddddd-dddd-4ddd-8ddd-dddddddddddd", screening_run_id: runId, criterion_id: null,
+    criterion_type: "business_activity", criterion_label: "Business activity", result: "unknown",
+    numerator_value: null, numerator_definition: null, denominator_value: null, denominator_definition: null,
+    ratio: null, threshold: null, threshold_unit: null, threshold_direction: null, borderline_margin: null,
+    input_states: ["unknown"], confidence_tier: null, source_ids: [], calculation_trace: null,
+    result_reason: "Fixture criterion review", source_reference: null, sort_order: 0,
+  }],
+  unknowns: [{
+    id: "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee", screening_run_id: runId, criterion_id: null,
+    criterion_type: "business_activity", criterion_label: "Business activity", field_or_input: "business_activity",
+    why_missing: "Fixture disclosure not recorded", effect: "Review required", source_reference: null, severity: "review",
+  }],
+} as unknown as RunDetail;
+
 export function FinancialFixture({ locale }: { locale: Locale }) {
   const params = new URLSearchParams(window.location.search);
   const role = params.get("role") === "editor" ? "editor" : "admin";
   const view = params.get("view") === "ingestion" ? "ingestion" : "securities";
+  const isRunDetail = window.location.pathname.includes("/admin/runs/");
+  const includeScreening = params.get("screening") === "1";
   return <AdminShell locale={locale} role={role} currentPath={`/admin/${view}`} userLabel="Financial Fixture">
-    <FinancialAdmin data={fixtureData} role={role} view={view} />
+    {isRunDetail ? <ScreeningRunDetail detail={runDetail} role={role} /> : <FinancialAdmin data={fixtureData} screening={includeScreening ? screeningData : undefined} role={role} view={view} />}
   </AdminShell>;
 }

@@ -14,6 +14,8 @@
     "dev": "next dev -H 0.0.0.0 -p ${PORT:-3000}",
     "build": "next build",
     "build:jobs": "node scripts/build-jobs.mjs",
+    "job:ingest": "pnpm build:jobs && node dist/jobs/ingest-all.js",
+    "job:screen": "pnpm build:jobs && node dist/jobs/screen-universe.js",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const securitiesUrl = "/en/admin/securities?screen=financial";
 const readCalls = () => window.financialFixture.calls;
+const readScreeningCalls = () => window.screeningFixture.calls;
 
 test("admin can preview a fixture ticker and confirm it for ingestion", async ({ page }) => {
   await page.goto(`${securitiesUrl}&role=admin`);
@@ -121,4 +122,58 @@ test("ingestion controls start, resume, and retry fixture jobs", async ({ page }
   expect(calls[0].data).toBeUndefined();
   expect(calls[1]).toMatchObject({ operation: "resumeJob", data: { id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc" } });
   expect(calls[2]).toMatchObject({ operation: "ingest", securityId: "11111111-1111-4111-8111-111111111111" });
+});
+
+test("screening admin can run a selected version, inspect unchanged evidence, and verify a stored run", async ({ page }) => {
+  await page.goto(`${securitiesUrl}&role=admin&screening=1`);
+  await expect(page.getByText("Unchanged", { exact: true }).first()).toBeVisible();
+  await page.getByLabel("Methodology version").selectOption("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  await page.getByRole("button", { name: "Run screening now", exact: true }).click();
+  await expect(page.getByText("Unchanged result", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "Run details", exact: true }).last().click();
+  await expect(page).toHaveURL(/\/en\/admin\/runs\/33333333-3333-4333-8333-333333333333/);
+  await expect(page.getByText(/Data freshness/).first()).toBeVisible();
+  await page.getByRole("button", { name: "Verify", exact: true }).click();
+  await expect(page.getByText("Verification passed.", { exact: true })).toBeVisible();
+  const calls = await page.evaluate(readScreeningCalls);
+  expect(calls[0]).toMatchObject({ action: "runScreenAction", args: [{ securityId: "11111111-1111-4111-8111-111111111111", methodologyVersionId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa" }] });
+  expect(calls[1]).toMatchObject({ action: "verifyScreenAction", args: ["33333333-3333-4333-8333-333333333333"] });
+});
+
+test("verification failure presents detailed difference feedback", async ({ page }) => {
+  await page.goto("/en/admin/runs/33333333-3333-4333-8333-333333333333?screen=financial&verify=fail");
+  await page.getByRole("button", { name: "Verify", exact: true }).click();
+  await expect(page.getByText("Verification failed.", { exact: true })).toBeVisible();
+  await expect(page.getByText("outputs.status", { exact: true })).toBeVisible();
+  await expect(page.getByText("fedcba9876543210fedcba9876543210", { exact: true })).toBeVisible();
+});
+
+test("bulk screening reports its universe summary and gates a missing production methodology", async ({ page }) => {
+  await page.goto("/en/admin/ingestion?screen=financial&view=ingestion&role=admin&screening=1");
+  await page.getByRole("button", { name: "Screen all", exact: true }).click();
+  await expect(page.getByText("Job summary", { exact: true })).toBeVisible();
+  const jobSummary = page.getByRole("heading", { name: "Job summary", exact: true }).locator("..").locator("dl");
+  await expect(jobSummary.getByText("8", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Resume screen job", exact: true })).toBeVisible();
+  await page.goto("/en/admin/ingestion?screen=financial&view=ingestion&role=admin&screening=1&bulk=gate");
+  await page.getByRole("button", { name: "Screen all", exact: true }).click();
+  await expect(page.getByText("No production methodology to screen with", { exact: true })).toBeVisible();
+  const calls = await page.evaluate(readScreeningCalls);
+  expect(calls).toContainEqual({ action: "runUniverseAction", args: ["screen", undefined] });
+});
+
+test("editor can inspect screening history and detail but has no screening or bulk actions", async ({ page }) => {
+  await page.goto(`${securitiesUrl}&role=editor&screening=1`);
+  await expect(page.getByRole("button", { name: "Run screening now", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Run details/ })).toBeVisible();
+  await page.goto("/en/admin/runs/33333333-3333-4333-8333-333333333333?screen=financial&role=editor");
+  await expect(page.getByRole("button", { name: "Verify", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Verify", exact: true }).click();
+  await expect(page.getByText("Verification passed.", { exact: true })).toBeVisible();
+  await page.goto("/en/admin/ingestion?screen=financial&view=ingestion&role=editor&screening=1");
+  await expect(page.getByRole("button", { name: "Screen all", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Ingest all", exact: true })).toHaveCount(0);
+  const calls = await page.evaluate(readScreeningCalls);
+  expect(calls).toContainEqual({ action: "verifyScreenAction", args: ["33333333-3333-4333-8333-333333333333"] });
+  expect(calls.some((call) => call.action !== "verifyScreenAction")).toBe(false);
 });

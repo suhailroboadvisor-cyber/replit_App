@@ -8,8 +8,10 @@ import { formatDate, formatNumber } from "@/lib/format";
 import { reviewText, type Locale } from "@/components/accounts/types";
 import type { FinancialAdminData, FinancialCommand, FinancialResult, SecurityLookup } from "@/lib/financial/contracts";
 import { financialAction } from "@/app/[locale]/(private)/admin/(protected)/financial-actions";
+import { ScreeningControls } from "@/components/financial/ScreeningControls";
+import type { ScreeningAdminData } from "@/screening/contracts";
 
-type Props = { data: FinancialAdminData; role: "admin" | "editor"; view: "securities" | "ingestion" };
+type Props = { data: FinancialAdminData; role: "admin" | "editor"; view: "securities" | "ingestion"; screening?: ScreeningAdminData };
 type Tab = "facts" | "segments" | "prices" | "coverage" | "company";
 const tiers = ["Verified", "Calculated", "Estimated", "AI Interpretation"] as const;
 const states = ["reported", "derived", "estimated", "unknown"] as const;
@@ -65,7 +67,7 @@ function Empty({ children }: { children: ReactNode }) {
   return <div className="border border-dashed border-border px-5 py-8 text-center text-sm text-muted-foreground">{children}</div>;
 }
 
-export function FinancialAdmin({ data, role, view }: Props) {
+export function FinancialAdmin({ data, role, view, screening }: Props) {
   const router = useRouter();
   const locale = (useLocale() === "en" ? "en" : "ar") as Locale;
   const canEdit = role === "admin";
@@ -115,10 +117,11 @@ export function FinancialAdmin({ data, role, view }: Props) {
     return <main className="mx-auto max-w-[1280px] space-y-6">
       <Heading locale={locale} role={role} title="Ingestion" intro="Job history, progress and failed security retries." />
       {feedback && <Status locale={locale}>{feedback}</Status>}
-      <Panel locale={locale} title="Ingestion controls" aside={canEdit && <button className={buttonClass} type="button" disabled={pending} onClick={() => run({ operation: "runJob" }, "Job started.")}><RefreshCw size={14} aria-hidden="true" />{text(locale, "Ingest now")}</button>}>
+      <Panel locale={locale} title="Ingestion controls" aside={canEdit && !screening && <button className={buttonClass} type="button" disabled={pending} onClick={() => run({ operation: "runJob" }, "Job started.")}><RefreshCw size={14} aria-hidden="true" />{text(locale, "Ingest now")}</button>}>
         {!canEdit && <p className="mb-4 text-xs text-muted-foreground">{text(locale, "Editors have read-only access.")}</p>}
         <p className="text-sm leading-6 text-muted-foreground">{text(locale, "Start a resumable ingestion job for the curated universe, or resume a recorded run below.")}</p>
       </Panel>
+      {screening && <ScreeningControls data={screening} role={role} ingestion />}
       <Panel locale={locale} title="Job history">
         {data.jobs.length === 0 ? <Empty>{text(locale, "No ingestion jobs recorded.")}</Empty> : <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-start text-sm"><thead><tr className="border-b border-border text-xs text-muted-foreground">{["Job", "Status", "Started", "Finished", "Counts", "Actions"].map((label) => <th key={label} className="px-3 py-3 text-start font-medium">{text(locale, label)}</th>)}</tr></thead><tbody>{data.jobs.map((job) => {
           const errors = Array.isArray(job.errors) ? job.errors : [];
@@ -191,6 +194,7 @@ export function FinancialAdmin({ data, role, view }: Props) {
       </div>
     </Panel>
 
+    {screening && <ScreeningControls data={screening} role={role} securityId={selected?.id} securityLabel={selected ? `${selected.ticker} · ${company?.name_ar || company?.name || ""}` : undefined} />}
     {selected && company && <section className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-4">
         <div><p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--byline)]">{text(locale, "Security record")}</p><h2 className="mt-1 text-2xl font-semibold">{company.name_ar || company.name} <bdi dir="ltr" className="font-mono text-base text-muted-foreground">({selected.ticker})</bdi></h2>

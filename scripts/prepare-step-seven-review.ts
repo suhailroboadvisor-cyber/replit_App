@@ -1,5 +1,5 @@
 /**
- * Explicit Step-7 inventory preparation, NOT an Arabic translation or approval.
+ * Explicit pending-copy inventory preparation, NOT an Arabic translation or approval.
  * Keep new copy visibly untranslated until a separate founder-reviewed batch.
  */
 import { readFileSync, writeFileSync } from "node:fs";
@@ -15,4 +15,4 @@ for (const [id, row] of Object.entries(rows)) {
 }
 writeFileSync("docs/arabic-draft-proposals.json", `${JSON.stringify(proposals, null, 2)}\n`);
 writeFileSync("docs/arabic-drafts.json", `${JSON.stringify(rows, null, 2)}\n`);
-console.log(`${added} untranslated Step-7 documentation placeholders; no Arabic approval or runtime copy changed.`);
+console.log(`${added} untranslated documentation placeholders; no Arabic approval or runtime copy changed.`);

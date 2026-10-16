@@ -11,6 +11,7 @@ import { AdminFixture } from "./AdminFixture";
 import { MethodologyFixture } from "./MethodologyFixture";
 import { FinancialFixture } from "./FinancialFixture";
 import { financialFixture } from "./financial-actions";
+import { screeningFixture } from "./screening-actions";
 import en from "../../src/i18n/messages/en.json";
 import ar from "../../src/i18n/messages/ar.json";
 import { CURRENT_TERMS_VERSION,CURRENT_PRIVACY_VERSION } from "../../src/lib/auth/policies";
@@ -25,11 +26,13 @@ declare global {interface Window {fixture:typeof fixture}}
 window.fixture=fixture;
 window.accountFixture=accountFixture;
 window.financialFixture=financialFixture;
+window.screeningFixture=screeningFixture;
 const locale=window.location.pathname.startsWith("/en")?"en":"ar";
 const query = new URLSearchParams(window.location.search);
 const next = safeNext(query.get("next"));
 const mode=new URLSearchParams(window.location.search).get("screen")??
-  (window.location.pathname.endsWith("/admin/methodologies")?"methodologies":
+  (window.location.pathname.includes("/admin/runs/")?"financial":
+    window.location.pathname.endsWith("/admin/methodologies")?"methodologies":
     window.location.pathname.endsWith("/account")?"account":"header");
 const content=mode==="forbidden"?<Forbidden/>:
   mode==="error"||mode==="not-found"||mode==="global-error"?<RecoveryScreen locale={locale} kind={mode==="not-found"?"not-found":"error"}/>:

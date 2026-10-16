@@ -9,8 +9,13 @@ describe("financial admin UI wiring", () => {
   it("loads protected data through the authorized server pages", () => {
     for (const page of [securitiesPage, ingestionPage]) {
       expect(page).toContain('await requireRole(["admin", "editor"])');
-      expect(page).toContain("await getFinancialAdminData()");
+      expect(page).toContain("getFinancialAdminData()");
+      expect(page).toContain("getScreeningAdminData()");
+      expect(page).toContain("Promise.all([getFinancialAdminData(), getScreeningAdminData()])");
       expect(page).toContain("context.user.role");
+      const guardIndex = page.indexOf('await requireRole(["admin", "editor"])');
+      expect(guardIndex).toBeLessThan(page.indexOf("getFinancialAdminData()"));
+      expect(guardIndex).toBeLessThan(page.indexOf("getScreeningAdminData()"));
     }
   });
 

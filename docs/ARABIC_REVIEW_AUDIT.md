@@ -124,3 +124,12 @@ and the same two O-7 legal holds. New documentation placeholders and runtime UI
 copy remain visibly marked in English; they are not Arabic translation proposals
 or founder-approved wording. D-101/D-107 evidence and applied translations remain
 unchanged. Caller coverage reports zero unresolved surfaces and unused keys.
+
+## Step-8 inventory update
+
+The current regenerated inventory has 218 pending rows (216 runtime phrases and
+the same two O-7 legal holds), an increase of 70 pending rows. New screening
+controls and finite refusal text have not received founder Arabic approval.
+Untranslated documentation placeholders remain explicitly marked; existing
+proposal wording may be reused in the review sheet, never silently applied.
+D-101/D-107 evidence and approved runtime translations remain unchanged.
