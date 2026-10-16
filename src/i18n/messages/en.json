@@ -3,6 +3,16 @@
     "name": "Suhail",
     "tagline": "Your bearing in the market."
   },
+  "publicSearch": {
+    "title": "Stock search",
+    "label": "Ticker or company name",
+    "submit": "Search",
+    "hint": "Enter 1–40 characters of a ticker or company name.",
+    "noResults": "No matching stocks",
+    "noResultsBody": "No listed stocks in the screening universe match this search.",
+    "notScreened": "Not screened yet",
+    "methodologyLine": "Read how the screening methodology works."
+  },
   "nav": {
     "picks": "Weekly picks",
     "methodologies": "Methodologies",

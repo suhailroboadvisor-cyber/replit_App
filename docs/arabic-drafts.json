@@ -9,6 +9,46 @@
     "draft": "Do not translate; needs O-7 text",
     "category": "legal document (do not translate; needs O-7 text)"
   },
+  "J-publicSearch-hint": {
+    "source": "Enter 1–40 characters of a ticker or company name.",
+    "draft": "⟦AR-REVIEW⟧ Enter 1–40 characters of a ticker or company name.",
+    "category": "help/error"
+  },
+  "J-publicSearch-label": {
+    "source": "Ticker or company name",
+    "draft": "⟦AR-REVIEW⟧ Ticker or company name",
+    "category": "UI label"
+  },
+  "J-publicSearch-methodologyLine": {
+    "source": "Read how the screening methodology works.",
+    "draft": "⟦AR-REVIEW⟧ Read how the screening methodology works.",
+    "category": "help/error"
+  },
+  "J-publicSearch-noResults": {
+    "source": "No matching stocks",
+    "draft": "⟦AR-REVIEW⟧ No matching stocks",
+    "category": "help/error"
+  },
+  "J-publicSearch-noResultsBody": {
+    "source": "No listed stocks in the screening universe match this search.",
+    "draft": "⟦AR-REVIEW⟧ No listed stocks in the screening universe match this search.",
+    "category": "help/error"
+  },
+  "J-publicSearch-notScreened": {
+    "source": "Not screened yet",
+    "draft": "⟦AR-REVIEW⟧ Not screened yet",
+    "category": "help/error"
+  },
+  "J-publicSearch-submit": {
+    "source": "Search",
+    "draft": "⟦AR-REVIEW⟧ Search",
+    "category": "UI label"
+  },
+  "J-publicSearch-title": {
+    "source": "Stock search",
+    "draft": "⟦AR-REVIEW⟧ Stock search",
+    "category": "UI label"
+  },
   "U-00799d7eb4caed17030b0bb9cecb5a8263924c1e769a6f6791f684ac288d98d0": {
     "source": "English name",
     "draft": "⟦AR-REVIEW⟧ English name",

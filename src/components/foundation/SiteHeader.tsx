@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Lockup } from "./Lockup";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
+import { StockSearchForm } from "./StockSearchForm";
 
 export type SiteHeaderLocale = "ar" | "en";
 
@@ -35,6 +36,7 @@ export function SiteHeader({ locale, labels, accountControl }: SiteHeaderProps) 
               {labels.methodologies}
             </a>
           </nav>
+          <StockSearchForm locale={locale} compact />
           {accountControl}
           <div className="flex items-center gap-3 border-s border-[var(--divider)] ps-5">
             <LocaleSwitcher className="text-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />

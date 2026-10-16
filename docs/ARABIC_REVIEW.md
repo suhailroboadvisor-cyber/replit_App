@@ -1,6 +1,6 @@
 # Live Arabic review — unapproved documentation-only drafts
 
-Generated deterministically by `pnpm ar-review:list`. Live pending rows: **288**.
+Generated deterministically by `pnpm ar-review:list`. Live pending rows: **296**.
 
 ## Boundaries and coverage
 
@@ -76,6 +76,14 @@ origins; unknown future navigation copy is not approved or invented.
 
 | ID | Key/source | Page/component rendering context | Current English source | Arabic draft — UNAPPROVED, documentation only | Category |
 | --- | --- | --- | --- | --- | --- |
+| J-publicSearch-hint | publicSearch.hint | Rendered/conditionally rendered: src/components/search/SearchResults.tsx:12 | Enter 1–40 characters of a ticker or company name. | ⟦AR-REVIEW⟧ Enter 1–40 characters of a ticker or company name. | help/error |
+| J-publicSearch-label | publicSearch.label | Rendered/conditionally rendered: src/components/foundation/StockSearchForm.tsx:14 | Ticker or company name | ⟦AR-REVIEW⟧ Ticker or company name | UI label |
+| J-publicSearch-methodologyLine | publicSearch.methodologyLine | Rendered/conditionally rendered: src/app/[locale]/(public)/page.tsx:23 | Read how the screening methodology works. | ⟦AR-REVIEW⟧ Read how the screening methodology works. | help/error |
+| J-publicSearch-noResults | publicSearch.noResults | Rendered/conditionally rendered: src/components/search/SearchResults.tsx:11 | No matching stocks | ⟦AR-REVIEW⟧ No matching stocks | help/error |
+| J-publicSearch-noResultsBody | publicSearch.noResultsBody | Rendered/conditionally rendered: src/components/search/SearchResults.tsx:12 | No listed stocks in the screening universe match this search. | ⟦AR-REVIEW⟧ No listed stocks in the screening universe match this search. | help/error |
+| J-publicSearch-notScreened | publicSearch.notScreened | Rendered/conditionally rendered: src/components/search/SearchResults.tsx:24 | Not screened yet | ⟦AR-REVIEW⟧ Not screened yet | help/error |
+| J-publicSearch-submit | publicSearch.submit | Rendered/conditionally rendered: src/components/foundation/StockSearchForm.tsx:20 | Search | ⟦AR-REVIEW⟧ Search | UI label |
+| J-publicSearch-title | publicSearch.title | Rendered/conditionally rendered: src/app/[locale]/(public)/search/page.tsx:22; Rendered/conditionally rendered: src/components/foundation/StockSearchForm.tsx:11; Rendered/conditionally rendered: src/components/search/SearchResults.tsx:11 | Stock search | ⟦AR-REVIEW⟧ Stock search | UI label |
 | U-00799d7eb4caed17030b0bb9cecb5a8263924c1e769a6f6791f684ac288d98d0 | runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | English name | ⟦AR-REVIEW⟧ English name | help/error |
 | U-00cbe0ccc588866d7e45c808e1a0028ae1c8cfe02ca6f3f7e1e8977ebde2dc06 | runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Current facts | ⟦AR-REVIEW⟧ Current facts | help/error |
 | U-025194fba737d2482baf082e533e2c434b6b732094063ad3d6fa4a4bdab939c1 | runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Calculation | ⟦AR-REVIEW⟧ Calculation | help/error |

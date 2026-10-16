@@ -1,6 +1,6 @@
 # Live Arabic review keys
 
-Generated deterministically by `pnpm ar-review:list`. Live pending rows: **288**.
+Generated deterministically by `pnpm ar-review:list`. Live pending rows: **296**.
 
 ## Boundaries and coverage
 
@@ -76,6 +76,14 @@ origins; unknown future navigation copy is not approved or invented.
 
 | Key/source | Page/component rendering context | Current English source | Arabic (approved) |
 | --- | --- | --- | --- |
+| publicSearch.hint | Rendered/conditionally rendered: src/components/search/SearchResults.tsx:12 | Enter 1–40 characters of a ticker or company name. |  |
+| publicSearch.label | Rendered/conditionally rendered: src/components/foundation/StockSearchForm.tsx:14 | Ticker or company name |  |
+| publicSearch.methodologyLine | Rendered/conditionally rendered: src/app/[locale]/(public)/page.tsx:23 | Read how the screening methodology works. |  |
+| publicSearch.noResults | Rendered/conditionally rendered: src/components/search/SearchResults.tsx:11 | No matching stocks |  |
+| publicSearch.noResultsBody | Rendered/conditionally rendered: src/components/search/SearchResults.tsx:12 | No listed stocks in the screening universe match this search. |  |
+| publicSearch.notScreened | Rendered/conditionally rendered: src/components/search/SearchResults.tsx:24 | Not screened yet |  |
+| publicSearch.submit | Rendered/conditionally rendered: src/components/foundation/StockSearchForm.tsx:20 | Search |  |
+| publicSearch.title | Rendered/conditionally rendered: src/app/[locale]/(public)/search/page.tsx:22; Rendered/conditionally rendered: src/components/foundation/StockSearchForm.tsx:11; Rendered/conditionally rendered: src/components/search/SearchResults.tsx:11 | Stock search |  |
 | runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | English name |  |
 | runtime phrase | Rendered/conditionally rendered: src/components/financial/FinancialAdmin.tsx:49 | Current facts |  |
 | runtime phrase | Rendered/conditionally rendered: src/components/stock/StockVerdictParts.tsx:45 | Calculation |  |

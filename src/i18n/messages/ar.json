@@ -3,6 +3,16 @@
     "name": "سهيل",
     "tagline": "دليلك في السوق."
   },
+  "publicSearch": {
+    "title": "⟦AR-REVIEW⟧ Stock search",
+    "label": "⟦AR-REVIEW⟧ Ticker or company name",
+    "submit": "⟦AR-REVIEW⟧ Search",
+    "hint": "⟦AR-REVIEW⟧ Enter 1–40 characters of a ticker or company name.",
+    "noResults": "⟦AR-REVIEW⟧ No matching stocks",
+    "noResultsBody": "⟦AR-REVIEW⟧ No listed stocks in the screening universe match this search.",
+    "notScreened": "⟦AR-REVIEW⟧ Not screened yet",
+    "methodologyLine": "⟦AR-REVIEW⟧ Read how the screening methodology works."
+  },
   "nav": {
     "picks": "اختيارات الأسبوع",
     "methodologies": "المنهجيات",

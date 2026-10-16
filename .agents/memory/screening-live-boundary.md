@@ -6,7 +6,9 @@ description: Founder boundary between local example-based tests and live financi
 Example methodologies are not authority for screening live securities. Preview
 site mode does not make real data a test dataset. The explicit development demo
 seed is allowed to screen obviously fabricated demo issuers outside tests, but
-only in non-live mode with demo security, company, methodology and version.
+only with explicitly selected preview mode and demo security, company,
+methodology and version. The demo seed command also requires loopback storage;
+preview mode alone never authorizes a remote seed.
 Until a real production-enabled version exists, live bulk screening must do
 nothing and say “No production methodology to screen with”.
 

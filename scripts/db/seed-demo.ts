@@ -5,13 +5,14 @@ import { pathToFileURL } from "node:url";
 import * as schema from "../../src/db/schema";
 import { goldenInput } from "../../src/engine/__fixtures__/synthetic";
 import { screenSecurity } from "../../src/screening/service";
-import { cliConnection } from "./connection";
+import { demoSeedConnection } from "./connection";
+import { LOOPBACK_HOSTS } from "./test-target";
 import { seedDatabase } from "./seed";
 import type { Tx } from "../../src/lib/auth/audit";
 
 export function assertDemoMode(mode = process.env.SITE_MODE) {
   if (mode === "live") throw new Error("Demo seed refuses SITE_MODE=live");
-  if (mode !== undefined && mode !== "preview") throw new Error("Demo seed requires SITE_MODE=preview");
+  if (mode !== "preview") throw new Error("Demo seed requires SITE_MODE=preview");
 }
 export const DEMO_CASES = [
   { slug: "demo-fixa", name: "Fixture Alpha", ticker: "FIXA", outcome: "pass", covered: true },
@@ -26,6 +27,9 @@ export const DEMO_CASES = [
 /** Explicit developer command, never called by page loads, builds or live jobs. */
 export async function seedDemoData(client: Sql) {
   assertDemoMode();
+  if (!client.options.host.length || !client.options.host.every(host =>
+    LOOPBACK_HOSTS.some(allowed => allowed === host || (allowed === "[::1]" && host === "::1"))
+  )) throw new Error("Demo seed requires an isolated loopback database");
   await seedDatabase(client);
   const db = drizzle(client, { schema });
   return db.transaction(createDemoFixtures);
@@ -96,7 +100,7 @@ export async function createDemoFixtures(tx: Tx) {
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   assertDemoMode(); // Refuse before opening any connection.
-  const client = cliConnection(process.argv.includes("--test") ? "DATABASE_URL_TEST" : "DATABASE_URL_MIGRATIONS");
+  const client = demoSeedConnection(process.argv.includes("--test") ? "DATABASE_URL_TEST" : "DATABASE_URL_MIGRATIONS");
   try { console.log(JSON.stringify(await seedDemoData(client))); }
   catch { console.error("Demo seed failed; check the isolated preview database and EX-A default. No credentials were logged."); process.exitCode = 1; }
   finally { await client.end(); }
