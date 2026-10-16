@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { EngineInput, JsonValue } from "./types";
 import { EngineInputError } from "./errors";
 export { EngineInputError } from "./errors";
-import { ENGINE_VERSION, CALCULATION_VERSION } from "./versions";
+import { ENGINE_VERSION, SUPPORTED_CALCULATION_VERSIONS } from "./versions";
 import { validateShares } from "./shares";
 const states = z.enum(["reported", "derived", "estimated", "unknown"]);
 const tiers = z.enum(["Verified", "Calculated", "Estimated", "AI Interpretation"]);
@@ -26,7 +26,7 @@ const categoryList = z.array(z.enum(categories));
 const contract = z.object({
   securityId: z.string(), asOf: z.string(),
   stalenessLimitDays: z.number().finite().int().positive().optional(),
-    engineVersion: z.literal(ENGINE_VERSION), calculationVersion: z.literal(CALCULATION_VERSION),
+    engineVersion: z.literal(ENGINE_VERSION), calculationVersion: z.enum(SUPPORTED_CALCULATION_VERSIONS),
   period: z.object({ id: z.string(), label: z.string(), periodEnd: z.string() }),
   facts: z.array(z.object({
     lineItem: z.string(), value: numeric, inputState: states, confidenceTier: tiers, sourceId: z.string(),
