@@ -14,3 +14,13 @@ Bound test-worker concurrency when unit tests and engine coverage run alongside 
 **Why:** Independently passing engine tests and even a dedicated tooling setup hook can time out when all completion checks oversubscribe the workspace together. These failures did not indicate changed engine results.
 
 **How to apply:** Reduce worker pressure before increasing assertion budgets. Test both the individual commands and the concurrent completion checks.
+
+Even two workers per suite can oversubscribe the workspace when engine coverage
+and the main suite start alongside TypeScript, ESLint and completion review.
+
+**Why:** Existing hash-property and authorization-AST assertions timed out only
+in the simultaneous completion run, while the ordinary unit run passed.
+
+**How to apply:** Keep coverage and unit worker caps coordinated with the whole
+validation fan-out; do not increase behavioral timeouts or reduce property runs
+to hide machine contention.

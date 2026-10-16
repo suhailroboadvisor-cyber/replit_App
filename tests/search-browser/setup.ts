@@ -1,5 +1,6 @@
 import { cliConnection } from "../../scripts/db/connection";
 import { seedDemoData } from "../../scripts/db/seed-demo";
+import { applyMigrations } from "../../scripts/db/migrate";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { eq } from "drizzle-orm";
 import * as schema from "../../src/db/schema";
@@ -9,6 +10,7 @@ import * as schema from "../../src/db/schema";
 if (process.env.NODE_ENV !== "test") throw new Error("Search browser setup is test-only");
 const client = cliConnection("DATABASE_URL_TEST");
 try {
+  await applyMigrations(client);
   await seedDemoData(client);
   await client.unsafe("alter role suhail_public login");
   const db = drizzle(client, { schema });

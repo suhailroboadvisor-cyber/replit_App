@@ -1,6 +1,71 @@
 import { expect, test } from "@playwright/test";
 import ar from "../src/i18n/messages/ar.json";
 import en from "../src/i18n/messages/en.json";
+import { startSearchEdgeFixture } from "../tests/search-edge/http-fixture";
+
+test.describe("local edge policy in front of real query-driven SSR", () => {
+  let edge: Awaited<ReturnType<typeof startSearchEdgeFixture>>;
+  test.beforeAll(async () => { edge = await startSearchEdgeFixture(); });
+  test.beforeEach(() => edge.reset());
+  test.afterAll(async () => { await edge?.close(); });
+
+  for (const locale of ["ar", "en"] as const) {
+    test(`${locale} normal GET forms work through the local edge`, async ({ page, request }) => {
+      const prefix = locale === "en" ? "/en" : "";
+      await page.goto(`${edge.origin}${prefix || "/"}`);
+      await page.locator("main input[name=q]").fill("FIXA");
+      await page.locator("main button[type=submit]").click();
+      await expect(page).toHaveURL(`${edge.origin}${prefix}/search?q=FIXA`);
+      await expect(page.locator(`main a[href="${prefix}/stock/demo-fixa"]`)).toBeVisible();
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, follow");
+      await page.locator("header input[name=q]").fill("FIXB");
+      await page.locator("header button[type=submit]").click();
+      await expect(page).toHaveURL(`${edge.origin}${prefix}/search?q=FIXB`);
+      await expect(page.locator(`main a[href="${prefix}/stock/demo-fixb"]`)).toBeVisible();
+      const result = await request.get(`${edge.origin}${prefix}/search?q=FIXN`);
+      expect(result.status()).toBe(200);
+      expect(result.headers()["cache-control"]).toContain("no-store");
+      expect(result.headers()["x-robots-tag"]).toContain("noindex");
+      expect(result.headers()["set-cookie"]).toBeUndefined();
+      expect(await result.text()).toContain("Not screened yet");
+    });
+  }
+
+  test("shared locale budget blocks before origin, then recovers without affecting ISR", async ({ page, request }) => {
+    for (let i = 0; i < 30; i++) {
+      const response = await request.head(`${edge.origin}${i % 2 ? "/en" : ""}/search?q=FIXA&_rsc=${i}`, {
+        headers: { "x-forwarded-for": `spoof-${i}`, "cf-connecting-ip": `spoof-${i}` },
+      });
+      expect(response.status()).toBe(200);
+    }
+    const forwarded = edge.upstreamRequests();
+    for (const prefix of ["", "/en"]) {
+      const response = await page.goto(`${edge.origin}${prefix}/search?q=FIXB`);
+      expect(response?.status()).toBe(429);
+      expect(response?.headers()["cache-control"]).toContain("no-store");
+      expect(response?.headers()["x-robots-tag"]).toContain("noindex");
+      expect(response?.headers()["set-cookie"]).toBeUndefined();
+      await expect(page.locator('p[lang="ar"]')).toHaveText("تجاوزت الحد المسموح من الطلبات، حاول مجددا لاحقا");
+      await expect(page.locator('p[lang="en"]')).toHaveText("You have exceeded the request limit. Please try again later.");
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
+    }
+    expect(edge.upstreamRequests()).toBe(forwarded);
+    for (const prefix of ["", "/en"]) {
+      for (const path of ["/", "/stock/demo-fixa", "/methodology"]) {
+        const response = await request.get(`${edge.origin}${prefix}${path}`);
+        expect(response.status()).toBe(200);
+        expect(response.headers()["cache-control"]).toContain("s-maxage=900");
+        expect(response.headers()["cache-control"]).not.toContain("no-store");
+        expect(response.headers()["set-cookie"]).toBeUndefined();
+      }
+    }
+    edge.advance(60_000);
+    const recovered = await request.get(`${edge.origin}/en/search?q=FIXB`);
+    expect(recovered.status()).toBe(200);
+    expect(await recovered.text()).toContain("demo-fixb");
+    expect(recovered.headers()["cache-control"]).toContain("no-store");
+  });
+});
 
 for (const locale of ["ar", "en"] as const) {
   const prefix = locale === "en" ? "/en" : "";

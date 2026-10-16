@@ -7,7 +7,7 @@ export default defineConfig({
     environment: "node",
     // Completion checks run alongside lint/typecheck/coverage. Bound workers
     // instead of weakening assertion timeouts under concurrent cold startup.
-    maxWorkers: 2,
+    maxWorkers: 1,
     include: ["src/**/*.test.ts", "tests/**/*.test.{ts,tsx}"],
     exclude: ["tests/**/*.integration.test.ts"],
     coverage: {
