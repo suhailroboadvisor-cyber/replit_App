@@ -65,8 +65,9 @@ export function mapAnnual(data: CompanyFacts, retrieval: Retrieval) {
   function sum(line: string, tags: readonly string[]): MappedFact {
     const fact = base(line);
     const selectedRows = (tag: string) => entries(data, tag).filter(e => e.accn === selected.accn);
-    const excluded = line === "interest_bearing_debt" && selectedRows("LongTermDebt").length ?
-      ["LongTermDebtNoncurrent", "LongTermDebtCurrent"] : [];
+    const total = line === "interest_bearing_debt" ? "LongTermDebt" : tags[0];
+    const excluded = selectedRows(total).length ?
+      (line === "interest_bearing_debt" ? ["LongTermDebtNoncurrent", "LongTermDebtCurrent"] : tags.slice(1)) : [];
     const active = tags.filter(tag => !excluded.includes(tag));
     const absent: string[] = [];
     const used: Entry[] = [];
@@ -86,8 +87,13 @@ export function mapAnnual(data: CompanyFacts, retrieval: Retrieval) {
     fact.source = used.length ? source(used[0]) : source(selected);
     if (invalid.length) return unknown(fact, tags, `Unusable present component: ${invalid.join("; ")}`);
     if (!used.length) return unknown(fact, tags);
+    const incompleteDebt = line === "interest_bearing_debt" &&
+      !used.some(e => e.tag === "LongTermDebt" || e.tag === "LongTermDebtNoncurrent");
+    if (incompleteDebt) fact.mapping_note += "; No long-term debt tag found; total may be incomplete — analyst to confirm";
+    const directTotal = line !== "interest_bearing_debt" && used.some(e => e.tag === total);
     return { ...fact, value: used.reduce((total, e) => total + e.val, 0),
-      input_state: "derived", confidence_tier: "Calculated" };
+      input_state: incompleteDebt ? "estimated" : directTotal ? "reported" : "derived",
+      confidence_tier: incompleteDebt ? "Estimated" : directTotal ? "Verified" : "Calculated" };
   }
   const facts = Object.entries(candidates).filter(([line]) => line !== "shares_outstanding")
     .map(([line, tags]) => sumItems.has(line) ? sum(line, tags) : direct(line, tags));

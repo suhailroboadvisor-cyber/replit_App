@@ -47,7 +47,8 @@ describe("live-only pending Arabic inventory with pinned founder approvals", () 
   it("has stable surviving IDs, no approved/dead rows, and legal placeholders under original IDs", () => {
     const ids = audit.entries.map((entry) => entry.id);
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids).toEqual(["L-privacy-body", "L-terms-body"]);
+    // New Step-7 copy is unapproved; D-107's enumerated origins stay approved.
+    expect(ids).toEqual(expect.arrayContaining(["L-privacy-body", "L-terms-body"]));
     expect(ids).toContain("L-terms-body");
     expect(ids).toContain("L-privacy-body");
     expect(ids.some((id) => /^[AFEI]-/.test(id))).toBe(false);
@@ -56,7 +57,12 @@ describe("live-only pending Arabic inventory with pinned founder approvals", () 
     expect(ids).not.toContain("J-admin-immutableNotice");
     for (const entry of audit.entries) {
       if (entry.id.startsWith("L-")) expect(draftFor(entry, drafts)).toBe("Do not translate; needs O-7 text");
-      else expect(draftFor(entry, drafts), entry.id).toMatch(/[\u0600-\u06ff]/);
+      else {
+        const draft = draftFor(entry, drafts);
+        // Step 7 explicitly leaves new copy untranslated, rather than inventing Arabic.
+        if (draft.startsWith("⟦AR-REVIEW⟧ ")) expect(draft).toBe(`⟦AR-REVIEW⟧ ${entry.source}`);
+        else expect(draft, entry.id).toMatch(/[\u0600-\u06ff]/);
+      }
     }
   });
   it("preserves the D-107 approval for merged navigation and recovery wording", () => {

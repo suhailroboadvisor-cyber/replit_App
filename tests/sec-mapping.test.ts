@@ -29,9 +29,9 @@ describe("genuine SEC fixture mapping", () => {
   const expected = {
     aapl: [416161000000, 359241000000, 73733000000, 98657000000, 1230000000, 12490000000,
       35934000000, 18763000000, 39777000000, 112010000000, 111482000000, 14594180000, 391035000000, 93736000000],
-    msft: [331839000000, 758376000000, 442387000000, 40294000000, null, 16532000000,
+    msft: [331839000000, 758376000000, 442387000000, 40294000000, 66594000000, 21925000000,
       20935000000, 55908000000, 80876000000, 133749000000, 182935000000, 7425545491, 281724000000, 101832000000],
-    jpm: [182447000000, 4424900000000, 362438000000, 64776000000, null, null,
+    jpm: [182447000000, 4424900000000, 362438000000, 64776000000, null, 9337000000,
       343338000000, null, null, 57048000000, -147782000000, 2658186195, 177556000000, 58471000000],
   };
   it.each(["aapl", "msft", "jpm"] as const)("%s locks every value, state, tier, mapping note and source", name => {
@@ -95,7 +95,8 @@ describe.each(sumCases)("%s present-component semantics", (line, current, noncur
     const f = fact(data, line);
     expect(f).toMatchObject(total === null ?
       { value: null, input_state: "unknown", confidence_tier: "Estimated" } :
-      { value: total, input_state: "derived", confidence_tier: "Calculated" });
+      { value: total, input_state: line === "interest_bearing_debt" && values[1] === undefined ? "estimated" : "derived",
+        confidence_tier: line === "interest_bearing_debt" && values[1] === undefined ? "Estimated" : "Calculated" });
     const tags = candidates[line];
     expect(f.unknown_note).toBe(total === null ? `No XBRL value among: ${tags.join(", ")}` : null);
     for (const [i, tag] of [current, noncurrent].entries()) {
@@ -144,6 +145,25 @@ describe.each(sumCases)("%s present-component semantics", (line, current, noncur
   });
 });
 describe("debt alternatives and exclusions", () => {
+  it.each(["ShortTermBorrowings", "CommercialPaper", "LongTermDebtCurrent"])("D-116 marks %s-only debt incomplete", tag => {
+    const data = sample();
+    add(data, tag, observation(7));
+    expect(fact(data, "interest_bearing_debt")).toMatchObject({
+      value: 7, input_state: "estimated", confidence_tier: "Estimated", unknown_note: null,
+      mapping_note: expect.stringContaining("No long-term debt tag found; total may be incomplete — analyst to confirm"),
+    });
+  });
+  it.each(["LongTermDebt", "LongTermDebtNoncurrent"])("zero %s is present, not incomplete", tag => {
+    const data = sample();
+    add(data, tag, observation(0));
+    expect(fact(data, "interest_bearing_debt")).toMatchObject({
+      value: 0, input_state: "derived", confidence_tier: "Calculated",
+    });
+    expect(fact(data, "interest_bearing_debt").mapping_note).not.toContain("total may be incomplete");
+  });
+  it("never adds lease-inclusive or maturity tags to debt candidates", () => {
+    expect(candidates.interest_bearing_debt.some(t => /Lease|Maturit/.test(t))).toBe(false);
+  });
   it("aggregate replaces the pair, with extra borrowings/paper but never leases", () => {
     const data = sample();
     for (const [tag, value] of [
@@ -175,6 +195,27 @@ describe("debt alternatives and exclusions", () => {
     expect(fact(data, "interest_bearing_debt").value).toBe(107);
     add(data, "LongTermDebt", observation(0));
     expect(fact(data, "interest_bearing_debt").value).toBe(7);
+  });
+});
+
+describe.each([
+  ["finance_lease_liabilities", "FinanceLeaseLiability"],
+  ["operating_lease_liabilities", "OperatingLeaseLiability"],
+] as const)("D-117 %s preferred total", (line, tag) => {
+  it.each([0, 123])("uses total %s without also adding the pair", value => {
+    const data = sample();
+    add(data, tag, observation(value));
+    add(data, `${tag}Current`, observation(50));
+    add(data, `${tag}Noncurrent`, observation(100));
+    expect(fact(data, line)).toMatchObject({ value, input_state: "reported", confidence_tier: "Verified" });
+    expect(fact(data, line).mapping_note).toContain(`Alternative excluded: ${tag}Current, ${tag}Noncurrent`);
+  });
+  it("does not hide an incompatible total behind its valid component pair", () => {
+    const data = sample();
+    add(data, tag, observation(123), "EUR");
+    add(data, `${tag}Current`, observation(50));
+    expect(fact(data, line)).toMatchObject({ value: null, input_state: "unknown" });
+    expect(fact(data, line).unknown_note).toContain(`${tag}: incompatible`);
   });
 });
 describe("annual/amendment/comparative selection", () => {
