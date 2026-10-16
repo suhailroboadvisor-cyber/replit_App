@@ -22,7 +22,7 @@ describe("account UI copy locale parity", () => {
       "⟦AR-REVIEW⟧ Unapproved new phrase",
     );
     expect(reviewText("ar", 'Type "DELETE" to confirm')).toBe(
-      'اكتب "DELETE" للتأكيد',
+      'اكتب "\u2066DELETE\u2069" للتأكيد',
     );
     expect(
       reviewText("ar", "That code could not be verified. Try again."),

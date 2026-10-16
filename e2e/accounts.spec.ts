@@ -116,10 +116,10 @@ for (const prefix of ["", "/en"]) {
       })
       .click();
     await expect(page.locator("p[role=alert]")).toContainText(
-      "contact the site owner",
+      prefix ? "contact the site owner" : "فتواصل مع مالك الموقع",
     );
     await expect(
-      page.getByRole("link", { name: /Open sign-in in a new tab/ }),
+      page.getByRole("link", { name: prefix ? "Open sign-in in a new tab" : "فتح تسجيل الدخول في علامة تبويب جديدة" }),
     ).toHaveAttribute("rel", "noopener noreferrer");
     await expect(
       page.getByRole("button", {
@@ -136,7 +136,7 @@ for (const prefix of ["", "/en"]) {
       })
       .click();
     await expect(page.locator("p[role=alert]")).toContainText(
-      "Check your connection",
+      prefix ? "Check your connection" : "تحقّق من اتصالك",
     );
   });
 }
@@ -168,10 +168,10 @@ test("AR/EN Google-only sign-in, linked consent, friendly provider errors and pr
     );
     const consent = page.locator("form").locator("..");
     await expect(
-      consent.getByRole("link", { name: /Terms of Use/ }),
+      consent.getByRole("link", { name: prefix ? "Terms of Use" : "شروط الاستخدام" }),
     ).toBeVisible();
     await expect(
-      consent.getByRole("link", { name: /Privacy Policy/ }),
+      consent.getByRole("link", { name: prefix ? "Privacy Policy" : "سياسة الخصوصية" }),
     ).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       "content",

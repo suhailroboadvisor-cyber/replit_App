@@ -17,3 +17,5 @@
 - [WebKit browser verification](webkit-browser-verification.md) — isolate engine-specific overrides and distinguish automated WebKit results from physical iPhone Safari checks.
 - [Provider test typing](provider-test-typing.md) — required children props and positional React children can disagree; validate provider fixtures with both types and lint.
 - [ISR health verification](isr-health-verification.md) — healthy cached public pages do not establish that live database reads or private application connections work.
+- [Fallback locale isolation](fallback-locale-isolation.md) — root recovery cannot assume a surviving locale provider or use server request reads to infer language.
+- [Caller-aware copy audits](caller-aware-copy-audits.md) — imported JSON can appear as compiler source files; dictionary data is not runtime caller evidence.

@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { LocalizedText, Num } from "../foundation";
 import type { PublicMethodologyGroup } from "../../db/methodology-public";
 import { MethodologyCopy } from "./MethodologyCopy";
+import { formatNumber } from "@/lib/format";
 
 export function MethodologyDirectory({
   groups,
@@ -33,7 +34,7 @@ export function MethodologyDirectory({
             <MethodologyCopy id="documentedMethods" />
           </span>
           <Num className="mt-2 block text-4xl text-[var(--brass-soft)]">
-            {groups.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}
+            {formatNumber(groups.length, locale === "ar" ? "ar" : "en")}
           </Num>
         </div>
       </div>
@@ -87,7 +88,7 @@ export function MethodologyDirectory({
                     </span>
                     <span>
                       <span className="text-muted-foreground"><MethodologyCopy id="publicVersions" />: </span>
-                      <Num>{group.versions.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</Num>
+                      <Num>{formatNumber(group.versions.length, locale === "ar" ? "ar" : "en")}</Num>
                     </span>
                   </div>
                 </div>

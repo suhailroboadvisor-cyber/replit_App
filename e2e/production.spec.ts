@@ -7,6 +7,23 @@ for (const locale of ["ar", "en"] as const) {
   const prefix = locale === "en" ? "/en" : "";
   const title = locale === "ar" ? approvedArabicCopy.Methodologies : "Methodologies";
   const messages=locale==="ar"?arMessages:enMessages;
+  test(`@security ${locale} actual public/auth/404 home links and guarded Back destination`, async ({page}) => {
+    for (const path of [prefix||"/", `${prefix}/auth/sign-in?error=cancelled`, `${prefix}/auth/sign-in?error=provider`, `${prefix}/missing-navigation-page`]) {
+      const response = await page.goto(path);
+      if (path.endsWith("missing-navigation-page")) expect(response?.status()).toBe(404);
+      const home=page.locator(`a[href="${prefix||"/"}"]`).first();
+      await expect(home).toBeVisible();
+      await home.focus();
+      await page.keyboard.press("Enter");
+      await expect(page).toHaveURL(prefix||"/");
+      await expect(page.getByRole("heading",{level:1})).toHaveText(messages.app.tagline);
+    }
+    await page.goto(`${prefix}/auth/sign-in?next=${encodeURIComponent(`${prefix}/admin/methodologies`)}`);
+    const back=page.locator("a").filter({has:page.locator("[data-back-direction]")});
+    await back.click();
+    await expect(page).toHaveURL(new RegExp(`${prefix}/auth/sign-in\\?next=`));
+    await expect(page.locator("header.surface-dark")).toBeVisible();
+  });
 
   test(`${locale} public Methodologies link opens a truthful cookie-free destination`, async ({
     page, request,
@@ -25,7 +42,7 @@ for (const locale of ["ar", "en"] as const) {
     await expect(page.locator("html")).toHaveAttribute("lang", locale);
     await expect(page.locator("html")).toHaveAttribute("dir", locale === "ar" ? "rtl" : "ltr");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(messages.methodologies.title);
-    await expect(page.getByRole("main").getByText(messages.controls.sectionUnavailable, { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("main").getByText(locale === "ar" ? "هذا القسم غير متاح بعد" : "This section is not available yet", { exact: true })).toHaveCount(0);
     await expect(page.locator("#content")).toHaveCount(1);
     expect(profiles).toBe(0);
     const response = await request.get(`${prefix}/methodology`);
@@ -39,7 +56,7 @@ for (const locale of ["ar", "en"] as const) {
   });
   test(`${locale} example-a public documentation renders literal criteria and no-margin evidence`,async({page,request})=>{
     test.skip(Boolean(process.env.CI), "D-78: database-available checks run in a configured runtime; database-free CI runs the cold ISR suite.");
-    const response=await page.goto(`${prefix}/methodology/example-a`);
+    const response = await page.goto(`${prefix}/methodology/example-a`);
     expect(response?.status()).toBe(200);
     await expect(page.getByText(messages.banner.exampleMethodology,{exact:true})).toBeVisible();
     await expect(page.getByRole("table")).toBeVisible();
@@ -56,10 +73,13 @@ for (const locale of ["ar", "en"] as const) {
   });
   test(`@security ${locale} public methodology HTML and ISR headers are independent of cookies`,async({request})=>{
     test.skip(Boolean(process.env.CI), "D-78: cached data checks run in a configured runtime; database-free CI runs the cold ISR suite.");
-    for(const path of [`${prefix}/methodology`,`${prefix}/methodology/example-a`]) {
+    for(const path of [prefix||"/",`${prefix}/methodology`,`${prefix}/methodology/example-a`]) {
       const anonymous=await request.get(path);
       const cookieRequest=await request.get(path,{headers:{Cookie:"public-cache-probe=synthetic; theme=light"}});
       expect(anonymous.status()).toBe(200);
+      expect(anonymous.headers()["set-cookie"]).toBeUndefined();
+      expect(anonymous.headers()["vary"]?.toLowerCase()??"").not.toContain("cookie");
+      expect(anonymous.headers()["cache-control"]).toBe(cookieRequest.headers()["cache-control"]);
       expect(cookieRequest.status()).toBe(200);
       expect(cookieRequest.headers()["cache-control"]).toContain("s-maxage=900");
       expect(cookieRequest.headers()["set-cookie"]).toBeUndefined();
@@ -100,13 +120,13 @@ test("@security private production scripts use nonce CSP and restore theme; lega
   request,
 }) => {
   const violations: string[] = [];
+  page.on("pageerror", (error) => violations.push(`${page.url()} pageerror: ${error.message}`));
   page.on("console", (message) => {
     if (
-      /Refused to execute|violates.*Content Security Policy|Executing inline script/.test(
-        message.text(),
-      )
+      message.type() === "error" ||
+      (message.type() === "warning" && /hydrat|server.render|script/i.test(message.text()))
     )
-      violations.push(message.text());
+      violations.push(`${page.url()} console.${message.type()}: ${message.text()}`);
   });
   await page.addInitScript(() => localStorage.setItem("suhail-theme", "light"));
   let profiles = 0;

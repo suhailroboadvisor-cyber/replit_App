@@ -67,6 +67,7 @@ for (const locale of ["ar", "en"] as const) {
     const remove = page.getByRole("button", { name: text("Delete my account"), exact: true });
     await expect(save).toBeDisabled();
     await expect(remove).toBeDisabled();
+    await page.locator("header.surface-dark button").focus();
     await tab(page, language);
     // Change the preference with the keyboard; keep this save on the current locale.
     await page.keyboard.press(locale === "ar" ? "ArrowUp" : "ArrowDown");
@@ -305,7 +306,7 @@ for (const locale of ["ar", "en"] as const) {
       if (mode === "enroll") {
         await expect(page.getByText(text("Admin access requires a time-based authenticator. Your role alone does not grant access."), { exact: true })).toBeVisible();
         const begin = page.getByRole("button", { name: text("Begin setup"), exact: true });
-        await page.getByRole("link").focus();
+        await page.getByRole("main").getByRole("link").focus();
         await tab(page, begin);
         await page.keyboard.press("Enter");
         await expect(page.getByRole("img", { name: text("Authenticator setup QR code"), exact: true })).toBeVisible();
@@ -315,10 +316,10 @@ for (const locale of ["ar", "en"] as const) {
         await expect(page.getByText(text("If scanning is unavailable, enter this key manually."), { exact: true })).toBeVisible();
         await expect(page.locator("code")).toHaveAttribute("dir", "ltr");
         await expect(page.locator("code")).toHaveText("FIXTURESETUPKEY");
-        await page.getByRole("link").focus();
+        await page.getByRole("main").getByRole("link").focus();
         await tab(page, page.getByRole("button", { name: text("Copy setup key"), exact: true }));
       } else {
-        await page.getByRole("link").focus();
+        await page.getByRole("main").getByRole("link").focus();
       }
       const codeName = text(mode === "enroll" ? "Enter the six-digit code" : "Authenticator code");
       const code = page.getByRole("textbox", { name: codeName, exact: true });
@@ -352,6 +353,8 @@ for (const locale of ["ar", "en"] as const) {
     await expect(page.getByText(text("QR code unavailable. Use the setup key instead."), { exact: true })).toBeVisible();
     await expect(page.getByText(text("If scanning is unavailable, enter this key manually."), { exact: true })).toBeVisible();
     await expect(page.locator("code")).toHaveText("FIXTURESETUPKEY");
-    await expect(page.getByText(/⟦AR-REVIEW⟧/)).toHaveCount(0);
+    // The new Back link is deliberately unapproved copy; existing helper text
+    // remains human-approved and must not regress to a review placeholder.
+    await expect(page.locator("main section").getByText(/⟦AR-REVIEW⟧/)).toHaveCount(0);
   });
 }

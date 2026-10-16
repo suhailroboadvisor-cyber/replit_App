@@ -1,7 +1,13 @@
 "use client";
+import { formatNumber, formatTimestamp } from "@/lib/format";
 
 import type { MethodologyAdminData } from "@/lib/methodology/admin-data";
 import { GovernedCopy } from "./GovernedCopy";
+import { AdminBreadcrumbs } from "./AdminBreadcrumbs";
+import { BackLink } from "@/components/accounts/BackLink";
+import { useLocale } from "next-intl";
+import { reviewText } from "@/components/accounts/types";
+import { LocalizedText } from "@/components/foundation";
 
 type Report = MethodologyAdminData["reports"][number];
 type JsonRecord = Record<string, unknown>;
@@ -9,11 +15,15 @@ const record = (value: unknown): JsonRecord | null =>
   value !== null && typeof value === "object" && !Array.isArray(value) ? value as JsonRecord : null;
 const array = (value: unknown): unknown[] => Array.isArray(value) ? value : [];
 const string = (value: unknown) => typeof value === "string" ? value : "";
+function ErrorText({ value }: { value: unknown }) {
+  const locale = useLocale() === "ar" ? "ar" : "en";
+  return <LocalizedText>{reviewText(locale, string(value))}</LocalizedText>;
+}
 const bool = (value: unknown) => value === true;
 const json = (value: unknown) => {
   try { return JSON.stringify(value ?? null, null, 2); } catch { return "null"; }
 };
-const number = (value: unknown) => typeof value === "number" ? value.toLocaleString("en-US", { maximumFractionDigits: 6 }) : "—";
+const number = (value: unknown) => typeof value === "number" ? formatNumber(value, "en", { maximumFractionDigits: 6 }) : "—";
 
 function Value({ value }: { value: unknown }) {
   if (value === null || value === undefined) return <span>—</span>;
@@ -30,7 +40,7 @@ function CoverageGaps({ payload }: { payload: JsonRecord }) {
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border bg-secondary px-4 py-3">
         <h3 className="font-medium"><GovernedCopy id="coverageGaps" /></h3>
         <span className={`font-mono text-xs ${gaps.length ? "text-[var(--brass-soft)]" : "text-[var(--byline)]"}`}>
-          {gaps.length.toLocaleString("en-US")} / {coverage.length.toLocaleString("en-US")}
+          {formatNumber(gaps.length, "en")} / {formatNumber(coverage.length, "en")}
         </span>
       </div>
       {gaps.length === 0 ? (
@@ -111,7 +121,7 @@ function TestReport({ payload }: { payload: JsonRecord }) {
                       </table>
                     </div>
                   )}
-                  {string(test.error) && <p className="mt-2 text-xs text-[var(--brass-soft)]">{string(test.error)}</p>}
+                  {string(test.error) && <p className="mt-2 text-xs text-[var(--brass-soft)]"><ErrorText value={test.error} /></p>}
                   {array(test.unexpectedIds).length > 0 && <p className="mt-2 break-all font-mono text-xs text-[var(--brass-soft)]" dir="ltr">{array(test.unexpectedIds).join(", ")}</p>}
                 </article>
               );
@@ -133,7 +143,7 @@ function TestReport({ payload }: { payload: JsonRecord }) {
                 <div><dt className="text-muted-foreground"><GovernedCopy id="expectedHash" /></dt><dd className="mt-1 break-all font-mono" dir="ltr">{string(golden.expectedHash) || "—"}</dd></div>
                 <div><dt className="text-muted-foreground"><GovernedCopy id="actualHash" /></dt><dd className="mt-1 break-all font-mono" dir="ltr">{string(golden.actualHash) || "—"}</dd></div>
                 <div><dt className="text-muted-foreground"><GovernedCopy id="actualStatus" /></dt><dd className="mt-1 font-mono" dir="ltr">{string(golden.actualStatus) || "—"}</dd></div>
-                {string(golden.error) && <div className="text-[var(--brass-soft)]">{string(golden.error)}</div>}
+                {string(golden.error) && <div className="text-[var(--brass-soft)]"><ErrorText value={golden.error} /></div>}
               </dl>
             </details>
           ))}
@@ -203,7 +213,7 @@ function ImpactReport({ payload }: { payload: JsonRecord }) {
       <section className="border border-border">
         <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border bg-secondary px-4 py-3">
           <h3 className="font-medium"><GovernedCopy id="borderlineCases" /></h3>
-          <span className="font-mono text-xs" dir="ltr">{borderline.length.toLocaleString("en-US")}</span>
+          <span className="font-mono text-xs" dir="ltr">{formatNumber(borderline.length, "en")}</span>
         </div>
         {borderline.length === 0 ? <p className="px-4 py-4 text-sm text-muted-foreground">—</p> : (
           <ul className="divide-y divide-border">
@@ -233,10 +243,10 @@ function ImpactReport({ payload }: { payload: JsonRecord }) {
                       <Value value={security.oldStatus} /> <span className="mx-2">→</span> <Value value={security.newStatus} />
                     </span>
                   <span className={`font-mono text-[10px] ${string(security.error) ? "text-[var(--brass-soft)]" : "text-muted-foreground"}`}>
-                      {string(security.error) || <><bdi dir="ltr">{changed.length.toLocaleString("en-US")}</bdi> <GovernedCopy id="criterionChanges" /></>}
+                      {string(security.error) ? <ErrorText value={security.error} /> : <><bdi dir="ltr">{formatNumber(changed.length, "en")}</bdi> <GovernedCopy id="criterionChanges" /></>}
                     </span>
                   </summary>
-                  {string(security.error) ? <p className="border-t border-border px-4 py-3 text-sm text-[var(--brass-soft)]">{string(security.error)}</p> : (
+                  {string(security.error) ? <p className="border-t border-border px-4 py-3 text-sm text-[var(--brass-soft)]"><ErrorText value={security.error} /></p> : (
                     <div className="space-y-4 border-t border-border bg-background px-4 py-4">
                       <div className="grid gap-4 sm:grid-cols-2">
                         <CriterionSnapshot titleKey="previousCriteria" values={oldResults} />
@@ -295,19 +305,23 @@ function CriterionSnapshot({ titleKey, values }: { titleKey: "previousCriteria" 
 }
 
 export function MethodologyReports({
-  reports, locale, focusId,
+  reports, locale, focusId, parentHref, breadcrumbs,
 }: {
   reports: Report[]; locale: "ar" | "en"; focusId?: string;
+  parentHref?: string;
+  breadcrumbs?: { label: React.ReactNode; href?: string }[];
 }) {
   const ordered = [...reports].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   return (
     <section aria-labelledby="reports-title" className="mt-8 border-t border-border pt-6">
+      {breadcrumbs && <AdminBreadcrumbs locale={locale} items={[...breadcrumbs, { label: <GovernedCopy id="reportArchive" /> }]} />}
+      {parentHref && <BackLink locale={locale} next={parentHref} label="Back to version" />}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="font-mono text-[10px] tracking-[0.15em] text-muted-foreground"><GovernedCopy id="governanceReports" /></p>
           <h3 id="reports-title" className="mt-2 text-xl"><GovernedCopy id="reportArchive" /></h3>
         </div>
-        <span className="font-mono text-xs text-muted-foreground">{ordered.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</span>
+        <span className="font-mono text-xs text-muted-foreground">{formatNumber(ordered.length, locale)}</span>
       </div>
       {ordered.length === 0 ? (
         <p className="mt-4 border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground"><GovernedCopy id="noReports" /></p>
@@ -323,12 +337,13 @@ export function MethodologyReports({
                     <span className={`size-2 shrink-0 rounded-full ${passed ? "bg-[var(--byline)]" : "bg-border"}`} />
                     <span>
                       <span className="block text-sm">{report.kind === "test" ? <GovernedCopy id="testReport" /> : <GovernedCopy id="impactReport" />}</span>
-                      <span className="mt-1 block font-mono text-[10px] text-muted-foreground" dir="ltr">{new Intl.DateTimeFormat(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }).format(new Date(report.created_at))}</span>
+                      <span className="mt-1 block font-mono text-[10px] text-muted-foreground" dir="ltr">{formatTimestamp(report.created_at, locale, { dateStyle: "medium", timeStyle: "short" })}</span>
                     </span>
                   </span>
                   <span className={`font-mono text-xs ${passed ? "text-[var(--byline)]" : "text-muted-foreground"}`}><GovernedCopy id={passed ? "passed" : "reviewFailed"} /></span>
                 </summary>
                 <div className="border-t border-border p-4 sm:p-5">
+                  {parentHref && <BackLink locale={locale} next={parentHref} label="Back to version" />}
                   <dl className="mb-5 grid gap-3 border-b border-border pb-4 text-xs sm:grid-cols-3">
                     <div><dt className="text-muted-foreground"><GovernedCopy id="engineVersion" /></dt><dd className="mt-1 font-mono" dir="ltr">{string(payload.engineVersion) || "—"}</dd></div>
                     <div><dt className="text-muted-foreground"><GovernedCopy id="calculationVersion" /></dt><dd className="mt-1 font-mono" dir="ltr">{string(payload.calculationVersion) || "—"}</dd></div>

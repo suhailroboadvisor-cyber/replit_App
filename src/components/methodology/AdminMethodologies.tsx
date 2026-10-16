@@ -11,11 +11,17 @@ import type { MethodologyActionResult, MethodologyCommand } from "@/lib/methodol
 import { governedText, GovernedCopy, type GovernedKey } from "./GovernedCopy";
 import { AnalystCasesEditor, CriterionForm, MetadataForm, SourceAssociation, VersionForm } from "./MethodologyForms";
 import { MethodologyReports } from "./MethodologyReports";
+import { methodologyHref, type MethodologySelection } from "@/lib/methodology/navigation";
+import { AdminBreadcrumbs } from "./AdminBreadcrumbs";
+import { BackLink } from "@/components/accounts/BackLink";
+import { reviewText } from "@/components/accounts/types";
+import { formatNumber, formatTimestamp } from "@/lib/format";
 
 type Props = {
   data: MethodologyAdminData;
   locale: Locale;
   role: "admin" | "editor";
+  selection?: MethodologySelection;
   action: (command: MethodologyCommand) => Promise<MethodologyActionResult>;
 };
 type MethodologyRow = MethodologyAdminData["methodologies"][number];
@@ -24,15 +30,10 @@ type CriterionRow = MethodologyAdminData["criteria"][number];
 const labelForVersion = (version: VersionRow) => version.version_label ?? version.version;
 
 function formatDate(locale: Locale, value: Date | string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value);
-  return new Intl.DateTimeFormat(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US", {
-    dateStyle: "medium", timeStyle: "short", timeZone: "UTC",
-  }).format(date);
+  return formatTimestamp(value, locale, { dateStyle: "medium", timeStyle: "short" });
 }
 function reviewError(locale: Locale, error: string) {
-  return locale === "ar" ? `⟦AR-REVIEW⟧ ${error}` : error;
+  return reviewText(locale, error);
 }
 
 function Metric({ label, value }: { label: ReactNode; value: ReactNode }) {
@@ -44,13 +45,15 @@ function Metric({ label, value }: { label: ReactNode; value: ReactNode }) {
   );
 }
 
-export function AdminMethodologies({ data, locale, role, action }: Props) {
+export function AdminMethodologies({ data, locale, role, action, selection = {} }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const isAdmin = role === "admin";
-  const [methodologyId, setMethodologyId] = useState(data.methodologies[0]?.id ?? "");
-  const initialVersion = data.versions.find((item) => item.methodology_id === methodologyId);
-  const [versionId, setVersionId] = useState(initialVersion?.id ?? "");
+  const [methodologyId, setMethodologyId] = useState(
+    data.methodologies.find((method) => method.id === selection.methodology)?.id ?? data.methodologies[0]?.id ?? "");
+  const initialVersions = data.versions.filter((item) => item.methodology_id === methodologyId);
+  const [versionId, setVersionId] = useState(
+    initialVersions.find((item) => item.id === selection.version)?.id ?? initialVersions[0]?.id ?? "");
   const [editingMetadata, setEditingMetadata] = useState(false);
   const [showNewMetadata, setShowNewMetadata] = useState(false);
   const [editingVersion, setEditingVersion] = useState(false);
@@ -75,11 +78,29 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
     : [];
   const destination = currentVersion ? nextStage(currentVersion.workflow_status) : null;
   const canEditDraft = isAdmin && currentVersion?.workflow_status === "draft";
+  const methodSelection = { methodology: currentMethod?.id };
+  const versionSelection = { ...methodSelection, version: currentVersion?.id };
+  const methodHref = methodologyHref(locale, methodSelection, "methodology-record");
+  const versionHref = methodologyHref(locale, versionSelection, "version-record");
+  const crumbs = [
+    { label: <GovernedCopy id="methodologyManagement" />, href: methodologyHref(locale) },
+    ...(currentMethod ? [{ label: currentMethod.name, href: methodHref }] : []),
+    ...(currentVersion ? [{ label: labelForVersion(currentVersion), href: versionHref }] : []),
+  ];
+  // Keep selections reloadable without adding routes or changing authorization.
+  const rememberSelection = (methodology: string, version?: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("methodology", methodology);
+    if (version) url.searchParams.set("version", version);
+    else url.searchParams.delete("version");
+    window.history.replaceState(null, "", url);
+  };
 
   const chooseMethodology = (method: MethodologyRow) => {
     setMethodologyId(method.id);
     const next = data.versions.find((version) => version.methodology_id === method.id);
     setVersionId(next?.id ?? "");
+    rememberSelection(method.id, next?.id);
     setEditingMetadata(false);
     setEditingVersion(false);
     setEditingCriterion(null);
@@ -122,6 +143,7 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
 
   return (
     <section className="mx-auto max-w-[1280px]">
+      <AdminBreadcrumbs locale={locale} items={crumbs.map((item, index) => index === crumbs.length - 1 ? { label: item.label } : item)} />
       <div className="relative overflow-hidden border border-border bg-card">
         <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 end-0 w-1/3 opacity-30" style={{ background: "linear-gradient(140deg, transparent, var(--brass), transparent)" }} />
         <div className="relative flex flex-col gap-7 p-5 sm:p-8 lg:flex-row lg:items-end lg:justify-between">
@@ -146,15 +168,15 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
         <div className="relative grid gap-0 border-t border-border sm:grid-cols-3">
           <div className="flex items-center gap-3 border-b border-border p-4 sm:border-b-0 sm:border-e">
             <BookOpenText aria-hidden="true" size={17} strokeWidth={1.6} className="text-[var(--byline)]" />
-            <Metric label={<GovernedCopy id="methodologyRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{data.methodologies.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</bdi>} />
+            <Metric label={<GovernedCopy id="methodologyRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{formatNumber(data.methodologies.length, locale)}</bdi>} />
           </div>
           <div className="flex items-center gap-3 border-b border-border p-4 sm:border-b-0 sm:border-e">
             <GitBranch aria-hidden="true" size={17} strokeWidth={1.6} className="text-[var(--byline)]" />
-            <Metric label={<GovernedCopy id="versionRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{data.versions.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</bdi>} />
+            <Metric label={<GovernedCopy id="versionRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{formatNumber(data.versions.length, locale)}</bdi>} />
           </div>
           <div className="flex items-center gap-3 p-4">
             <Check aria-hidden="true" size={17} strokeWidth={1.6} className="text-[var(--byline)]" />
-            <Metric label={<GovernedCopy id="criteriaRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{data.criteria.length.toLocaleString(locale === "ar" ? "ar-u-ca-gregory-nu-latn" : "en-US")}</bdi>} />
+            <Metric label={<GovernedCopy id="criteriaRecords" />} value={<bdi dir="ltr" className="font-mono tabular-nums">{formatNumber(data.criteria.length, locale)}</bdi>} />
           </div>
         </div>
       </div>
@@ -211,7 +233,8 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
 
           {currentMethod && (
             <div className="min-w-0 space-y-5">
-              <section className="border border-border bg-card">
+              <section id="methodology-record" className="border border-border bg-card">
+                <div className="px-5 pt-3"><BackLink locale={locale} next={methodologyHref(locale)} label="Back to methodologies" /></div>
                 <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border p-5 sm:p-6">
                   <div className="min-w-0">
                     <p className="font-mono text-[10px] tracking-[0.14em] text-[var(--byline)]"><GovernedCopy id="methodologyMetadata" /></p>
@@ -271,10 +294,11 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                         <button key={version.id} type="button" onClick={() => {
                           setVersionId(version.id); setEditingVersion(false); setEditingCriterion(null); setShowNewCriterion(false);
                           setShowNewVersion(false); setFeedback(""); setFocusedReportId("");
+                          rememberSelection(currentMethod.id, version.id);
                         }}
                           className={`min-h-12 min-w-36 border px-3 py-2 text-start ${active ? "border-[var(--brass)] bg-secondary" : "border-border hover:bg-secondary/60"}`}>
                           <span className="block font-mono text-xs" dir="ltr">{labelForVersion(version)}</span>
-                          <span className="mt-1 block text-[10px] text-muted-foreground">{version.workflow_status}</span>
+                          <span className="mt-1 block text-[10px] text-muted-foreground">{version.workflow_status === "approved" ? reviewText(locale, "approved") : version.workflow_status}</span>
                         </button>
                       );
                     })}
@@ -297,12 +321,17 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                 )}
 
                 {currentVersion && (
-                  <div className="p-5 sm:p-6">
+                  <div id="version-record" className="p-5 sm:p-6">
+                    <BackLink locale={locale} next={methodHref} label="Back to methodology" />
+                    <nav aria-label={reviewError(locale, "Version sections")} className="mb-5 flex flex-wrap gap-4 text-sm">
+                      <a href={methodologyHref(locale, versionSelection, "criteria-record")} className="underline underline-offset-4"><GovernedCopy id="criteria" /></a>
+                      <a href={methodologyHref(locale, versionSelection, "reports-title")} className="underline underline-offset-4"><GovernedCopy id="reportArchive" /></a>
+                    </nav>
                     <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto]">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-lg font-semibold">{labelForVersion(currentVersion)}</h3>
-                          <span className={`border px-2 py-1 font-mono text-[10px] ${currentVersion.workflow_status === "draft" ? "border-[var(--brass)] text-[var(--brass-soft)]" : "border-border text-muted-foreground"}`} dir="ltr">{currentVersion.workflow_status}</span>
+                          <span className={`border px-2 py-1 font-mono text-[10px] ${currentVersion.workflow_status === "draft" ? "border-[var(--brass)] text-[var(--brass-soft)]" : "border-border text-muted-foreground"}`} dir={locale === "ar" && currentVersion.workflow_status === "approved" ? "rtl" : "ltr"}>{currentVersion.workflow_status === "approved" ? reviewText(locale, "approved") : currentVersion.workflow_status}</span>
                           {currentVersion.production_enabled && <span className="border border-[var(--byline)] px-2 py-1 font-mono text-[10px] text-[var(--byline)]"><GovernedCopy id="productionEnabled" /></span>}
                           <span className={`border px-2 py-1 font-mono text-[10px] ${currentVersion.is_public ? "border-[var(--byline)] text-[var(--byline)]" : "border-border text-muted-foreground"}`}>
                             {currentVersion.is_public ? <GovernedCopy id="publicVisible" /> : <GovernedCopy id="notPublic" />}
@@ -351,7 +380,9 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                       )}
                     </div>
 
-                    <section className="mt-7 border-t border-border pt-5">
+                    <section id="criteria-record" className="mt-7 border-t border-border pt-5">
+                      <AdminBreadcrumbs locale={locale} items={[...crumbs, { label: <GovernedCopy id="criteria" /> }]} />
+                      <BackLink locale={locale} next={versionHref} label="Back to version" />
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
                           <h4 className="font-medium"><GovernedCopy id="criteria" /></h4>
@@ -451,7 +482,7 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                           return (
                             <li key={stage} className={`min-h-14 border px-3 py-2 ${current ? "border-[var(--brass)] bg-secondary" : complete ? "border-[var(--byline)]/50" : "border-border"}`}>
                               <span className="block font-mono text-[9px] text-muted-foreground" dir="ltr">{String(index + 1).padStart(2, "0")}</span>
-                              <span className={`mt-1 block break-words font-mono text-[10px] ${current ? "text-[var(--brass-soft)]" : complete ? "text-[var(--byline)]" : "text-muted-foreground"}`} dir="ltr">{stage}</span>
+                              <span className={`mt-1 block break-words font-mono text-[10px] ${current ? "text-[var(--brass-soft)]" : complete ? "text-[var(--byline)]" : "text-muted-foreground"}`} dir={locale === "ar" && stage === "approved" ? "rtl" : "ltr"}>{stage === "approved" ? reviewText(locale, "approved") : stage}</span>
                             </li>
                           );
                         })}
@@ -481,7 +512,7 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                         <div className="mt-5 grid gap-4 border border-border bg-background p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
                           <div className="space-y-3">
                             <p className="text-xs text-muted-foreground">
-                              <GovernedCopy id="nextWorkflowTarget" />: <bdi dir="ltr" className="ms-1 font-mono text-[var(--brass-soft)]">{destination}</bdi>
+                              <GovernedCopy id="nextWorkflowTarget" />: <bdi dir={locale === "ar" && destination === "approved" ? "rtl" : "ltr"} className="ms-1 font-mono text-[var(--brass-soft)]">{destination === "approved" ? reviewText(locale, "approved") : destination}</bdi>
                             </p>
                             <label htmlFor="workflow-note" className="block text-xs text-muted-foreground">
                               <span className="mb-1.5 block"><GovernedCopy id="workflowReviewNote" /></span>
@@ -518,7 +549,8 @@ export function AdminMethodologies({ data, locale, role, action }: Props) {
                       )}
                     </section>
 
-                    <MethodologyReports reports={currentReports} locale={locale} focusId={focusedReportId} />
+                    <MethodologyReports reports={currentReports} locale={locale} focusId={focusedReportId}
+                      parentHref={versionHref} breadcrumbs={crumbs} />
                   </div>
                 )}
               </section>
@@ -538,4 +570,3 @@ function Meta({ label, value, ltr = false }: { label: GovernedKey; value: string
     </div>
   );
 }
-

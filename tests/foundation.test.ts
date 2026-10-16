@@ -10,6 +10,7 @@ import ar from "../src/i18n/messages/ar.json";
 import en from "../src/i18n/messages/en.json";
 import { approvedArabicCopy } from "../src/i18n/approved-arabic";
 import baseline from "./fixtures/brand-sha256.json";
+import arabicBatchTwo from "./fixtures/arabic-batch-two-approval.json";
 import {
   StatusBadge,
   type StatusCode,
@@ -108,27 +109,16 @@ describe("brand preservation and real exported icons", () => {
   });
 });
 describe("dictionary extraction and explicitly unapproved Arabic", () => {
-  const active = [
-    "app",
-    "nav",
-    "common",
-    "status",
-    "stock",
-    "why",
-    "methodologies",
-    "admin",
-    "disclaimer",
-    "banner",
-    "methodology",
-    "controls",
-    "styleguide",
-  ];
+  const active = Object.keys(en);
+  it("has recursive parity across the entire dictionary", () => {
+    expect(Object.keys(leaves(ar)).sort()).toEqual(Object.keys(leaves(en)).sort());
+  });
   it.each(active)("has recursive leaf parity for %s", (namespace) => {
     expect(Object.keys(leaves((ar as Tree)[namespace] as Tree)).sort()).toEqual(
       Object.keys(leaves((en as Tree)[namespace] as Tree)).sort(),
     );
   });
-  it("preserves Appendix leaves, allowing only specified changes", async () => {
+  it("preserves surviving Appendix leaves, allowing only specified changes", async () => {
     const ref = await readFile("docs/SUHAIL_BUILD_REFERENCE.md", "utf8");
     for (const [appendix, dict] of [
       ["Appendix A", en],
@@ -141,6 +131,8 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
       for (const [key, value] of Object.entries(leaves(original))) {
         if (["app.name", "app.tagline", "app.workingTitleNote"].includes(key))
           continue;
+        // The Phase 0 caller audit removes unused prototype copy symmetrically.
+        if (!(key in leaves(dict))) continue;
         expect(leaves(dict)[key]).toBe(value.replaceAll("بصغة", "بصمة"));
       }
     }
@@ -160,6 +152,11 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
         ["requires_review", "insufficient_data"].includes(key),
     );
     for (const [key, value] of Object.entries(leaves(ar))) {
+      const approvedRow = arabicBatchTwo.rows.find((row) => row.approved && row.key === key);
+      if (approvedRow) {
+        expect(value, key).toBe(approvedRow.applied);
+        continue;
+      }
       if (
         !(key in prior) &&
         !(key.startsWith("status.") && labels.includes(key.slice(7)))
@@ -172,8 +169,6 @@ describe("dictionary extraction and explicitly unapproved Arabic", () => {
             : undefined) ?? `⟦AR-REVIEW⟧ ${english[key]}`,
         );
     }
-    expect(ar.status.runHash).toBe("بصمة التشغيل");
-    expect(ar.governance.hashMatch).toBe("تطابق البصمة");
   });
   it("contains no obsolete branding in src or messages", async () => {
     async function scan(path: string): Promise<void> {
@@ -206,6 +201,7 @@ describe("bilingual status and coverage", () => {
         const props = {
           locale,
           messages,
+          timeZone: "Asia/Riyadh",
           children: createElement(StatusBadge, { status }),
         };
         const html = renderToStaticMarkup(
@@ -254,7 +250,7 @@ describe("bilingual status and coverage", () => {
   });
   it("keeps the review marker visible and isolates English placeholder text", () => {
     const html = renderToStaticMarkup(
-      createElement(LocalizedText, null, ar.nav.screen),
+      createElement(LocalizedText, null, "⟦AR-REVIEW⟧ Unknown future heading"),
     );
     expect(html).toContain('lang="en" dir="ltr"');
     expect(html).toContain("⟦AR-REVIEW⟧ ");
@@ -298,6 +294,12 @@ describe("formatting and contrast", () => {
   });
 });
 describe("static-safe early theme restoration", () => {
+  it("serves exactly the tested theme source as the root's render-blocking resource", async () => {
+    expect((await readFile("public/theme-restore.js", "utf8")).trim()).toBe(THEME_SCRIPT);
+    const document = await readFile("src/components/foundation/LocaleDocument.tsx", "utf8");
+    expect(document).toContain('src="/theme-restore.js" async blocking="render" nonce={nonce}');
+    expect(document).not.toContain("dangerouslySetInnerHTML");
+  });
   it.each(["light", "dark", null, "invalid"])(
     "restores only explicit choice %s",
     (choice) => {

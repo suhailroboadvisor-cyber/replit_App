@@ -13,3 +13,8 @@ Deleting markers alone would have left syntactically broken test logic.
 **How to apply:** Preserve both sets of functionality using an intact version as
 the base when needed. Parse/typecheck the result and run the affected checks
 before finishing reconciliation.
+
+A completion-time synchronization can introduce newer main-project edits after
+the working tree was tested. Treat those earlier passing checks as evidence for
+the pre-sync tree only. Reconcile against the latest intact main versions,
+preserve both behaviors, and validate the exact combined files again.

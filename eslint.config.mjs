@@ -1,5 +1,6 @@
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
+import formatting from "./scripts/eslint-formatting.mjs";
 
 const jobsRestriction = {
   group: ["@/jobs", "@/jobs/**", "**/jobs", "**/jobs/**"],
@@ -32,6 +33,12 @@ const config = [
         },
       ],
     },
+  },
+  {
+    files: ["src/**/*.{js,jsx,ts,tsx}"],
+    ignores: ["src/lib/format.ts"],
+    plugins: { formatting },
+    rules: { "formatting/shared": "error" },
   },
   {
     files: ["src/engine/**/*.ts"],

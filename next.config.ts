@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
   // D-19: keep classic ISR; Cache Components are not enabled in Phase 0.
   cacheComponents: false,
   experimental: {
+    globalNotFound: true,
     authInterrupts: true,
     // Browser checks must not inherit a previous dev session's compiler state.
     // Only the self-managed Playwright server opts out; preview/build keep defaults.

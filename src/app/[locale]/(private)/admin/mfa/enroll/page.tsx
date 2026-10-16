@@ -32,6 +32,7 @@ export default async function MfaEnrollPage({ params, searchParams }: PageProps)
         locale={locale}
         mode="enroll"
         next={requestedNext ?? localePath(locale, "/admin")}
+        backTo={requestedNext ?? localePath(locale, "/")}
       />
     </div>
   );
