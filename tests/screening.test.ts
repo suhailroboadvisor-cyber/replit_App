@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { input } from "../src/engine/__fixtures__/synthetic";
 import { screen } from "../src/engine/screen";
+import * as engine from "../src/engine/screen";
 import { hash } from "../src/engine/canonical";
 import { inputFromPayload, verifyStoredRun, diff } from "../src/screening/verify";
 import type { HashPayload } from "../src/db/schema/types";
@@ -29,6 +30,22 @@ describe("stored screening payload replay", () => {
     const run = stored();
     run.hash_payload.facts = null as unknown as HashPayload["facts"];
     expect(verifyStoredRun(run).differences.some(d => d.path === "$.replay")).toBe(true);
+  });
+  it.each([true, false])("skips current-engine replay for foreign versions (intact hash: %s)", (intact) => {
+    const run = stored();
+    run.hash_payload.engine_version = "engine-0.9.0";
+    // Intentionally not reconstructable by today's engine.
+    run.hash_payload.facts = null as unknown as HashPayload["facts"];
+    run.immutable_hash = hash(run.hash_payload);
+    if (!intact) run.hash_payload.outputs.confidence = "Low";
+    const replay = vi.spyOn(engine, "screen");
+    try {
+      const result = verifyStoredRun(run);
+      expect(replay).not.toHaveBeenCalled();
+      expect(result).toMatchObject({ valid: intact, hashMatches: intact, replaySupported: false,
+        replayMatches: null, engineVersion: "engine-0.9.0" });
+      expect(result.differences.map(d => d.path)).toEqual(intact ? [] : ["$.immutable_hash"]);
+    } finally { replay.mockRestore(); }
   });
   it("recurses to the changed array cell and ignores object key order", () => {
     expect(diff({ a: 1, b: [2] }, { b: [3], a: 1 })).toEqual([{ path: "$.b.0", expected: 2, actual: 3 }]);

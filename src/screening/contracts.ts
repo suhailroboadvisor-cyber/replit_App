@@ -5,7 +5,8 @@ export type ScreenOptions = { asOf: string; trigger: string };
 export type ScreenResult = { unchanged: boolean; runId: string };
 export type Difference = { path: string; expected?: JsonValue; actual?: JsonValue };
 export type Verification = {
-  valid: boolean; hashMatches: boolean; replayMatches: boolean;
+  valid: boolean; hashMatches: boolean; replayMatches: boolean | null;
+  replaySupported: boolean; engineVersion: string;
   storedHash: string; computedHash: string; differences: Difference[];
 };
 export type RunDetail = {

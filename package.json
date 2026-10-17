@@ -33,7 +33,8 @@
     "db:seed:demo": "tsx --conditions=react-server scripts/db/seed-demo.ts",
     "db:studio": "drizzle-kit studio",
     "db:test:up": "tsx scripts/db/test-up.ts",
-    "test:db": "vitest run --config vitest.database.config.ts"
+    "test:db": "vitest run --config vitest.database.config.ts",
+    "bench:search": "vitest run --config vitest.search-benchmark.config.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.4.0",

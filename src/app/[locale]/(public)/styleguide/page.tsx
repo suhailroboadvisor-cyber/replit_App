@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+export const dynamic = "force-static";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { routing } from "../../../../i18n/routing";

@@ -67,7 +67,8 @@ for (const locale of ["ar", "en"] as const) {
     const remove = page.getByRole("button", { name: text("Delete my account"), exact: true });
     await expect(save).toBeDisabled();
     await expect(remove).toBeDisabled();
-    await page.locator("header.surface-dark button").focus();
+    // The shared header now also contains the Stock Search submit button.
+    await page.locator("header.surface-dark button[aria-pressed]").focus();
     await tab(page, language);
     // Change the preference with the keyboard; keep this save on the current locale.
     await page.keyboard.press(locale === "ar" ? "ArrowUp" : "ArrowDown");

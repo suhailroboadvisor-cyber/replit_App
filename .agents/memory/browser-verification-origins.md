@@ -14,3 +14,13 @@ Self-managed browser checks should own their server and avoid inherited persiste
 **Why:** accepting an arbitrary existing server or its persisted compiler cache makes browser failures dependent on previous workspace sessions. Opting out only for the test server trades slower cold compilation for reproducibility, without changing preview or production caching.
 
 **How to apply:** preserve this isolation when changing browser configuration. Capture real document requests, HMR metadata and browser errors before restarting a failing server; a restart can remove the evidence needed to identify the exact artifact. Do not count soft HMR history updates as document reloads.
+
+Keep standalone-package verification separate from `next start` verification.
+
+**Why:** an isolated standalone package produced self-redirects on unprefixed
+Arabic routes while the same build's `next start` runner served both locales.
+A passing production-server browser suite does not establish standalone
+relocation correctness.
+
+**How to apply:** report the runner actually tested and retain separate
+standalone packaging checks before claiming that release form is verified.

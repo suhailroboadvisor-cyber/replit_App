@@ -4,6 +4,7 @@ import { dbApp } from "../db/app";
 import { screeningRun } from "../db/schema/screening";
 import { hash } from "../engine/canonical";
 import { screen } from "../engine/screen";
+import { ENGINE_VERSION } from "../engine/versions";
 import type { Criterion, EngineInput, Fact, Segment, JsonObject, JsonValue } from "../engine/types";
 import { requireFinancial } from "../lib/financial/persistence";
 import { idSchema } from "../lib/financial/service";
@@ -51,6 +52,12 @@ export function verifyStoredRun(run: Pick<typeof screeningRun.$inferSelect, "has
   const computedHash = hash(payload);
   const hashMatches = computedHash === run.immutable_hash;
   const differences: Difference[] = hashMatches ? [] : [{ path: "$.immutable_hash", expected: run.immutable_hash, actual: computedHash }];
+  const engineVersion = payload.engine_version as string;
+  // Historical formats are hash-verifiable, not inputs to today's engine.
+  if (typeof engineVersion === "string" && engineVersion !== ENGINE_VERSION) {
+    return { valid: hashMatches, hashMatches, replaySupported: false, replayMatches: null,
+      engineVersion, storedHash: run.immutable_hash, computedHash, differences };
+  }
   let replayMatches = false;
   try {
     const replay = screen(inputFromPayload(payload));
@@ -61,7 +68,8 @@ export function verifyStoredRun(run: Pick<typeof screeningRun.$inferSelect, "has
     differences.push({ path: "$.replay", expected: "Valid replayable engine input",
       actual: error instanceof Error ? error.message : "Engine replay failed" });
   }
-  return { valid: hashMatches && replayMatches, hashMatches, replayMatches, storedHash: run.immutable_hash, computedHash, differences };
+  return { valid: hashMatches && replayMatches, hashMatches, replaySupported: true, replayMatches,
+    engineVersion, storedHash: run.immutable_hash, computedHash, differences };
 }
 export async function verifyRun(runId: string, db: Pick<Tx, "select"> = dbApp): Promise<Verification> {
   const [run] = await db.select().from(screeningRun).where(eq(screeningRun.id, idSchema.parse(runId)));

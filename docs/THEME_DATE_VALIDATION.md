@@ -13,7 +13,7 @@
   uses the installed App Router/React async external-script resource with
   `blocking="render"`, a stable identifier and private nonce. This is not a raw
   inline executable script. Public documents still read no request APIs.
-- D-107 defines calendar dates separately from timestamps. Shared timestamp
+- D-121 defines calendar dates separately from timestamps. Shared timestamp
   display defaults to Asia/Riyadh and honors explicit market-zone overrides.
   Calendar-only dates retain their original day. Gregorian calendars, Western
   digits, null labels, bidi isolation and each caller's precision are retained.
@@ -83,8 +83,8 @@ incoming main-project documentation supplies all navigation/recovery draft
 rows; these were preserved unchanged, without adding translation proposals.
 No application translation, approved row, English/Arabic message JSON, legal
 policy or runtime copy was changed. D-103–D-106 were already occupied by the
-merged terminology decisions, so the date policy uses the unused identifier
-D-107 instead.
+merged terminology decisions. The date policy now uses D-121 to avoid sharing
+the Arabic batch-2 approval identifier.
 
 One development browser startup was blocked because the preview had resumed and
 held Next's shared development lock. After stopping that workflow, all six

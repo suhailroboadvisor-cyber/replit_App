@@ -124,6 +124,23 @@ test("ingestion controls start, resume, and retry fixture jobs", async ({ page }
   expect(calls[2]).toMatchObject({ operation: "ingest", securityId: "11111111-1111-4111-8111-111111111111" });
 });
 
+test("historical verification is hash-only, not a replay mismatch", async ({ page }) => {
+  for (const prefix of ["/en", ""]) {
+    await page.goto(`${prefix}/admin/runs/33333333-3333-4333-8333-333333333333?screen=financial&verify=unsupported`);
+    await page.getByRole("button", { name: /Verify/ }).click();
+    await expect(page.getByRole("status")).toContainText("Hash verified.");
+    await expect(page.getByText(/replay not supported for engine/)).toContainText("engine-0.9.0");
+    await expect(page.getByText("Verification failed.", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Verification passed.", { exact: true })).toHaveCount(0);
+    await page.goto(`${prefix}/admin/runs/33333333-3333-4333-8333-333333333333?screen=financial&verify=unsupported-tampered`);
+    await page.getByRole("button", { name: /Verify/ }).click();
+    await expect(page.getByRole("status")).toContainText("Verification failed.");
+    await expect(page.getByText(/replay not supported for engine/)).toContainText("engine-0.9.0");
+    await expect(page.getByText("$.immutable_hash", { exact: true })).toBeVisible();
+    await expect(page.getByText("Hash verified.", { exact: true })).toHaveCount(0);
+  }
+});
+
 test("screening admin can run a selected version, inspect unchanged evidence, and verify a stored run", async ({ page }) => {
   await page.goto(`${securitiesUrl}&role=admin&screening=1`);
   await expect(page.getByText("Unchanged", { exact: true }).first()).toBeVisible();

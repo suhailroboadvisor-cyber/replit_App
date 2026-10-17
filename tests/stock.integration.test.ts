@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, afterAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { eq, sql } from "drizzle-orm";
 import type { Sql } from "postgres";
@@ -13,6 +13,8 @@ import type { Tx } from "../src/lib/auth/audit";
 vi.mock("server-only", () => ({}));
 let client: Sql;
 const rollback = new Error("rollback isolated public stock fixture");
+beforeEach(() => { vi.stubEnv("SITE_MODE", "preview"); });
+afterEach(() => { vi.unstubAllEnvs(); });
 beforeAll(async () => {
   client = cliConnection("DATABASE_URL_TEST");
   await applyMigrations(client);

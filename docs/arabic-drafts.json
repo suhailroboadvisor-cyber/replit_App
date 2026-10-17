@@ -9,6 +9,46 @@
     "draft": "Do not translate; needs O-7 text",
     "category": "legal document (do not translate; needs O-7 text)"
   },
+  "J-publicSearch-hint": {
+    "source": "Enter 1–40 characters of a ticker or company name.",
+    "draft": "⟦AR-REVIEW⟧ Enter 1–40 characters of a ticker or company name.",
+    "category": "help/error"
+  },
+  "J-publicSearch-label": {
+    "source": "Ticker or company name",
+    "draft": "⟦AR-REVIEW⟧ Ticker or company name",
+    "category": "UI label"
+  },
+  "J-publicSearch-methodologyLine": {
+    "source": "Read how the screening methodology works.",
+    "draft": "⟦AR-REVIEW⟧ Read how the screening methodology works.",
+    "category": "help/error"
+  },
+  "J-publicSearch-noResults": {
+    "source": "No matching stocks",
+    "draft": "⟦AR-REVIEW⟧ No matching stocks",
+    "category": "help/error"
+  },
+  "J-publicSearch-noResultsBody": {
+    "source": "No listed stocks in the screening universe match this search.",
+    "draft": "⟦AR-REVIEW⟧ No listed stocks in the screening universe match this search.",
+    "category": "help/error"
+  },
+  "J-publicSearch-notScreened": {
+    "source": "Not screened yet",
+    "draft": "⟦AR-REVIEW⟧ Not screened yet",
+    "category": "help/error"
+  },
+  "J-publicSearch-submit": {
+    "source": "Search",
+    "draft": "⟦AR-REVIEW⟧ Search",
+    "category": "UI label"
+  },
+  "J-publicSearch-title": {
+    "source": "Stock search",
+    "draft": "⟦AR-REVIEW⟧ Stock search",
+    "category": "UI label"
+  },
   "U-00799d7eb4caed17030b0bb9cecb5a8263924c1e769a6f6791f684ac288d98d0": {
     "source": "English name",
     "draft": "⟦AR-REVIEW⟧ English name",
@@ -212,6 +252,11 @@
   "U-2a97f0418d4d5e0152b8471f843970d177238392adf784390c2ec618dcf82012": {
     "source": "Universe membership",
     "draft": "⟦AR-REVIEW⟧ Universe membership",
+    "category": "help/error"
+  },
+  "U-2b20a72bf7be962dfb991fdb105daca0d82157dd2a42f63998d88b119c578a0b": {
+    "source": "Hash verified.",
+    "draft": "⟦AR-REVIEW⟧ Hash verified.",
     "category": "help/error"
   },
   "U-2c74499f1b9dad4d192a585c0b5fd2598193ad5cb22497c544a72373cad2e67d": {
@@ -1322,6 +1367,11 @@
   "U-e565ca7422ac6e6c9eeacf0ffffe71b74d57faf6e77935ad14ba8445759b78d9": {
     "source": "Calculation trace",
     "draft": "⟦AR-REVIEW⟧ Calculation trace",
+    "category": "help/error"
+  },
+  "U-e856bf88761db489d1534e4eef19f63147a1a1a6bae8f4664ea6e8d0eb3421c2": {
+    "source": "replay not supported for engine",
+    "draft": "⟦AR-REVIEW⟧ replay not supported for engine",
     "category": "help/error"
   },
   "U-e91fadf24f78c081972a2015146e9b7ad4636bb5a208f5733b54ee4407682078": {

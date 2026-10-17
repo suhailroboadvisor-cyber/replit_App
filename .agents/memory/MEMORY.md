@@ -22,3 +22,6 @@
 - [SEC continuation scope](sec-mapping-checkpoint.md) — Step 7 go-ahead received; local implementation only, no live imports/migrations; serial ingest, process-local limiter.
 - [DB integration bootstrap](database-integration-order.md) — fresh disposable cluster per full run; bootstrap must precede suites that apply migrations.
 - [Live screening boundary](screening-live-boundary.md) — example fixtures are not live screening authority; preview mode is not production-methodology approval.
+- [Next browser database boundary](next-browser-database-boundary.md) — compiled Next rewrites NODE_ENV; keep local browser database adapters in isolated test copies.
+- [Search performance budget](search-performance-budget.md) — founder agreed 10,000 securities and 250 ms warm-query p95, not a hosted page SLA or migration approval.
+- [Public search edge boundary](public-search-edge-boundary.md) — founder-approved edge preparation is not activation or evidence of an exact global query quota.

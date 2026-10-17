@@ -35,8 +35,10 @@ describe("Public methodology classic ISR", () => {
   it("defers all public routes to first request, retaining 900-second classic ISR", async () => {
     for (const route of [publicLayout, directoryRoute, detailRoute]) {
       expect(route.revalidate).toBe(900);
-      expect(route.dynamic).toBe("force-static");
     }
+    for (const route of [directoryRoute, detailRoute]) expect(route.dynamic).toBe("force-static");
+    // Leaf policies isolate query-driven search from static public siblings.
+    expect(publicLayout).not.toHaveProperty("dynamic");
     expect(publicLayout.generateStaticParams()).toEqual([]);
     await expect(detailRoute.generateStaticParams()).resolves.toEqual([]);
   });

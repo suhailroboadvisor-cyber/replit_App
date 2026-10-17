@@ -1,4 +1,29 @@
 import { expect, test, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+test("@search production home ISR and dynamic search have separate caching boundaries", async ({ request }) => {
+  const manifest = JSON.parse(readFileSync(".next/prerender-manifest.json", "utf8"));
+  expect(manifest.dynamicRoutes["/[locale]"]).toMatchObject({ response: "empty", compute: "blocking" });
+  expect(manifest.dynamicRoutes).not.toHaveProperty("/[locale]/search");
+  for (const prefix of ["", "/en"]) {
+    const home = await request.get(prefix || "/");
+    expect(home.status()).toBe(200);
+    expect(home.headers()["cache-control"]).toContain("s-maxage=900");
+    expect(home.headers()["set-cookie"]).toBeUndefined();
+    const again = await request.get(prefix || "/");
+    expect(again.headers()["x-nextjs-cache"]).toBe("HIT");
+    for (const query of ["", "?q=%20%20", `?q=${"a".repeat(41)}`]) {
+      const response = await request.get(`${prefix}/search${query}`);
+      expect(response.status()).toBe(200);
+      expect(response.headers()["cache-control"]).toContain("no-store");
+      expect(response.headers()["set-cookie"]).toBeUndefined();
+      const html = (await response.text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "");
+      expect(html).toContain('name="robots" content="noindex, follow"');
+      expect(html).toContain("Enter 1–40 characters");
+      expect(html).not.toMatch(/href="(?:\/en)?\/stock\//);
+    }
+  }
+});
 import enMessages from "../src/i18n/messages/en.json";
 import arMessages from "../src/i18n/messages/ar.json";
 import { approvedArabicCopy } from "../src/i18n/approved-arabic";
@@ -411,6 +436,13 @@ for (const locale of ["ar", "en"] as const) {
     await expect(page.getByRole("main")).toBeInViewport();
     // Non-tabindex main landmarks receive the browser's sequential-focus start.
     // The next Tab must bypass the header, not return to its navigation.
+    await page.keyboard.press("Tab");
+    const main = page.getByRole("main");
+    await expect(main.getByRole("searchbox")).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(main.getByRole("button", { name: (locale === "ar" ? arMessages : enMessages).publicSearch.submit, exact: true })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(main.getByRole("link")).toBeFocused();
     await page.keyboard.press("Tab");
     const details = page.locator("#full-disclaimer");
     const summary = details.locator("summary");

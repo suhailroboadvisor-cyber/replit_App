@@ -70,6 +70,7 @@ jobs:
       # The isolated suite applies migrations and seeds twice before role tests.
       - run: pnpm test:db
       - run: pnpm exec playwright install --with-deps chromium webkit
+      - run: pnpm test:e2e:stock
       - run: pnpm test:e2e
       - run: pnpm test:e2e:accounts
       # Separate production Next copy: synthetic module IO, real roots/SSR/hydration.

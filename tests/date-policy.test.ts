@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ESLint } from "eslint";
 import { formatCalendarDate, formatDate, formatTimestamp, DISPLAY_TIME_ZONE } from "../src/lib/format";
 
-describe("D-107 date display policy", () => {
+describe("D-121 date display policy", () => {
   it.each(["UTC", "America/Los_Angeles", "Pacific/Kiritimati"])("ignores host zone %s", (zone) => {
     const previous = process.env.TZ;
     process.env.TZ = zone;

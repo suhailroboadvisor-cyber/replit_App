@@ -25,6 +25,8 @@ describe("public stock boundary and metadata", () => {
       expect(meta.robots).toMatchObject({ index: false });
       expect(JSON.stringify(meta.openGraph)).toContain("FIXA");
       expect(JSON.stringify(meta.twitter)).toContain("FIXA");
+      expect(meta.openGraph?.images).toEqual([{ url: "https://public.example/icons/icon-512.png", alt: expect.any(String) }]);
+      expect(meta.twitter?.images).toEqual(["https://public.example/icons/icon-512.png"]);
     });
   }
   it("production versions are indexable; no-run metadata invents no status", () => {

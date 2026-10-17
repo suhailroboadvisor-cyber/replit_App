@@ -9,10 +9,10 @@ import { LocaleDocument, documentMetadata } from "../../../components/foundation
 import { AccountControl } from "../../../components/accounts/AccountControl";
 export const metadata = documentMetadata;
 export const revalidate = 900;
-export const dynamic = "force-static";
+// Static policy belongs to each leaf: search alone must read searchParams.
 export function generateStaticParams() {
   // D-102: no database access or public-page rendering during CI/image builds.
-  // Each locale/page is generated and cached on its first runtime request.
+  // Static locale/pages are generated and cached on their first runtime request.
   return [];
 }
 

@@ -8,6 +8,13 @@ This file is the single source of truth for rebuilding the Base44 prototype ("Th
 
 ## 0. How to use this file
 
+Public stock-search scale measurements and the founder-approved **10,000 total
+securities / 250 ms warm database-call p95** planning target are maintained in
+[SEARCH_PERFORMANCE.md](SEARCH_PERFORMANCE.md). Larger synthetic benchmark sizes
+are stress scenarios, not an approved expansion of the curated universe.
+Performance work does not authorize a live migration or a change to matching
+semantics.
+
 1. Read sections 1–3 first. They fix the product rules, scope and stack. Do not re-decide them.
 2. Section 4 (branding) comes from the founder's Suhail Brand Strategy Brief, Revision 2 — logos, colours, fonts and copy rules are taken from it, never from the prototype. Use sections 4–10 as the specification: brand tokens, pages, data model, engine logic, scoring, AI pipeline, copy.
 3. Section 12 lists defects in the prototype. Do not copy them.

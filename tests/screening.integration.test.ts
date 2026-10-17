@@ -13,6 +13,7 @@ import { screeningRun, screeningCriterionResult, screeningUnknown } from "../src
 import { auditEvent, jobRun } from "../src/db/schema/accounts";
 import { screenSecurity } from "../src/screening/service";
 import { verifyRun } from "../src/screening/verify";
+import { hash } from "../src/engine/canonical";
 import { insertCurrent } from "../src/lib/financial/persistence";
 import type { Mutation } from "../src/ingest/sec/ingest";
 import type { Tx } from "../src/lib/auth/audit";
@@ -118,6 +119,23 @@ describe("database-backed screening", () => {
     await tx.update(financialPeriod).set({ is_latest: false }).where(eq(financialPeriod.id, f.p.id));
     await expect(screenSecurity(f.s.id, f.v.id, options, f.mutate)).rejects.toThrow("No financial period to screen");
     expect(await tx.select().from(screeningRun).where(eq(screeningRun.security_id, f.s.id))).toHaveLength(0);
+  }));
+  it.each([true, false])("verifies historical hashes without replay through stored-row reads (intact: %s)", intact => isolated(async tx => {
+    const f = await setup(tx), r = await screenSecurity(f.s.id, f.v.id, options, f.mutate);
+    const [original] = await tx.select().from(screeningRun).where(eq(screeningRun.id, r.runId));
+    const payload = structuredClone(original.hash_payload);
+    payload.engine_version = "engine-0.9.0";
+    const immutableHash = hash(payload);
+    if (!intact) payload.outputs.confidence = "Low";
+    const [historical] = await tx.insert(screeningRun).values({
+      ...original, id: randomUUID(), engine_version: payload.engine_version,
+      hash_payload: payload, immutable_hash: immutableHash,
+    }).returning();
+    expect(await verifyRun(historical.id, tx)).toMatchObject({
+      valid: intact, hashMatches: intact, replaySupported: false, replayMatches: null,
+      engineVersion: "engine-0.9.0",
+      differences: intact ? [] : [{ path: "$.immutable_hash", expected: immutableHash, actual: hash(payload) }],
+    });
   }));
   it("detects payload tampering with the append-only trigger explicitly disabled only here", () => isolated(async tx => {
     const f = await setup(tx), r = await screenSecurity(f.s.id, f.v.id, options, f.mutate);

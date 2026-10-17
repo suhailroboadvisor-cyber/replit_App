@@ -1,7 +1,7 @@
 import type { Locale } from "../i18n/routing";
 
 const formats = { ar: "ar-u-ca-gregory-nu-latn", en: "en-US" } as const;
-// D-107: instants use Saudi time; calendar dates never move between zones.
+// D-121: instants use Saudi time; calendar dates never move between zones.
 export const DISPLAY_TIME_ZONE = "Asia/Riyadh";
 export function formatNumber(
   value: number,
